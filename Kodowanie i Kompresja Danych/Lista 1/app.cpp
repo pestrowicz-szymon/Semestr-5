@@ -11,7 +11,7 @@ double entropy(const map<char, int>& frequencies, int total) {
     double result = 0.0;
     for (const auto& pair : frequencies) {
         double probability = static_cast<double>(pair.second) / total;
-        result -= probability * log2(probability);
+        result -= probability * log2(1/probability);
     }
     return result;
 }
