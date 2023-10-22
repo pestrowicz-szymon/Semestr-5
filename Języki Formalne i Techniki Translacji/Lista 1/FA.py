@@ -5,21 +5,20 @@ if(len(sys.argv) < 3):
 
 def ComputeTransitionFunction(pattern, alphabet):
     m = len(pattern)
-    for q in range(m):
+    for q in range(m+1):
+        transitionTable[q] = {}
         for a in alphabet:
-            k = min(m+1, q+2)
-            #print(pattern[:k] + ": " + pattern[q - k + 1:q] + a)
+            k = min(m, q+1)
             while k > 0 and pattern[:k] != pattern[q - k + 1:q] + a:
-                #print("w while " + pattern[:k] + ": " + pattern[q - k + 1:q] + a)
                 k-=1
-            transitionTable[(q, a)] = k
+            transitionTable[q][a] = k
 
 def FiniteAutomationMatcher(text, transitionTable, pattern):
     n = len(text)
     q = 0
     matches = []
     for i in range(n):
-        q = transitionTable.get((q, text[i]), 0)
+        q = transitionTable[q][text[i]]
         if q == len(pattern):
             matches.append(i - len(pattern) + 1)
     return matches
