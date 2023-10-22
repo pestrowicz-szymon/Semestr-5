@@ -10,6 +10,7 @@ n = 5
 function a32()
     S = Float32(0.0)
     for i in 1:n
+        println(x32[i]*y32[i])
         S += x32[i]*y32[i]
     end
     println("Iloczyn skalarny w przód Float32:  ", S)

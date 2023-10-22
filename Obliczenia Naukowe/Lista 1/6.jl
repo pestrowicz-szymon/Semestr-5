@@ -6,7 +6,7 @@ function f(x)
 end
 
 function g(x)
-    return (x*x) / sqrt(x * x + 1) + 1
+    return (x*x) / (sqrt(x * x + 1) + 1)
 end
 
 function main()
