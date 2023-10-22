@@ -7,6 +7,7 @@ x64 = Float64[2.718281828, -3.141592654, 1.414213562, 0.5772156649, 0.3010299957
 y64 = Float64[1486.2497, 878366.9879, -22.37492, 4773714.647, 0.000185049]
 n = 5
 
+#podpunkt a dla float32
 function a32()
     S = Float32(0.0)
     for i in 1:n
@@ -16,6 +17,7 @@ function a32()
     println("Iloczyn skalarny w przód Float32:  ", S)
 end
 
+#podpunkt a dla float64
 function a64()
     S = Float64(0.0)
     for i in 1:n
@@ -24,6 +26,7 @@ function a64()
     println("Iloczyn skalarny w przód Float64:  ", S)
 end
 
+#podpunkt b dla float32
 function b32()
     S = Float32(0.0)
     for i in 1:n
@@ -32,6 +35,7 @@ function b32()
     println("Iloczyn skalarny w tył Float32:    ", S)
 end
 
+#podpunkt b dla float64
 function b64()
     S = Float64(0.0)
     for i in 1:n
@@ -40,14 +44,15 @@ function b64()
     println("Iloczyn skalarny w tył Float64:    ", S)
 end
 
+#podpunkty c i d dla float32
 function cd32()
-    vector32 = Float32[0.0, 0.0, 0.0, 0.0, 0.0]
-    Sc = Float32(0.0)
-    Sc1 = Float32(0.0)
-    Sc2 = Float32(0.0)
-    Sd1 = Float32(0.0)
-    Sd2 = Float32(0.0)
-    Sd = Float32(0.0)
+    vector32 = Float32[0.0, 0.0, 0.0, 0.0, 0.0] #wymnozone kolejne przez siebie liczby
+    Sc = Float32(0.0) #suma podpunktu c
+    Sc1 = Float32(0.0) #suma liczb dodatnich podpunktu c
+    Sc2 = Float32(0.0) #suma liczb ujemnych podpunktu c
+    Sd1 = Float32(0.0) #suma liczb dodatnich podpunktu d
+    Sd2 = Float32(0.0) #suma liczb ujemnych podpunktu d
+    Sd = Float32(0.0) #suma podpunktu d
     for i in 1:n
         vector32[i] = x32[i]*y32[i]
     end
@@ -73,14 +78,15 @@ function cd32()
     println("Iloczyn skalarny rosnaco FLoat32:  ", Sd)
 end
 
+#podpunkty c i d dla float64
 function cd64()
-    vector64 = Float64[0.0, 0.0, 0.0, 0.0, 0.0]
-    Sc = Float64(0.0)
-    Sc1 = Float64(0.0)
-    Sc2 = Float64(0.0)
-    Sd1 = Float64(0.0)
-    Sd2 = Float64(0.0)
-    Sd = Float64(0.0)
+    vector64 = Float64[0.0, 0.0, 0.0, 0.0, 0.0] #wymnozone kolejne przez siebie liczby
+    Sc = Float64(0.0) #suma podpunktu c
+    Sc1 = Float64(0.0) #suma liczb dodatnich podpunktu c
+    Sc2 = Float64(0.0) #suma liczb ujemnych podpunktu c
+    Sd1 = Float64(0.0) #suma liczb dodatnich podpunktu d
+    Sd2 = Float64(0.0) #suma liczb ujemnych podpunktu d
+    Sd = Float64(0.0) #suma podpunktu d
     for i in 1:n
         vector64[i] = x64[i]*y64[i]
     end
