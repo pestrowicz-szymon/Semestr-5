@@ -28,8 +28,6 @@ def FiniteAutomationMatcher(text, transitionTable, pattern):
 
 pattern = sys.argv[1]
 text = open(sys.argv[2], "r", encoding="utf-8").read()
-print(text)
-print(pattern)
 transitionTable = {}
 ComputeTransitionFunction(pattern, set(text))
 matches = FiniteAutomationMatcher(text, transitionTable, pattern)
