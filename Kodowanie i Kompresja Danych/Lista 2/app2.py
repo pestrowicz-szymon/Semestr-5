@@ -4,6 +4,7 @@ import pickle
 import math
 import sys
 import struct
+from bitstring import BitArray
 
 class Node:
     def __init__(self, char, frequency):
@@ -83,9 +84,8 @@ def binary_string_to_bytes(binary_string):
     return bytes(bytes_list)
 
 def bitstring_to_bytes(s):
-    x=int(s, 2)
-    print("LICZBA W DZIESIETNYM: ", x)
-    print("STRUCT: ", struct.pack('i', x))
+    return int(s, 2).to_bytes((len(s) + 7) // 8, byteorder='big')
+
 
         
 def encode(input, output):
@@ -109,7 +109,16 @@ def encode(input, output):
         #bytes_text = binary_string_to_bytes(encoded_text)
         #print("bytes text: ", bytes_text)
         print("encoded: ", encoded_text)
-        bitstring_to_bytes(encoded_text)
+        print("chat: ", binary_string_to_bytes(encoded_text))
+        print("stack: ", bitstring_to_bytes(encoded_text))
+        binary_string = ''
+        for byte in binary_string_to_bytes(encoded_text):
+            binary_string += bin(byte)[2:].zfill(8)
+
+        print(binary_string)
+        #c = BitArray(hex=binary_string_to_bytes(encoded_text))
+        #c.bin
+        #print("spowrotem: ", c)
         #file.write(bytes_text)
         #file.write(encoded_text)
 
