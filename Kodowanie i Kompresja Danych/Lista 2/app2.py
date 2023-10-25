@@ -117,24 +117,38 @@ def encode(input, output):
     #print("encoded text: ", encoded_text)
 
     with open(output, 'wb') as file:
-        pickle.dump(huffman_codes, file)  # Zapisz kody do pliku
+        pickle.dump(huffman_codes, file)
+        bytesamm = math.ceil(len(encoded_text)/8)
+        print(encoded_text)
+        for i in range(bytesamm):
+            print(int(encoded_text[8*i:8*(i+1)], 2).to_bytes(1))
+
+        x = b'#\xe5\x07'
+        print(int.from_bytes(x))
+            
+        #print(int("00000111", 2))
+
+
+        #(23>>4)&1
+
+
         #bytes_text = binary_string_to_bytes(encoded_text)
         #print("bytes text: ", bytes_text)
-        reverted_encoded_text = encoded_text [::-1]
+        #reverted_encoded_text = encoded_text [::-1]
         #print(encoded_text)
         
         #print("encoded: ", encoded_text)
         #print("chat: ", binary_string_to_bytes(reverted_encoded_text))
         #print("stack: ", bitstring_to_bytes(reverted_encoded_text))
-        binary_string = ''
-        for byte in binary_string_to_bytes(reverted_encoded_text):
+        #binary_string = ''
+        #for byte in binary_string_to_bytes(binary_string):
             #print(byte)
-            binary_string += bin(byte)[2:].zfill(8)
+            #binary_string += bin(byte)[2:].zfill(8)
         
-        binary_string = binary_string [::-1]
-        print(binary_string)
+        #binary_string = binary_string [::-1]
+        #print(binary_string)
 
-        print(bitstring_to_bytes2(encoded_text))
+        #print(bitstring_to_bytes2(encoded_text))
 
         #print(binary_string)
 
