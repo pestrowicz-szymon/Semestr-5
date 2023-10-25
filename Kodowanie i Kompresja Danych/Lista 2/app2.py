@@ -86,7 +86,17 @@ def binary_string_to_bytes(binary_string):
 def bitstring_to_bytes(s):
     return int(s, 2).to_bytes((len(s) + 7) // 8, byteorder='big')
 
-
+def bitstring_to_bytes2(s):
+    print("w funkcji: ", s)
+    v = int(s, 2)
+    print("v          ", s)
+    b = bytearray()
+    while v:
+        print("wewnatrz while: ", v & 0xff)
+        b.append(v & 0xff)
+        v >>= 8
+    print(b)
+    return bytes(b[::-1])
         
 def encode(input, output):
     with open(input, 'r', encoding='utf-8') as file:
@@ -97,6 +107,8 @@ def encode(input, output):
     huffman_codes = {}
     generate_huffman_codes(huffman_tree, "", huffman_codes)
 
+    print(huffman_codes)
+
     #print("huffman codes")
     #print(huffman_codes)
 
@@ -105,17 +117,36 @@ def encode(input, output):
     #print("encoded text: ", encoded_text)
 
     with open(output, 'wb') as file:
-        #pickle.dump(huffman_codes, file)  # Zapisz kody do pliku
+        pickle.dump(huffman_codes, file)  # Zapisz kody do pliku
         #bytes_text = binary_string_to_bytes(encoded_text)
         #print("bytes text: ", bytes_text)
-        print("encoded: ", encoded_text)
-        print("chat: ", binary_string_to_bytes(encoded_text))
-        print("stack: ", bitstring_to_bytes(encoded_text))
+        reverted_encoded_text = encoded_text [::-1]
+        #print(encoded_text)
+        
+        #print("encoded: ", encoded_text)
+        #print("chat: ", binary_string_to_bytes(reverted_encoded_text))
+        #print("stack: ", bitstring_to_bytes(reverted_encoded_text))
         binary_string = ''
-        for byte in binary_string_to_bytes(encoded_text):
+        for byte in binary_string_to_bytes(reverted_encoded_text):
+            #print(byte)
             binary_string += bin(byte)[2:].zfill(8)
-
+        
+        binary_string = binary_string [::-1]
         print(binary_string)
+
+        print(bitstring_to_bytes2(encoded_text))
+
+        #print(binary_string)
+
+        
+
+        #byts = bitstring_to_bytes(binary_string)
+        #print(byts)
+        
+        #newFileByteArray = bytearray(binary_string)
+        #print(newFileByteArray)
+        #file.write(newFileByteArray)
+
         #c = BitArray(hex=binary_string_to_bytes(encoded_text))
         #c.bin
         #print("spowrotem: ", c)
