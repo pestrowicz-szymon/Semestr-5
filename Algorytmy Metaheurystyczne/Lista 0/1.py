@@ -6,7 +6,7 @@ import random
 G = nx.Graph()
 
 # Tworzenie 10 losowych wierzchołków
-num_vertices = 10
+num_vertices = 6
 for i in range(num_vertices):
     G.add_node(i)
 
@@ -21,6 +21,9 @@ mst = nx.minimum_spanning_tree(G)
 
 # Obliczanie wagi MST
 mst_weight = sum(mst[i][j]['weight'] for i, j in mst.edges())
+
+for i, j in mst.edges():
+    print(i, "->", j, ": ", mst[i][j]['weight'])
 
 # Wypisywanie wagi MST na terminalu
 print("Waga MST:", mst_weight)
