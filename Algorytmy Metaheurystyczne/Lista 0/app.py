@@ -1,7 +1,4 @@
 import networkx as nx
-import random
-import matplotlib.pyplot as plt
-import sys
 import math
 
 def distance(x1, y1, x2, y2):
@@ -12,7 +9,7 @@ for file in files:
     print(file)
     #-----------------TWORZENIE GRAFU----------------
     G = nx.Graph()
-    with open(file, 'r') as file:
+    with open('data/'+file, 'r') as file:
         G = nx.Graph()
         data = []
         for line in file:
@@ -28,19 +25,12 @@ for file in files:
         for j in range(i+1, num_vertices):
             G.add_edge(i, j, weight=distance(data[i][1], data[i][2], data[j][1], data[j][2]))
 
-    # Algorytm Kruskala do wyznaczenia MST
+    #-----------------OBLICZANIE MST----------------
     mst = nx.minimum_spanning_tree(G)
-
-    # Obliczanie wagi MST
     mst_weight = sum(mst[i][j]['weight'] for i, j in mst.edges())
-
-    #for i, j in mst.edges():
-    #    print(i, "->", j, ": ", mst[i][j]['weight'])
-
-    # Wypisywanie wagi MST na terminalu
     print("Waga MST:", mst_weight)
 
-    #-----------------ALGORYTM DFS----------------
+    #-----------------OBLICZANIE DFS----------------
     visited = [False] * num_vertices
     visited_counter = 0
     dfs_path = []
@@ -50,7 +40,6 @@ for file in files:
         visited[v] = True
         visited_counter += 1
         dfs_path.append(v)
-        #print(v)
         if visited_counter != num_vertices:
             min_weight = math.inf
             for neighbour in G.neighbors(v):
@@ -65,11 +54,9 @@ for file in files:
         DFSUtil(v, visited_counter)
 
     DFS(starting_point, visited_counter)
-
     dfs_sum = sum(G[dfs_path[i]][dfs_path[i+1]]['weight'] for i in range(num_vertices))
+
+    #-----------------WYPISYWANIE WYNIKÓW----------------
     print("WAGA DFS: ", dfs_sum)
     print("DFS/MST:", dfs_sum/mst_weight)
     print()
-
-    #nx.draw(G, pos)
-    #plt.show()
