@@ -2,16 +2,24 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import random
 import math
+import sys
 
 #-----------------TWORZENIE GRAFU----------------
-G = nx.Graph()
-num_vertices = 10
-for i in range(num_vertices):
-    G.add_node(i)
-for i in range(num_vertices):
-    for j in range(i+1, num_vertices):
-        weight = random.randint(1, 1000)
-        G.add_edge(i, j, weight=weight)
+with open(sys.argv[1], 'r') as file:
+    G = nx.Graph()
+    for line in file:
+        words = line.split()
+        if words[0] == 'DIMENSION':
+            num_vertices = words[2]
+        if words[0].isnumeric():
+            G.add_edge(words[0], words[1], weight = words[2])
+
+print(G)
+
+for i, j in G.edges():
+    print(i, "->", j, ": ", G[i][j]['weight'])
+
+'''
 
 #-----------------OBLICZANIE MST----------------
 mst = nx.minimum_spanning_tree(G)
@@ -56,22 +64,4 @@ DFS(starting_point, visited_counter)
 dfs_sum = sum(G[dfs_path[i]][dfs_path[i+1]]['weight'] for i in range(num_vertices))
 print()
 print(dfs_sum)
-'''
-
-#-----------------ALGORYTM DFS WERSJA 2----------------
-sorted_edges = sorted(G.edges(data=True), key=lambda x: x[2]['weight'])
-
-for edge in sorted_edges:
-    print(f"Krawędź: {edge[0]} -> {edge[1]}, Waga: {edge[2]['weight']}")
-
-tps_path = []
-used = [0] * num_vertices
-
-for edge in sorted_edges:
-    if used[edge[0]] < 2 and used[edge[1]] < 2:
-        tps_path.append(edge)
-        used[edge[0]] += 1
-        used[edge[1]] += 1
-
-print(tps_path)
 '''
