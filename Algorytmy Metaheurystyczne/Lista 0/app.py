@@ -68,8 +68,9 @@ for file in files:
     print("WAGA DFS: ", dfs_sum)
     print("DFS/MST:", dfs_sum/mst_weight)
 
-    filename1 = "graph/mst" + file.name[8:-4] + ".png"
-    filename2 = "graph/dfs" + file.name[8:-4] + ".png"
+    filename1 = "graph/mst" + file.name[5:-4] + ".png"
+    filename2 = "graph/dfs" + file.name[5:-4] + ".png"
+    print(file.name)
     nx.draw(mst, pos, node_size=20, node_color='red')
     plt.axis('off')
     plt.savefig(filename1)
