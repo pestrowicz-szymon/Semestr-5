@@ -1,5 +1,6 @@
 import networkx as nx
 import math
+import matplotlib.pyplot as plt
 
 def distance(x1, y1, x2, y2):
     return round(math.sqrt((x2 - x1)**2 + (y2 - y1)**2))
@@ -9,8 +10,8 @@ for file in files:
     print(file)
     #-----------------TWORZENIE GRAFU----------------
     G = nx.Graph()
+    dfs_g = nx.Graph()
     with open('data/'+file, 'r') as file:
-        G = nx.Graph()
         data = []
         for line in file:
             words = line.split()
@@ -18,8 +19,10 @@ for file in files:
                 num_vertices = int(words[2])
             if words[0].isnumeric():
                 data.append((int(words[0])-1, int(words[1]), int(words[2])))
+                dfs_g.add_node(int(words[0])-1, pos=(int(words[1]), int(words[2])))
 
     pos = {i:(data[i][1],data[i][2]) for i in range(num_vertices)}
+
 
     for i in range(num_vertices):
         for j in range(i+1, num_vertices):
@@ -35,6 +38,8 @@ for file in files:
     visited_counter = 0
     dfs_path = []
     starting_point = 0
+
+
 
     def DFSUtil(v, visited_counter):
         visited[v] = True
@@ -56,7 +61,20 @@ for file in files:
     DFS(starting_point, visited_counter)
     dfs_sum = sum(G[dfs_path[i]][dfs_path[i+1]]['weight'] for i in range(num_vertices))
 
+    for i in range(len(dfs_path)-1):
+        dfs_g.add_edge(dfs_path[i], dfs_path[i+1])
+
     #-----------------WYPISYWANIE WYNIKÓW----------------
     print("WAGA DFS: ", dfs_sum)
     print("DFS/MST:", dfs_sum/mst_weight)
+
+    filename1 = "graph/mst" + file.name[8:-4] + ".png"
+    filename2 = "graph/dfs" + file.name[8:-4] + ".png"
+    nx.draw(mst, pos, node_size=20, node_color='red')
+    plt.axis('off')
+    plt.savefig(filename1)
+    nx.draw(dfs_g, pos, node_size=20, node_color='red')
+    plt.axis('off')
+    plt.savefig(filename2)
+
     print()
