@@ -3,6 +3,10 @@
 \documentclass{article} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
 
 \usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[utf8]{inputenc}
+
 
 \title{Obliczenia Naukowe} % Sets article title
 \author{Szymon Pestrowicz} % Sets authors name
@@ -37,15 +41,38 @@
 		\end{tabular}
 
 	\section*{Zadanie 2} % creates a section
+		
+		Wykresy wygenerowane przy użyciu dwóch różnych programów:
+		
+		\begin{figure}[h]
+		 	\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{plot.png}
+   				\caption*{Wykres z julii (bliblioteka Plots.}
+ 			\end{minipage}%
+ 			\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{geo_gebra.png}
+   				\caption*{Wykres z geogebry.}
+ 			\end{minipage}
+		\end{figure}
+		
+		Przy użyciu biblioteki SymPy w julii otrzymałem taki wynik: $\displaystyle \lim_{x \to \infty} f(x) = 1$. Widzimy, że obra wykresy osiagaja wartość bardzo zbliżona do 1 już dla x = 4. Wartość ta daży jeszcze bardziej do 1, natomiast powyżej 30 zaczyna ona znaczaco odbiegać od 1, zarówno w góre jak i w dół ostatecznie osiagajac wartość 0 dla x od około 36. Wachania te wynikaja z tego, że wraz ze wzrostem x składowa $e^x$ daży do $\infty$, natomiast $\ln(1 + e^-x)$ daży do 0. Z tego też powodu dla wiekszych wartości x funkcja ta przyjmuje wartości 0, ponieważ mamy $e^x * 0$ 
+		
+		
+		
 
 
 	\section*{Zadanie 3} % creates a section
+		Opis zadanie 3
 
 	\section*{Zadanie 4} % creates a section
+		Opis zadanie 4
 
 	\section*{Zadanie 5} % creates a section
+		Opis zadanie 5
 
 	\section*{Zadanie 6} % creates a section	    
-
+		Opis zadanie 6
 
 \end{document} % This is the end of the document
