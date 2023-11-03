@@ -4,6 +4,7 @@
 
 \usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
 \usepackage{graphicx}
+\usepackage{wrapfig}
 \usepackage{tabularx}
 \usepackage{caption}
 \usepackage[utf8]{inputenc}
@@ -18,34 +19,40 @@
 	\maketitle % creates title using information in preamble (title, author, date)
 	
 	\section*{Zadanie 1} % creates a section
+		Zadanie 5 z listy 1 polegało na liczeniu iloczynu skalarnego 2 wektorów. Zmiana jaka należy wykonać na potrzeby tej listy to usuniecie najmniej znaczcej cyfry z $x_4$ oraz $x_5$.
 	    
-		\begin{tabular}{|c|c|c|}
+		\vspace{0.1cm}
+		\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
 		 & Lista 1 & Lista 2 \\
 		\hline
-		Iloczyn skalarny w przód Float32 & -0.4999443 & -0.4999443 \\
+		w przód Float32 & -0.4999443 & -0.4999443 \\
 		\hline
-		Iloczyn skalarny w tył Float32 & -0.4543457 & -0.4543457 \\
+		w tył Float32 & -0.4543457 & -0.4543457 \\
 		\hline
-		Iloczyn skalarny malejaco FLoat32 & -0.5 & -0.5\\
+		malejaco Float32 & -0.5 & -0.5\\
 		\hline
-		Iloczyn skalarny rosnaco FLoat32 &  -0.5 & -0.5\\
+		rosnaco Float32 &  -0.5 & -0.5\\
 		\hline
-		Iloczyn skalarny w przód Float64 & 1.0251881368296672e-10 &-0.004296342739891585\\
+		w przód Float64 & 1.0251881368296672e-10 &-0.004296342739891585\\
 		\hline
-		Iloczyn skalarny w tył Float64 & -1.5643308870494366e-10 &-0.004296342998713953 \\
+		w tył Float64 & -1.5643308870494366e-10 &-0.004296342998713953 \\
 		\hline
-		Iloczyn skalarny malejaco FLoat64 & 0.0 &-0.004296342842280865 \\
+		malejaco Float64 & 0.0 &-0.004296342842280865 \\
 		\hline
-		Iloczyn skalarny rosnaco FLoat64 & 0.0 &-0.004296342842280865 \\
+		rosnaco Float64 & 0.0 &-0.004296342842280865 \\
 		\hline
-		\end{tabular}
+		\end{tabularx}
+		\vspace{0.1cm}
+
+		Taka zmiana danych nie wpływa na wynik podczas liczenia w arytmetyce Float32, natomiast we Float 64 w przypadku iloczynu skalarnego "w przód" i "w tył" widzimy dość duże różnice. To, że nie ma różnicy pomiedzy Lista 1 a Lista 2 w przypadku Float32 wynika z tego, że 4 bajtowa reprezentacja liczby zmiennoprzecinkowej jest w stanie przechować jedynie 6-7 cyfr znaczacych, w przeciwieństwie do standardu podwojonej precyzji, który to przechowuje 15-16 cyfr znaczacych
 
 	\section*{Zadanie 2} % creates a section
 		
-		Wykresy wygenerowane przy użyciu dwóch różnych programów:
-		
-		\begin{figure}[h]
+		W zadaniu drugim mamy narysować wykres funkcji $f(x) = e^x\ln(1 + e^{-x})$ Przy użyciu biblioteki SymPy w julii otrzymałem taki wynik: $\displaystyle \lim_{x \to \infty} f(x) = 1$. Widzimy, że obra wykresy osiagaja wartość bardzo zbliżona do 1 już dla x = 4. Wartość ta daży jeszcze bardziej do 1, natomiast powyżej 30 zaczyna ona znaczaco odbiegać od 1, zarówno w góre jak i w dół ostatecznie osiagajac wartość 0 dla x od około 36. Wachania te wynikaja z tego, że wraz ze wzrostem x składowa $e^x$ daży do $\infty$, natomiast $\ln(1 + e^{-x})$ daży do 0. Z tego też powodu dla wiekszych wartości x funkcja ta przyjmuje wartości 0, ponieważ mamy $e^x * 0$ 
+
+		\vspace{0.1cm}
+		\begin{figure}
 		 	\begin{minipage}{0.5\textwidth}
    				\centering
    				\includegraphics[width=0.9\linewidth]{plot.png}
@@ -57,16 +64,17 @@
    				\caption*{Wykres z geogebry.}
  			\end{minipage}
 		\end{figure}
-		
-		Przy użyciu biblioteki SymPy w julii otrzymałem taki wynik: $\displaystyle \lim_{x \to \infty} f(x) = 1$. Widzimy, że obra wykresy osiagaja wartość bardzo zbliżona do 1 już dla x = 4. Wartość ta daży jeszcze bardziej do 1, natomiast powyżej 30 zaczyna ona znaczaco odbiegać od 1, zarówno w góre jak i w dół ostatecznie osiagajac wartość 0 dla x od około 36. Wachania te wynikaja z tego, że wraz ze wzrostem x składowa $e^x$ daży do $\infty$, natomiast $\ln(1 + e^-x)$ daży do 0. Z tego też powodu dla wiekszych wartości x funkcja ta przyjmuje wartości 0, ponieważ mamy $e^x * 0$ 
+		\vspace{0.1cm}
 		
 		
 		
 
 
 	\section*{Zadanie 3} % creates a section
+		
 		Macierz Hilberta
-
+		
+		\vspace{0.1cm}
 		\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
 		\textbf{} & \textbf{Metoda Gausa} & \textbf{x = $A^(-1)*b $} \\
@@ -115,6 +123,7 @@
 		Macierz Losowa
 
 	\section*{Zadanie 4} % creates a section
+		\vspace{0.1cm}
 		\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
 		\textbf{} & \textbf{Podpunkt a} & \textbf{Podpunkt b} \\
@@ -160,10 +169,12 @@
 		$|P(z_{20})|$ & 3.284992217648231e13 & 1.374352755206264e18 \\
 		\hline
 		\end{tabularx}
+		\vspace{0.1cm}
 
-		Dla wysokich wartości k w zk w podpunkcie b otrzymujemy takie same wartości, ponieważ miejsca zerowe wychodza tam liczbami urojonymi.
-		Jak widzimy w tym zadaniu nawet bardzo mała różnica w liczbie, czyli $2^(-23)$ powoduje ogromne zmiany w wartościach
+		Dla wysokich wartości k w $z_k$ w podpunkcie b otrzymujemy takie same wartości, ponieważ miejsca zerowe wychodza tam liczbami urojonymi.
+		Jak widzimy w tym zadaniu nawet bardzo mała różnica w liczbie, czyli $2^{-23}$ powoduje ogromne zmiany w wartościach
 		
+		\vspace{0.1cm}
 		\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
 		\textbf{} & \textbf{Podpunkt a} & \textbf{Podpunkt b} \\
@@ -209,8 +220,12 @@
 		$|z_{20} - 20|$ & 0.00019609193560299332 & 0.8469088741049902 \\
 		\hline
 		\end{tabularx}
+		\vspace{0.1cm}
 
 	\section*{Zadanie 5} % creates a section
+		W zadaniu tym iterujemy po równaniu reukrencyjnym na 2 różne sposoby. Sposób 1: Wykonanie 40 iteracji, sposób 2 to natomiast wykonanie 10 iteracji, obciecie wyniku do 3 liczb po przecinku i nastepnie wykonanie pozostałych 30 iteracji. Badanie zostało przeprowadzone w arytmetyce Float32 oraz Float64
+
+		\vspace{0.1cm}
 		\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
 		\textbf{} & \textbf{40 iteracji} & \textbf{10 + 30 iteracji} \\
@@ -220,11 +235,53 @@
 		Float64 & 0.011611238029748606 & 0.7305550338104317 \\
 		\hline
 		\end{tabularx}
+		\vspace{0.1cm}
 
-		Mimo tak dużych rozbieżności pomiedzy Float32 a Float64 w obu przypadkach x po 10 iteracjach i obcieciu do 3 liczb po przecinku wynosił 0.722		
+		Mimo tak dużych rozbieżności pomiedzy Float32 a Float64 w obu przypadkach x po 10 iteracjach i obcieciu do 3 liczb po przecinku wynosił 0.722	
 
+	\section*{Zadanie 6} % creates a section
+		W zadaniu 6 podobnie jak w zadaniu 5 wykonujemy 40 iteracji na pewnym wzorze rekurencyjnym. W celu zaobserwowania zachowań wygenerowanych ciagów postanowiłem przedstawić je na wykresie
 
-	\section*{Zadanie 6} % creates a section	    
-		Opis zadanie 6
+		\begin{figure}[h]
+		\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{Punkt 1.png}
+ 			\end{minipage}%
+ 			\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{Punkt 2.png}
+ 		\end{minipage}
+		\end{figure}
+			    
+		\begin{figure}
+		\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{Punkt 3.png}
+ 			\end{minipage}%
+ 			\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{Punkt 4.png}
+ 		\end{minipage}
+		\end{figure}
+		
+		\begin{figure}
+		\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{Punkt 5.png}
+ 			\end{minipage}%
+ 			\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{Punkt 6.png}
+ 		\end{minipage}
+		\end{figure}
+
+		\begin{figure}
+		\begin{minipage}{0.5\textwidth}
+   				\centering
+   				\includegraphics[width=0.9\linewidth]{Punkt 7.png}
+ 		\end{minipage}%
+		\end{figure}
+
+		
 
 \end{document} % This is the end of the document
