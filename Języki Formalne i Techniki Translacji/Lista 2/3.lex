@@ -23,6 +23,8 @@ int inquote = 0;
 
 "\"" { if (inquote==0) inquote = 1; else inquote = 0; printf("\""); }
 
+"\\\"" { if (inquote == 1) printf("\\\""); }
+
 "\n" {
     printf("%s", "\n");
 }

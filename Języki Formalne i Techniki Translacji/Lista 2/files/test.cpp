@@ -13,8 +13,8 @@
 using namespace std;
 // */ 
 
-//! Komentarz dokumentacyjny
-	   //i jego // ciag dalszy
+//! Komentarz dokumentacyjny \
+	   i jego // ciag dalszy\
   /* i dalszy */
 int some_function(int a) {
 	return a << (1 << 4);
@@ -28,9 +28,12 @@ int some_function(int a) {
    */
 int main()
 {
-  /// Komentarz dokumentacyjny
+  /// Komentarz dokumentacyjny \
+  ciag dalszy jednolinijkowego komentarza
   int i = 5;
-  // Komentarz jednolinijkowy
+  // Komentarz jednolinijkowy\
+  i jego ciąg dalszy\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  i dalszy */
   cout << "Jakis program" << endl; // ;
   // A tutaj taki komentarz \ 
   cout << "Poczatek komentarza /*" << endl; // ala // <- gcc to potraktuje jako komentarz
@@ -57,13 +60,13 @@ int main()
   */
   // nie moze byc "za latwo", a co!
    // i jeszcze jeden */
-  cout << "Zabawa \" // \\\\\"ala i kot \\\\" << endl; // abcabcabc "
+  cout << "Zabawa \" // \\\\\"ala i kot " << endl; // abcabcabc "
   cout << "Komentarz // kot " << endl;
   cout << "Pulapka \" \
            // ma \
            /* \\\"ma\" */ \
 		   /** doc */\
-           \\\\" << endl;
+           " << endl;
  cout << /*Proba*/"Zabawa \" // ala i kot " << endl;	   
  printf("Zabawa \" // ala i kot ");
 }
