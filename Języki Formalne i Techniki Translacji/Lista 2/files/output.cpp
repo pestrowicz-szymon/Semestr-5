@@ -2,71 +2,68 @@
 #include<cstdio>
 
 
-/** Maly przyklad programu
- * 
- *  // autor Maciej Gebala
- * 
- */
+
+
+
+
+
 
 
 
 using namespace std;
 
 
-//! Komentarz dokumentacyjny \
-	   i jego 
+
+	   
   
 int some_function(int a) {
 	return a << (1 << 4);
 }
 
-/*! Nieco inny komentarz dokumentacyjny 
 
-	// Komentarz w komentarzu		
-					
-					
-   */
+
+
+
+
+
 int main()
 {
-  /// Komentarz dokumentacyjny \
-  ciag dalszy jednolinijkowego komentarza
+  
   int i = 5;
   
-  i jego ciąg dalszy\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-  i dalszy */
   cout << "Jakis program" << endl; 
   
-  cout << "Poczatek komentarza 
-
-
-
-  
+  cout << "Poczatek komentarza /*" << endl; 
   
 
 
   
-  ///// Komentarz TODO: Sprawdzić jak to jest interpretowane 
-  //! i jeszcze inny komentarz */
+  
+
+
+  
+  
+  
   cout << "Koniec komentarza */ "<< endl; 
-  cout << "Komentarz " << endl;
+  cout << "Komentarz /* ala */" << endl;
   
-  /*! I jeszcze jeden
-					**/
+  
+
   
 
 
-  /** "Dokumentujemy nasz \" kod"
   
-  */
+
+
   
    
-  cout << "Zabawa \" 
-  cout << "Komentarz 
+  cout << "Zabawa \" "
+  cout << "Komentarz // kot " << endl;
   cout << "Pulapka \" \
            
             \
-		   /** doc */\
+		   \
            \\\\" << endl;
- cout << "Zabawa \" 
+ cout << /*Proba*/"Zabawa \" // ala i kot " << endl;	   
  printf("Zabawa \" 
 }

@@ -19,9 +19,9 @@ int main() {
   /** lololo */
 
   /** doxgygen
-   * wielolinijkowy
+    wielolinijkowy
    * generalnie
-   * //z dodatkiem
+   * lol xd //z dodatkiem 
   */
 
   printf("Age = %d", age);
