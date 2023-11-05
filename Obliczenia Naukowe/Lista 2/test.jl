@@ -1,10 +1,19 @@
-using Polynomials  # Importowanie pakietu Polynomials
+using LinearAlgebra
 
-# Współczynniki wielomianu
-coefficients = [(-20:1:-16)...; (-15:1:-11)...; (-10:1:-6)...; (-5:1:-1)...]
+function matcond(n::Int, c::Float64)
 
-# Tworzenie wielomianu
-p = polynomial(coefficients)
+    if n < 2
+        error("size n should be > 1")
+    end
+    if c < 1.0
+        error("condition number  c of a matrix  should be >= 1.0")
+    end
+    (U, S, V) = svd(rand(n, n))
+    return U * diagm(0 => [LinRange(1.0, c, n);]) * V'
+end
 
-# Wyświetlenie wielomianu
-println(p)
+#x = matcond(5, 10.0)
+#println(x)
+for i in 1:2:30
+    println(i)
+end

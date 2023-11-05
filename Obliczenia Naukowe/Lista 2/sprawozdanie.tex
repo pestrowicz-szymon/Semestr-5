@@ -19,6 +19,7 @@
 	\maketitle % creates title using information in preamble (title, author, date)
 	
 	\section*{Zadanie 1} % creates a section
+
 		Zadanie 5 z listy 1 polegało na liczeniu iloczynu skalarnego 2 wektorów. Zmiana jaka należy wykonać na potrzeby tej listy to usuniecie najmniej znaczcej cyfry z $x_4$ oraz $x_5$.
 	    
 		\vspace{0.1cm}
@@ -71,104 +72,69 @@
 
 
 	\section*{Zadanie 3} % creates a section
-		
+		Zadanie to polega na porównaniu rozwiazań układów liniowych Ax = b.
+
 		Macierz Hilberta
-		
+
 		\vspace{0.1cm}
-		\begin{tabularx}{\textwidth}{|c|X|X|}
+		\begin{tabularx}{\textwidth}{|c|c|X|X|X|}
 		\hline
-		\textbf{} & \textbf{Metoda Gausa} & \textbf{x = $A^(-1)*b $} \\
-		\hline
-		1 & 0.0 & 0.0 \\
-		\hline
-		2 & 5.661048867003676e-16 & 1.4043333874306803e-15 \\
-		\hline
-		3 & 8.022593772267726e-15 & 0.0\\
-		\hline
-		4 & 4.137409622430382e-14 & 0.0\\
-		\hline
-		5 & 1.6828426299227195e-12 & 3.3544360584359632e-12\\
-		\hline
-		6 & 2.618913302311624e-10 & 2.0163759404347654e-10 \\
-		\hline
-		7 & 1.2606867224171548e-8 & 4.713280397232037e-9 \\
-		\hline
-		8 & 6.124089555723088e-8 & 3.07748390309622e-7 \\
-		\hline
-		9 & 3.8751634185032475e-6 & 4.541268303176643e-6 \\
-		\hline
-		10 & 8.67039023709691e-5 & 0.0002501493411824886 \\
-		\hline
-		11 & 0.00015827808158590435 & 0.007618304284315809 \\
-		\hline
-		12 & 0.13396208372085344 & 0.258994120804705 \\
-		\hline
-		13 & 0.11039701117868264 & 5.331275639426837 \\
-		\hline
-		14 & 1.4554087127659643 & 8.71499275104814 \\
-		\hline
-		15 & 4.696668350857427 & 7.344641453111494 \\
-		\hline
-		16 & 54.15518954564602 & 29.84884207073541 \\
-		\hline
-		17 & 13.707236683836307 & 10.516942378369349 \\
-		\hline
-		18 & 10.257619124632317 & 24.762070989128866 \\
-		\hline
-		19 & 102.15983486270827 & 109.94550732878284 \\
-		\hline
-		20 & 108.31777346206205 & 114.34403152557572 \\
-		\hline
+		\textbf{n} & \textbf{*} & \textbf{cond(A)}  & \textbf{Bład metody Gaussa} & \textbf{Blad metody inwersji}\\ \hline
+		1 & 1 & 1.0 & 0.0 & 0.0\\ \hline
+		3 & 3 & 524.0567775860 & 8.0225937722e-15 & 0.0\\ \hline
+		5 & 5 & 476607.2502422687 & 1.6828426299e-12 & 3.3544360584e-12\\ \hline
+		7 & 7 & 4.7536735659e8 & 1.2606867224e-8 & 4.7132803972e-9\\ \hline
+		9 & 9 & 4.9315375560e11 & 3.8751634185e-6 & 4.5412683031e-6\\ \hline
+		11 & 10 & 5.22270324501e14 & 0.000158278081585 & 0.0076183042\\ \hline
+		13 & 11 & 3.1905581877e18 & 0.1103970111 & 5.3312756394\\ \hline
+		15 & 12 & 3.6756828658e17 & 4.6966683508 & 7.3446414531\\ \hline
+		17 & 12 & 8.0712498943e17 & 13.7072366838 & 10.5169423783\\ \hline
+		19 & 13 & 5.1901324963e18 & 102.1598348627 & 109.9455073287\\ \hline
+		21 & 13 & 3.2903033202e18 & 44.0894558383 & 34.52041154914\\ \hline
+		23 & 13 & 6.1012090316e17 & 25.8425119179 & 22.27231429873\\ \hline
+		25 & 13 & 1.3309197553e18 & 7.0957572046 & 21.04404299195\\ \hline
+		27 & 14 & 4.2868370216e18 & 27.4330900905 & 35.6897453095\\ \hline
+		29 & 14 & 8.2774340844e18 & 60.0954503947 & 43.403836831990\\ \hline
 		\end{tabularx}
+		* - rank(A)
+		\vspace{5cm}
+		
 		Macierz Losowa
 
-		\begin{tabularx}{\textwidth}{|c|X|X|}
+		\begin{tabularx}{\textwidth}{|c|c|X|X|X|}
 		\hline
-		\textbf{} & \textbf{Metoda Gausa} & \textbf{x = $A^(-1)*b $} \\
-		\hline
-		1 & 0.0 & 0.0 \\
-		\hline
-		2 & 5.661048867003676e-16 & 1.4043333874306803e-15 \\
-		\hline
-		3 & 8.022593772267726e-15 & 0.0\\
-		\hline
-		4 & 4.137409622430382e-14 & 0.0\\
-		\hline
-		5 & 1.6828426299227195e-12 & 3.3544360584359632e-12\\
-		\hline
-		6 & 2.618913302311624e-10 & 2.0163759404347654e-10 \\
-		\hline
-		7 & 1.2606867224171548e-8 & 4.713280397232037e-9 \\
-		\hline
-		8 & 6.124089555723088e-8 & 3.07748390309622e-7 \\
-		\hline
-		9 & 3.8751634185032475e-6 & 4.541268303176643e-6 \\
-		\hline
-		10 & 8.67039023709691e-5 & 0.0002501493411824886 \\
-		\hline
-		11 & 0.00015827808158590435 & 0.007618304284315809 \\
-		\hline
-		12 & 0.13396208372085344 & 0.258994120804705 \\
-		\hline
-		13 & 0.11039701117868264 & 5.331275639426837 \\
-		\hline
-		14 & 1.4554087127659643 & 8.71499275104814 \\
-		\hline
-		15 & 4.696668350857427 & 7.344641453111494 \\
-		\hline
-		16 & 54.15518954564602 & 29.84884207073541 \\
-		\hline
-		17 & 13.707236683836307 & 10.516942378369349 \\
-		\hline
-		18 & 10.257619124632317 & 24.762070989128866 \\
-		\hline
-		19 & 102.15983486270827 & 109.94550732878284 \\
-		\hline
-		20 & 108.31777346206205 & 114.34403152557572 \\
-		\hline
+		\textbf{n} & \textbf{*} & \textbf{cond(A)}  & \textbf{Bład metody Gaussa} & \textbf{Blad metody inwersji}\\ \hline
+		5 & 5 & 1.0 & 2.482534153247e-16 & 2.27528013451e-16\\ \hline
+		5 & 5 & 9.999999999999 & 1.4895204919e-16 & 1.79018083652e-16\\ \hline
+		5 & 5 & 999.9999999999 & 1.0874519762e-14 & 8.98773367955e-15\\ \hline
+		5 & 5 & 1.000000000758e7 & 4.13222116228e-10 & 4.22607260856e-10\\ \hline
+		5 & 5 & 9.999927913963e11 & 2.14324570479e-6 & 6.98204239567e-6\\ \hline
+		5 & 4 & 7.866189095961e15 & 0.0790071308819 & 0.0379931762993\\ \hline
+		10 & 10 & 1.0000000000000007 & 2.916317306881e-16 & 1.1102230246e-16\\ \hline
+		10 & 10 & 10.000000000000005 & 2.192514798397e-16 & 3.597533769998e-16\\ \hline
+		10 & 10 & 1000.0000000000103 & 2.132310422677e-14 & 1.60892730118e-14\\ \hline
+		10 & 10 & 9.999999989883e6 & 7.013383248525e-11 & 6.757245726842e-11\\ \hline
+		10 & 10 & 9.99981061542911e11 & 1.47823448587e-5 & 1.855664045418e-5\\ \hline
+		10 & 9 & 7.37165578256e15 & 0.1188979494001 & 0.1105958648074\\ \hline
+		20 & 20 & 1.0000000000000022 & 6.065720539026e-16 & 5.008324230288e-16\\ \hline
+		20 & 20 & 10.000000000000009 & 3.349121675321e-16 & 4.04127281044e-16\\ \hline
+		20 & 20 & 1000.0000000000043 & 1.159617187076e-14 & 8.33185211459e-15\\ \hline
+		20 & 20 & 9.999999993563564e6 & 1.567341602325e-10 & 1.426718630764e-10\\ \hline
+		20 & 20 & 9.99993184115527e11 & 2.0639874465375e-5 & 1.888359433999e-5\\ \hline
+		20 & 19 & 1.0348578397316e16 & 0.20393870175 & 0.2018665947361\\ \hline
 		\end{tabularx}
+		* - rank(A)
+		
+		\vspace{0.3cm}
+
+		W przypadku macierzy Hilberta do n=15 widzimy, że metoda Gaussa generuje mniejsze błedy od metody inwersji, powyżej n = 15 błedy sa dość duże i nie da sie jednoznacznie określić która z tych metod jest dokładniejsza. W przypadku macierzy losowych obie metody maja podobny poziom dokładnośći oraz widzimy,  że błedy sa dużo mniejsze niż w macierzy Hilberta
+
+		
 
 	\section*{Zadanie 4} % creates a section
+		
+		Zadanie 4 polega na obliczeniu miejsc zerowych wielomianu Wilkinsona a nastepnie podstawieniu ich do wielomianu w celu sprawdzenia.
+
 		\vspace{0.1cm}
 		\begin{tabularx}{\textwidth}{|c|X|X|}
 		\hline
@@ -218,7 +184,7 @@
 		\vspace{0.1cm}
 
 		Dla wysokich wartości k w $z_k$ w podpunkcie b otrzymujemy takie same wartości, ponieważ miejsca zerowe wychodza tam liczbami urojonymi.
-		Jak widzimy w tym zadaniu nawet bardzo mała różnica w liczbie, czyli $2^{-23}$ powoduje ogromne zmiany w wartościach
+		Jak widzimy w tym zadaniu nawet bardzo mała różnica w liczbie, czyli $2^{-23}$ powoduje ogromne zmiany w wartościach. Z kolei fakt, że wstawiajac wartości x bedace miejscami zerowymi wartości nie wychodza równe 0 wynika z tego, że współczynniki przy niskich potegach x maja powzyej 17 znaków, a tyle maksymalnie można zakodować w arytmetyce Float64
 		
 		\vspace{0.1cm}
 		\begin{tabularx}{\textwidth}{|c|X|X|}
@@ -286,7 +252,7 @@
 		Mimo tak dużych rozbieżności pomiedzy Float32 a Float64 w obu przypadkach x po 10 iteracjach i obcieciu do 3 liczb po przecinku wynosił 0.722	
 
 	\section*{Zadanie 6} % creates a section
-		W zadaniu 6 podobnie jak w zadaniu 5 wykonujemy 40 iteracji na pewnym wzorze rekurencyjnym. W celu zaobserwowania zachowań wygenerowanych ciagów postanowiłem przedstawić je na wykresach
+		W zadaniu 6 podobnie jak w zadaniu 5 wykonujemy 40 iteracji na pewnym wzorze rekurencyjnym. W celu zaobserwowania zachowań wygenerowanych ciagów postanowiłem przedstawić je na wykresach. Widzimy, że podpunkty  w których $x_0$ jest liczbami całkowittymi nie generuja dziwnych wykresów, natomiast podpunkty 3, 6 oraz 7, gdzie $x_0$ jest liczbami ułamkowymii powoduje dziwne wachania wykresu, które sa najbardziej widoczne w punkcie 3.
 
 		\begin{figure}[h]
 		\begin{minipage}{0.5\textwidth}
@@ -327,6 +293,8 @@
    				\includegraphics[width=0.9\linewidth]{Punkt 7.png}
  		\end{minipage}%
 		\end{figure}
+
+		
 
 		
 
