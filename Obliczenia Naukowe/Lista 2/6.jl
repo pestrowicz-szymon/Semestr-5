@@ -1,3 +1,6 @@
+#Szymon Pestrowicz
+#268496
+
 using CSV
 
 csv_file = open("wyniki.csv", "w")

@@ -1,3 +1,6 @@
+#Szymon Pestrowicz
+#268496
+
 using LinearAlgebra
 
 function hilb(n::Int)

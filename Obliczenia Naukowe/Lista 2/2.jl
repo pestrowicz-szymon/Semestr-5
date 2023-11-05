@@ -1,3 +1,6 @@
+#Szymon Pestrowicz
+#268496
+
 using Plots 
 using Calculus
 using SymPy

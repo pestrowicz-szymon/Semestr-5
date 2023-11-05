@@ -1,3 +1,6 @@
+#Szymon Pestrowicz
+#268496
+
 function iteration(pn, r)
     return pn + r*pn*(1-pn)
 end
@@ -16,9 +19,7 @@ function tenthirty(p0_2, r)
         x = iteration(x, r)
     end
 
-    #println("x po 10 iteracjach: ", x)
     x = trunc(x, digits=3)
-    #println("x po obcięciu: ", x)
 
     for i in 1:30
         x = iteration(x, r)
