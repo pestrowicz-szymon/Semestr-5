@@ -361,12 +361,12 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[40] =
+static const flex_int16_t yy_accept[38] =
     {   0,
-        0,    0,    0,    0,    0,    0,    0,    0,   17,   15,
-       14,   12,   15,   15,   16,    2,   16,    7,   16,    7,
-       11,   11,    5,    1,   13,    0,    2,    0,    6,   10,
-        9,    8,    4,    3,    4,    4,    3,    3,    0
+        0,    0,    2,    2,    0,    0,    0,    0,   17,   15,
+       14,   12,   15,   15,    2,    2,    7,   16,    7,   11,
+       11,    5,    1,   13,    2,    2,    6,   10,    9,    8,
+        4,    3,    4,    4,    3,    3,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -406,44 +406,40 @@ static const YY_CHAR yy_meta[8] =
         1,    1,    1,    1,    1,    1,    1
     } ;
 
-static const flex_int16_t yy_base[46] =
+static const flex_int16_t yy_base[44] =
     {   0,
-        0,    0,    6,   12,   18,   22,   26,   30,   30,   57,
-       57,   57,   31,   25,   36,   57,   42,   57,   57,   20,
-       57,   19,   47,   50,   57,    0,   57,    0,   57,   57,
-       57,   57,   20,   19,   16,   57,   15,   57,   57,   15,
-       14,   11,   10,    9,    8
+        0,    0,   37,   36,    6,   10,   14,   18,   37,   40,
+       40,   40,   19,   32,   33,   40,   40,   40,   28,   40,
+       27,   23,   26,   40,   29,   40,   40,   40,   40,   40,
+       28,   25,   20,   40,   19,   40,   40,   17,   16,   13,
+       12,    9,    8
     } ;
 
-static const flex_int16_t yy_def[46] =
+static const flex_int16_t yy_def[44] =
     {   0,
-       39,    1,   40,   40,   41,   41,   42,   42,   39,   39,
-       39,   39,   39,   39,   43,   39,   43,   39,   39,   39,
-       39,   39,   39,   39,   39,   17,   39,   17,   39,   39,
-       39,   39,   44,   45,   44,   39,   45,   39,    0,   39,
-       39,   39,   39,   39,   39
+       37,    1,   38,   38,   39,   39,   40,   40,   37,   37,
+       37,   37,   37,   37,   41,   37,   37,   37,   37,   37,
+       37,   37,   37,   37,   41,   37,   37,   37,   37,   37,
+       42,   43,   42,   37,   43,   37,    0,   37,   37,   37,
+       37,   37,   37
     } ;
 
-static const flex_int16_t yy_nxt[65] =
+static const flex_int16_t yy_nxt[48] =
     {   0,
-       10,   11,   10,   12,   10,   13,   14,   16,   37,   35,
-       26,   21,   17,   16,   18,   15,   38,   36,   17,   19,
-       38,   36,   20,   19,   30,   29,   20,   19,   25,   39,
-       22,   19,   39,   39,   22,   23,   24,   27,   39,   39,
-       39,   39,   28,   27,   39,   39,   39,   39,   28,   31,
-       39,   32,   33,   39,   39,   34,    9,   39,   39,   39,
-       39,   39,   39,   39
+       10,   11,   10,   12,   10,   13,   14,   18,   35,   33,
+       19,   18,   25,   20,   19,   18,   17,   15,   21,   18,
+       36,   34,   21,   22,   23,   29,   36,   30,   31,   34,
+       26,   32,   28,   27,   26,   24,   37,   16,   16,    9,
+       37,   37,   37,   37,   37,   37,   37
     } ;
 
-static const flex_int16_t yy_chk[65] =
+static const flex_int16_t yy_chk[48] =
     {   0,
-        1,    1,    1,    1,    1,    1,    1,    3,   45,   44,
-       43,   42,    3,    4,   41,   40,   37,   35,    4,    5,
-       34,   33,    5,    6,   22,   20,    6,    7,   14,    9,
-        7,    8,    0,    0,    8,   13,   13,   15,    0,    0,
-        0,    0,   15,   17,    0,    0,    0,    0,   17,   23,
-        0,   23,   24,    0,    0,   24,   39,   39,   39,   39,
-       39,   39,   39,   39
+        1,    1,    1,    1,    1,    1,    1,    5,   43,   42,
+        5,    6,   41,   40,    6,    7,   39,   38,    7,    8,
+       35,   33,    8,   13,   13,   22,   32,   22,   23,   31,
+       25,   23,   21,   19,   15,   14,    9,    4,    3,   37,
+       37,   37,   37,   37,   37,   37,   37
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -465,9 +461,9 @@ char *yytext;
 #include <stdio.h>
 int savedoxygen = 0;
 int inquote = 0;
-#line 469 "3.c"
+#line 465 "3.c"
 
-#line 471 "3.c"
+#line 467 "3.c"
 
 #define INITIAL 0
 #define SINGLE_LINE 1
@@ -689,7 +685,7 @@ YY_DECL
 	{
 #line 9 "3.lex"
 
-#line 693 "3.c"
+#line 689 "3.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -716,13 +712,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 40 )
+				if ( yy_current_state >= 38 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 57 );
+		while ( yy_base[yy_current_state] != 40 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -755,84 +751,76 @@ case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
 #line 11 "3.lex"
-{ 
-  if (yytext[strlen(yytext) - 1] == '\\') {
-    printf("TUTAJ JEST LAMANA LINIJKAAAAAAAAA %s", "\n");
-  } else {
-    /* Linijka zakończona znakiem nowej linii */
-    printf("TUTAJ JEST KONIEC LINIJKIIIIIIIII %s", "\n");
-  }
-  BEGIN(INITIAL);
-}
+{ printf("%s", "\n"); BEGIN(INITIAL); }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 20 "3.lex"
+#line 12 "3.lex"
 {if (savedoxygen==1) printf("%s", yytext); else printf("%s", "\n"); } 
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 21 "3.lex"
+#line 13 "3.lex"
 {if (savedoxygen==1) printf("%s", yytext); else printf("%s", "\n"); } 
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 23 "3.lex"
+#line 15 "3.lex"
 { if(inquote == 0) BEGIN(MULTIPLE_LINE); else printf("/*"); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 24 "3.lex"
+#line 16 "3.lex"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 25 "3.lex"
+#line 17 "3.lex"
 { /* Zostań w stanie MULTIPLE_LINE */ }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 27 "3.lex"
+#line 19 "3.lex"
 {if (savedoxygen==1) printf("%s", yytext); BEGIN(MULTIPLE_LINE_DOXYGEN); } 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 28 "3.lex"
+#line 20 "3.lex"
 {if (savedoxygen==1) printf("%s", yytext); BEGIN(MULTIPLE_LINE_DOXYGEN); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 29 "3.lex"
+#line 21 "3.lex"
 { if (savedoxygen==1) printf("%s", yytext); BEGIN(INITIAL); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 30 "3.lex"
+#line 22 "3.lex"
 { if (savedoxygen==1) printf("%s", yytext); /* Zostań w stanie MULTIPLE_LINE */ }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 32 "3.lex"
+#line 24 "3.lex"
 { if (inquote==0) inquote = 1; else inquote = 0; printf("\""); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 34 "3.lex"
+#line 26 "3.lex"
 { if (inquote == 1) printf("\\\""); }
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 36 "3.lex"
+#line 28 "3.lex"
 {
     printf("%s", "\n");
 }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 40 "3.lex"
+#line 32 "3.lex"
 {
     // Dowolny inny znak.
     printf("%s", yytext);
@@ -840,10 +828,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 44 "3.lex"
+#line 36 "3.lex"
 ECHO;
 	YY_BREAK
-#line 847 "3.c"
+#line 835 "3.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(SINGLE_LINE):
 case YY_STATE_EOF(MULTIPLE_LINE):
@@ -1143,7 +1131,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 40 )
+			if ( yy_current_state >= 38 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1171,11 +1159,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 40 )
+		if ( yy_current_state >= 38 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 39);
+	yy_is_jam = (yy_current_state == 37);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1851,7 +1839,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 44 "3.lex"
+#line 36 "3.lex"
 
 
 int main(int argc, char *argv[]) {
