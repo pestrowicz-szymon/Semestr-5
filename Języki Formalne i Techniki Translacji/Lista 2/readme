@@ -1,2 +1,12 @@
 łamane komentarze jednolinijkowego
 i \" gdzie " jest cudzysłowiem kończącym
+
+3:
+\ \n jako kontynuacja poprzedniej linijki
+usunal kawalek sciezki include
+
+2:
+usunal fragment stringa, zastosowac to samo sprawdzenie co w 3
+
+1:
+nie usuwa spacji na poczatku i koncu linijki

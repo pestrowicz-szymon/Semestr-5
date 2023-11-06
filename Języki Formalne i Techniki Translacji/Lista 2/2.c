@@ -352,8 +352,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 7
-#define YY_END_OF_BUFFER 8
+#define YY_NUM_RULES 5
+#define YY_END_OF_BUFFER 6
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -361,10 +361,10 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[18] =
+static const flex_int16_t yy_accept[17] =
     {   0,
-        0,    0,    0,    0,    8,    4,    4,    5,    2,    2,
-        4,    0,    0,    0,    3,    1,    0
+        0,    0,    0,    0,    6,    4,    5,    4,    2,    2,
+        0,    0,    0,    3,    1,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -401,37 +401,35 @@ static const YY_CHAR yy_ec[256] =
 
 static const YY_CHAR yy_meta[7] =
     {   0,
-        1,    1,    2,    3,    4,    5
+        1,    1,    2,    3,    1,    4
     } ;
 
-static const flex_int16_t yy_base[26] =
+static const flex_int16_t yy_base[24] =
     {   0,
-        0,    4,   24,   23,   26,    0,    0,    0,   29,    0,
-        0,    0,    0,    0,   29,   29,   29,    9,   14,   19,
-       23,   20,    5,    2,    0
+        0,    4,   17,   16,   19,   22,   22,    0,   22,    0,
+        0,    0,    0,   22,   22,   22,    9,   13,   16,    5,
+        4,    0,    0
     } ;
 
-static const flex_int16_t yy_def[26] =
+static const flex_int16_t yy_def[24] =
     {   0,
-       18,   18,   19,   19,   17,   20,   20,   21,   17,   22,
-       20,   23,   24,   25,   17,   17,    0,   17,   17,   17,
-       17,   17,   17,   17,   17
+       17,   17,   18,   18,   16,   16,   16,   19,   16,   20,
+       21,   22,   23,   16,   16,    0,   16,   16,   16,   16,
+       16,   16,   16
     } ;
 
-static const flex_int16_t yy_nxt[36] =
+static const flex_int16_t yy_nxt[29] =
     {   0,
-       17,    7,   16,   17,    8,    7,   15,   14,    8,    6,
-        6,    6,    6,    6,    9,    9,    9,    9,    9,   11,
-       11,   11,   13,   11,   12,   17,   10,   10,    5,   17,
-       17,   17,   17,   17,   17
+       16,    7,   15,   14,    8,    7,   13,   12,    8,    6,
+        6,    6,    6,    9,    9,    9,    9,   11,   16,   10,
+       10,    5,   16,   16,   16,   16,   16,   16
     } ;
 
-static const flex_int16_t yy_chk[36] =
+static const flex_int16_t yy_chk[29] =
     {   0,
-        0,    1,   25,    0,    1,    2,   24,   23,    2,   18,
-       18,   18,   18,   18,   19,   19,   19,   19,   19,   20,
-       20,   20,   22,   20,   21,    5,    4,    3,   17,   17,
-       17,   17,   17,   17,   17
+        0,    1,   23,   22,    1,    2,   21,   20,    2,   17,
+       17,   17,   17,   18,   18,   18,   18,   19,    5,    4,
+        3,   16,   16,   16,   16,   16,   16,   16
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -451,11 +449,10 @@ char *yytext;
 #line 1 "2.lex"
 #line 2 "2.lex"
 #include <stdio.h>
-FILE *outputFile;
-int insideComment = 0; // Zmienna wskazująca, czy znajdujemy się wewnątrz komentarza.
-#line 457 "2.c"
+int insideComment = 0;
+#line 454 "2.c"
 
-#line 459 "2.c"
+#line 456 "2.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -673,9 +670,9 @@ YY_DECL
 		}
 
 	{
-#line 9 "2.lex"
+#line 8 "2.lex"
 
-#line 679 "2.c"
+#line 676 "2.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -702,13 +699,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 18 )
+				if ( yy_current_state >= 17 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 29 );
+		while ( yy_base[yy_current_state] != 22 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -734,7 +731,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 10 "2.lex"
+#line 9 "2.lex"
 {
     BEGIN COMMENT;
     insideComment = 1;
@@ -743,53 +740,33 @@ YY_RULE_SETUP
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 15 "2.lex"
+#line 14 "2.lex"
 {
     // Pomijamy treść komentarza.
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 19 "2.lex"
+#line 18 "2.lex"
 {
     BEGIN INITIAL;
     insideComment = 0;
 }
 	YY_BREAK
 case 4:
-/* rule 4 can match eol */
 YY_RULE_SETUP
-#line 24 "2.lex"
+#line 23 "2.lex"
 {
-    // Drukuje treść poza komentarzami.
-    if (!insideComment) {
-        fprintf(outputFile, "%s", yytext);
-    }
+    // Dowolny inny znak.
+    printf("%s", yytext);
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 31 "2.lex"
-{
-    // Początek nowego elementu.
-    fprintf(outputFile, "%s", yytext);
-    BEGIN INITIAL;
-}
-	YY_BREAK
-case 6:
-YY_RULE_SETUP
-#line 37 "2.lex"
-{
-    // Dowolny inny znak.
-    fprintf(outputFile, "%s", yytext);
-}
-	YY_BREAK
-case 7:
-YY_RULE_SETUP
-#line 42 "2.lex"
+#line 28 "2.lex"
 ECHO;
 	YY_BREAK
-#line 793 "2.c"
+#line 770 "2.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENT):
 	yyterminate();
@@ -1087,7 +1064,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 18 )
+			if ( yy_current_state >= 17 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1115,11 +1092,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 18 )
+		if ( yy_current_state >= 17 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 17);
+	yy_is_jam = (yy_current_state == 16);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1795,32 +1772,11 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 42 "2.lex"
+#line 28 "2.lex"
 
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        fprintf(stderr, "Użycie: %s <plik_wejsciowy> <plik_wyjsciowy>\n", argv[0]);
-        return 1;
-    }
-
-    FILE *inputFile = fopen(argv[1], "r");
-    if (inputFile == NULL) {
-        perror("Błąd otwarcia pliku wejściowego");
-        return 1;
-    }
-
-    outputFile = fopen(argv[2], "w");
-    if (outputFile == NULL) {
-        perror("Błąd otwarcia pliku wyjściowego");
-        return 1;
-    }
-
-    yyin = inputFile;
     yylex();
-
-    fclose(inputFile);
-    fclose(outputFile);
     return 0;
 }
 
