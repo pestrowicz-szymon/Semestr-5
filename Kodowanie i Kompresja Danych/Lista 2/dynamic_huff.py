@@ -15,11 +15,13 @@ class HuffmanTree():
         self.NYT = Node(symbol="NYT")
         self.root = self.NYT
         self.nodes = []
-        self.seen = [None] * 16384
+        self.seen = [None] * 256
     
     def encode(self, text):
         result = ''
         for c in text:
+            #ord(c) > 250:
+            print("c: ", c, "ord(c): ", ord(c))
             if self.seen[ord(c)]:
                 result += self.get_code(c, self.root)
             else:
