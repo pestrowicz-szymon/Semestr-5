@@ -25,11 +25,11 @@ def main(args):
             text = AdaptiveHuffmanCoding().read_from_file(args[1])
             result = AdaptiveHuffmanCoding().decode(text)
 
-            with open(args[2], "w") as output:
+            with open(args[2], "w", encoding='utf-8') as output:
                 output.write(result)
 
         elif args[3] == "--encode":
-            with open(args[1]) as inp:
+            with open(args[1], encoding='utf-8') as inp:
                 text = inp.read()
 
             result = AdaptiveHuffmanCoding().encode(text)

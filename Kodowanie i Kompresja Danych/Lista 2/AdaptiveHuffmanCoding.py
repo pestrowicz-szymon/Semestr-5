@@ -6,7 +6,7 @@ class AdaptiveHuffmanCoding:
         self.NYT = Node(symbol="NYT")
         self.root = self.NYT
         self.nodes = []
-        self.visited = [None] * 1024
+        self.visited = [None] * 10240
 
     def swap(self, a, b):
         idx_a = self.nodes.index(a)
