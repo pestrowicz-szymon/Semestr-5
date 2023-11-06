@@ -1,4 +1,4 @@
-import sys, getopt
+import sys, getopt, time
 from math import log2
 
 class Node():
@@ -15,11 +15,9 @@ class HuffmanTree():
         self.NYT = Node(symbol="NYT")
         self.root = self.NYT
         self.nodes = []
-        self.seen = [None] * 256
+        self.seen = [None] * 16384
     
     def encode(self, text):
-        print("text: ", text)
-        print("self: ", self)
         result = ''
         for c in text:
             if self.seen[ord(c)]:
@@ -176,4 +174,7 @@ def main():
 
 
 if __name__ == '__main__':
+    start = time.time()
     main()
+    end = time.time()
+    print("Total time: ", end-start)
