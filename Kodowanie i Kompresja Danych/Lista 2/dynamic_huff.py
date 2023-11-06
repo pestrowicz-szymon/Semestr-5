@@ -15,7 +15,7 @@ class HuffmanTree():
         self.NYT = Node(symbol="NYT")
         self.root = self.NYT
         self.nodes = []
-        self.seen = [None] * 256
+        self.seen = [None] * 1024
     
     def encode(self, text):
         result = ''
@@ -47,6 +47,7 @@ class HuffmanTree():
 
                 i = 8
                 while i < len(text):
+                    print(text[i], end ="")
                     if text[i] == '0':
                         node = node.left
                     else:
@@ -56,6 +57,7 @@ class HuffmanTree():
                         if symbol == 'NYT':
                             symbol = self.get_symbol(text[i+1:i+9])
                             i += 8
+                        print(" ", symbol)
                         f2.write(symbol)
                         self.insert(symbol)
                         node = self.root
