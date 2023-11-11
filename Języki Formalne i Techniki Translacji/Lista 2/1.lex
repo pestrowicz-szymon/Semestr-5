@@ -33,6 +33,16 @@ int inWhiteSpace = 0;
     // Puste linie
 }
 
+^[ \t]*[^ \t\n] {
+    //spacje i taby na poczatku
+}
+
+[ \t]+(\n|$) {
+    printf("\n");
+    lineCount++
+    //spacje i taby na koncu
+}
+
 . {
     // Dowolny inny znak
     printf("%s", yytext);
