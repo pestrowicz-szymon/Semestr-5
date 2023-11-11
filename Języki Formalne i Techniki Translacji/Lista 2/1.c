@@ -785,12 +785,13 @@ YY_RULE_SETUP
 #line 40 "1.lex"
 {
     printf("\n");
+    lineCount++
     //spacje i taby na koncu
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 45 "1.lex"
+#line 46 "1.lex"
 {
     // Dowolny inny znak
     printf("%s", yytext);
@@ -798,10 +799,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 50 "1.lex"
+#line 51 "1.lex"
 ECHO;
 	YY_BREAK
-#line 805 "1.c"
+#line 806 "1.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1809,7 +1810,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 50 "1.lex"
+#line 51 "1.lex"
 
 
 int main(int argc, char *argv[]) {
