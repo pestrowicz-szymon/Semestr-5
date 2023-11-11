@@ -1,14 +1,19 @@
 %{
 #include <stdio.h>
 int insideComment = 0;
+int inquote = 0;
 %}
 
 %x COMMENT
 
 %%
 "<!--" {
-    BEGIN COMMENT;
-    insideComment = 1;
+    if (inquote == 0) {
+        BEGIN COMMENT;
+        insideComment = 1;
+    } else {
+        printf("<!--");
+    }
 }
 
 <COMMENT>.|\n {
@@ -19,6 +24,9 @@ int insideComment = 0;
     BEGIN INITIAL;
     insideComment = 0;
 }
+
+
+"\"" { if (inquote==0) inquote = 1; else inquote = 0; printf("\""); }
 
 . {
     // Dowolny inny znak.
