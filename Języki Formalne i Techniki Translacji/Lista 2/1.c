@@ -785,7 +785,7 @@ YY_RULE_SETUP
 #line 40 "1.lex"
 {
     printf("\n");
-    lineCount++
+    lineCount++;
     //spacje i taby na koncu
 }
 	YY_BREAK
@@ -1814,23 +1814,8 @@ void yyfree (void * ptr )
 
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        fprintf(stderr, "Użycie: %s <nazwa_pliku_wejściowego>\n", argv[0]);
-        return 1;
-    }
-
-    FILE *file = fopen(argv[1], "r");
-    if (file == NULL) {
-        perror("Błąd otwierania pliku");
-        return 1;
-    }
-
-    yyin = file;
     yylex();
-
     printf("\nLiczba linii: %d\n", lineCount);
     printf("Liczba słów: %d\n", wordCount);
-
-    fclose(file);
     return 0;
 }
