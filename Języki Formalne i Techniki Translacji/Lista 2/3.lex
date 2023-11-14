@@ -27,6 +27,8 @@ int inquote = 0;
 <MULTIPLE_LINE_DOXYGEN>. { if (savedoxygen==1) printf("%s", yytext); /* Zostań w stanie MULTIPLE_LINE */ }
 
 "\"" { if (inquote==0) inquote = 1; else inquote = 0; printf("\""); }
+"<" { if (inquote==0) inquote = 1; printf("<"); }
+">" { if (inquote==1) inquote = 0; printf(">"); }
 
 "\\\"" { if (inquote == 1) printf("\\\""); }
 

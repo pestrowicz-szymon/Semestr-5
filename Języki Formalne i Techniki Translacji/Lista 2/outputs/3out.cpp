@@ -1,6 +1,6 @@
 #include "test/*asdf*/header.h"
 #include <stdio.h>
-#include <foobaz.h>   
+#include <foo/*bar*/baz.h>   
 
 
 int foo();
@@ -27,7 +27,6 @@ int main(int argc, const char* argv)
     
     baz();
     
-
 
 
 
