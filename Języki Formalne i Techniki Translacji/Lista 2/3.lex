@@ -4,11 +4,16 @@ int savedoxygen = 0;
 int inquote = 0;
 %}
 
-%x SINGLE_LINE MULTIPLE_LINE MULTIPLE_LINE_DOXYGEN
+%x SINGLE_LINE MULTIPLE_LINE MULTIPLE_LINE_DOXYGEN SINGLE_DOUBLE HALF_S
 
 %%
 "//" { if(inquote == 0) BEGIN(SINGLE_LINE); else printf("//"); }
-<SINGLE_LINE>[^\n]*(\n?) { printf("%s", "\n"); BEGIN(INITIAL); }
+<SINGLE_LINE>[^\n]*[^\\](\n) { printf("%s", "\n"); BEGIN(INITIAL); }
+<SINGLE_LINE>[^\n]*[\\](\n) { BEGIN(SINGLE_DOUBLE); }
+<SINGLE_DOUBLE>[^\n]*[^\\](\n) { printf("%s", "\n"); BEGIN(INITIAL); }
+<SINGLE_DOUBLE>[^\n]*[\\](\n) {  }
+"/\\" { BEGIN(HALF_S); }
+<HALF_S>"/"[^\n]*(\n) { printf("\n"); BEGIN(INITIAL); }
 "///"[^\n]*(\n?) {if (savedoxygen==1) printf("%s", yytext); else printf("%s", "\n"); } 
 "//!"[^\n]*(\n?) {if (savedoxygen==1) printf("%s", yytext); else printf("%s", "\n"); } 
 
@@ -22,6 +27,8 @@ int inquote = 0;
 <MULTIPLE_LINE_DOXYGEN>. { if (savedoxygen==1) printf("%s", yytext); /* Zostań w stanie MULTIPLE_LINE */ }
 
 "\"" { if (inquote==0) inquote = 1; else inquote = 0; printf("\""); }
+"<" { if (inquote==0) inquote = 1; printf("<"); }
+">" { if (inquote==1) inquote = 0; printf(">"); }
 
 "\\\"" { if (inquote == 1) printf("\\\""); }
 
