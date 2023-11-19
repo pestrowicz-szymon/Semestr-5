@@ -7,5 +7,7 @@
     In CDATA <!-- everything is data!!! -->
   ]]>
   <!-- valid comment -->
-  <!-- invalid -- comment -->
+  <element>
+  This is "kxakjsklas <!-- comment -->".
+  </element>
 </root>
