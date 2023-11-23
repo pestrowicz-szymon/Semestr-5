@@ -1,0 +1,102 @@
+% This is a simple sample document.  For more complicated documents take a look in the exercise tab. Note that everything that comes after a % symbol is treated as comment and ignored when the code is compiled.
+
+\documentclass{article} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
+
+\usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage[utf8]{inputenc}
+
+
+\title{Obliczenia Naukowe Lista 3} % Sets article title
+\author{Szymon Pestrowicz} % Sets authors name
+\date{\today} % Sets date for date compiled
+
+% The preamble ends with the command \begin{document}
+\begin{document} % All begin commands must be paired with an end command somewhere
+	\maketitle % creates title using information in preamble (title, author, date)
+
+	\section*{Zadanie 1 \& 2 \& 3} % creates a section
+
+		Pierwsze 3 zadania polegały na zaimplementowaniu algorytmów rozwiazywania funkcji metodami: bisekcji, stycznych oraz siecznych. Pseudokody tych algorytmów zostały podane na wykładzie 3, które nastepnie zaimplementowałem w Julii oraz dostosowałem do wymagań podanych w zadaniu. Oto przykład pokazujacy ich poprawność dla funkcji $ f(x) = 2x^2 - 4x $ gdzie faktycznie miejsca zerowe to 0 oraz 2
+
+	\vspace{0.1cm}
+		\begin{tabularx}{\textwidth}{|c|X|X|}
+		\hline
+		Metoda & $x_0$ & $x_1$ \\
+		\hline
+		Bisekcji & -9.5367431640625e-7 & 1.9999990463256836 \\
+		\hline
+		Stycznych & -1.1776091950196715e-10 & 2.000000000052878 \\
+		\hline
+		Siecznych &-9.754611053419075e-8 & 2.0000000975461103 \\
+		\hline
+		\end{tabularx}
+	\vspace{0.1cm}
+
+	\section*{Zadanie 4} % creates a section
+
+		W zadaniu 4 celem jest wyznaczenie pierwiastka równania $ sin(x) - (\frac{1}{2}x)^2 $ przy użyciu metod zaimplementowanych w zadaniach 1, 2, 3 z narzuconymi odgórnie parametrami wejściowymi. Oto wyniki tych algorytmów przy zadanych danych wejściowych
+
+	\vspace{0.1cm}
+		\begin{tabularx}{\textwidth}{|X|X|X|}
+		\hline
+		Metoda & Wynik & Liczba iteracji\\
+		\hline
+		Bisekcji & 1.9337520599365234 & 18\\
+		\hline
+		Stycznych & 1.933753779789742 & 4\\
+		\hline
+		Siecznych &1.933753644474301 & 4\\
+		\hline
+		\end{tabularx}
+	\vspace{0.1cm}
+
+	Widzimy, że wszystkie metody poradziły sobie bardzo dobrze z tym zadaniem a ich wyniki zaczynaja sie różnić dopiero na 7 liczbie znaczacej. Należy jednak zwrócić uwage, że metody stycznych oraz siecznych potrzebowały jedynie 4 przejść algorytmu podczas gdy metoda bisekcji potrzebowała aż 18 iteracji
+
+	\section*{Zadanie 5} % creates a section
+		
+		W zadaniu 5 mamy znaleźć wartości x w którym przecinaja sie funkcje $y=3x$ oraz $y=e^x$. W tym celu wykorzystamy metode bisekcji z dokładnościa obliczeń $\delta=10^{-4}$ i $\epsilon=10^{-4}$. Metoda ta znalazła miejsca zerowe znajdujace sie w 0.619049072265625 oraz 1.512115478515625. Do obliczeń obu pierwiastków funkcja potrzebowała 15 iteracji
+
+	\section*{Zadanie 6} % creates a section
+		
+		Zadanie 6 składa sie z 2 cześci. Pierwsza z nich polega na znalezieniu miejsc zerowych funkcji $f_1(x)=e^{1-x}-1$ oraz $f_2(x)=xe^{-x}$ przy użyciu wszystkich 3 metod. Oto uzyskane przeze mnie wyniki:
+
+	\vspace{0.1cm}
+		\begin{tabularx}{\textwidth}{|c|X|X|}
+		\hline
+		Metoda & $f_1$ & $f_2$\\
+		\hline
+		Bisekcji & 0.9999961853027344 & -3.814697265625e-6\\
+		\hline
+		Stycznych & 0.9999999173530496 & -3.0642493416461764e-7\\
+		\hline
+		Siecznych &0.9999999624498374 & 1.744165849924562e-8\\
+		\hline
+		\end{tabularx}
+	\vspace{0.1cm}
+
+
+		Druga cześć tego zadania polega na sprawdzeniu co sie stanie gdy w metodzie Newtona (stycznych) dla $f_1$ wybierzemy $x_0\in(1,\infty]$ a dla $f_2$ wybierzemy $x_0>1$. Podczas wybierania  $x_0\in(1,\infty]$ w $f_1$ zaobserwowałem, że liczba iteracji potrzebna do znalezienia wyniku rosła, a dla $x_0=5$ program przestał działać.
+
+	\vspace{0.1cm}
+		\begin{tabularx}{\textwidth}{|X|X|}
+		\hline
+		$x_0$ & liczba iteracji\\
+		\hline
+		1 & 0 \\
+		\hline
+		2 & 5 \\
+		\hline
+		3 & 9 \\
+		\hline
+		4 & 21 \\
+		\hline
+		\end{tabularx}
+	\vspace{0.1cm}
+
+		W przypadku gdy do $f_2$ wybierzemy $x_0>1$ wartości wychodza około 15 zamiast 0. Z kolei dla $x_0=1$ program nie działa
+
+\end{document} % This is the end of the document
