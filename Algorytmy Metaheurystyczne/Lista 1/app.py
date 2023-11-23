@@ -18,10 +18,18 @@ def DFSUtil(v, visited_counter):
                 closest_vertex = neighbour    
         DFSUtil(closest_vertex, visited_counter)
     else:
-        dfs_path.append(starting_point)
+        dfs_path.append(v)
     
 def DFS(v, visited_counter):
     DFSUtil(v, visited_counter)
+
+def LocalSearch(Graph):
+    LocalSearchUtil(Graph)
+
+def LocalSearchUtil(Graph):
+    return True
+
+
 
 files = ["xqf131.tsp"]#, "xqg237.tsp", "pma343.tsp", "pka379.tsp", "bcl380.tsp", "pbl395.tsp", "pbk411.tsp", "pbn423.tsp", "pbm436.tsp", "xql662.tsp"]
 for file in files:
@@ -74,12 +82,14 @@ for file in files:
         print("WAGA DFS",n ,":", dfs_sum)
         print("DFS/MST",n ,":", dfs_sum/mst_weight)
 
+        print("DFS_PATH:", dfs_path)
+
         print(dfs_g)
         filename = "graph/dfs" + file.name[5:-4] + "_" + str(n) + ".png"
         nx.draw(dfs_g, pos, node_size=20, node_color='red')
         plt.axis('off')
         plt.savefig(filename)
         plt.clf()
-
         dfs_g.remove_edges_from(list(dfs_g.edges()))
-        print()
+
+        LocalSearch(G)

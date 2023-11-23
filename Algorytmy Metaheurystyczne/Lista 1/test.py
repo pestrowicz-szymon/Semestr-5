@@ -1,5 +1,6 @@
 import random
 import math
 
-for i in range(16):
-    print(i, " ", math.sqrt(i))
+original_length = 131
+for i in range(2*original_length):
+    print (i)
