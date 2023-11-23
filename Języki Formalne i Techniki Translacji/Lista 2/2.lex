@@ -3,13 +3,14 @@
 int insideComment = 0;
 int inquote = 0;
 int bracket = 0;
+int indata = 0;
 %}
 
 %x COMMENT
 
 %%
 "<!--" {
-    if (inquote == 0) {
+    if (inquote == 0 && indata == 0) {
         BEGIN COMMENT;
         insideComment = 1;
     } else {
@@ -26,15 +27,38 @@ int bracket = 0;
     insideComment = 0;
 }
 
-"<" { bracket = 1; printf("<"); }
-">" { bracket = 0; printf(">"); }
+"<" {
+    if (inquote==0) {
+        bracket = 1; 
+    } 
+    printf("<"); 
+}
+">" { 
+    if (inquote==0) {
+        bracket = 0; 
+    }
+    printf(">"); 
+}
+
+"<![CDATA" {
+    printf("<![CDATA");
+    indata = 1;
+}
+"]]>" {
+    printf("]]>");
+    indata = 0;
+}
 
 "\"" { 
     if (bracket==1) {
-        if (inquote==0) 
+        if (inquote==0) {
+            //printf("CUDZY");
             inquote = 1; 
-        else 
+        }
+        else {
+            //printf("KONIEC");
             inquote = 0; 
+        }
     }
     printf("\"");
 }
