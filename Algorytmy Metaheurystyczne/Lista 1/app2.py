@@ -51,7 +51,8 @@ def LocalSearchUtil(original_path, original_best_score, path_length, number_of_s
     return original_path, number_of_steps
 
 
-files = ["xqf131.tsp", "xqg237.tsp", "pma343.tsp", "pka379.tsp", "bcl380.tsp", "pbl395.tsp", "pbk411.tsp", "pbn423.tsp", "pbm436.tsp", "xql662.tsp"]
+#files = ["xqf131.tsp", "xqg237.tsp", "pma343.tsp", "pka379.tsp", "bcl380.tsp", "pbl395.tsp", "pbk411.tsp", "pbn423.tsp", "pbm436.tsp", "xql662.tsp"]
+files = ["xqf131.tsp"]
 for file in files:
     print(file)
     #-----------------TWORZENIE GRAFU----------------
@@ -78,10 +79,10 @@ for file in files:
     mst = nx.minimum_spanning_tree(G)
     mst_weight = sum(mst[i][j]['weight'] for i, j in mst.edges())
     print("Waga MST:", mst_weight)
-    #filename = "graph/mst" + file.name[5:-4] + ".png"
-    #nx.draw(mst, pos, node_size=20, node_color='red')
-    #plt.savefig(filename)
-    #plt.clf()
+    filename = "graph/mst" + file.name[5:-4] + ".png"
+    nx.draw(mst, pos, node_size=20, node_color='red')
+    plt.savefig(filename)
+    plt.clf()
 
     local_sum_of_all = 0
     dfs_sum_of_all = 0
@@ -105,11 +106,11 @@ for file in files:
 
         #print("WAGA DFS:", dfs_sum)
         dfs_sum_of_all += dfs_sum
-        #filename = "graph/dfs" + file.name[5:-4] + "_" + str(n) + ".png"
-        #nx.draw(dfs_g, pos, node_size=20, node_color='red')
-        #plt.savefig(filename)
-        #plt.clf()
-        #dfs_g.remove_edges_from(list(dfs_g.edges()))
+        filename = "graph/dfs" + file.name[5:-4] + "_" + str(n) + ".png"
+        nx.draw(dfs_g, pos, node_size=20, node_color='red')
+        plt.savefig(filename)
+        plt.clf()
+        dfs_g.remove_edges_from(list(dfs_g.edges()))
 
         
         local_path = LocalSearch(dfs_path, dfs_sum)[0]
@@ -121,11 +122,11 @@ for file in files:
         #print("WAGA LOCAL:", local_sum)
         for i in range(len(local_path)):
             dfs_g.add_edge(local_path[i], local_path[(i+1)%len(local_path)]) 
-        #filename = "graph/local" + file.name[5:-4] + "_" + str(n) + ".png"
-        #nx.draw(dfs_g, pos, node_size=20, node_color='red')
-        #plt.savefig(filename)
-        #plt.clf()
-        #dfs_g.remove_edges_from(list(dfs_g.edges()))
+        filename = "graph/local" + file.name[5:-4] + "_" + str(n) + ".png"
+        nx.draw(dfs_g, pos, node_size=20, node_color='red')
+        plt.savefig(filename)
+        plt.clf()
+        dfs_g.remove_edges_from(list(dfs_g.edges()))
         print(n,"/",math.ceil(math.sqrt(num_vertices)))
     
     print("best found local: ", best_result)

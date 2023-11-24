@@ -1,0 +1,265 @@
+xqf131.tsp
+Waga MST: 474
+0 / 12
+1 / 12
+2 / 12
+3 / 12
+4 / 12
+5 / 12
+6 / 12
+7 / 12
+8 / 12
+9 / 12
+10 / 12
+11 / 12
+best found local:  606
+average steps:  8.25
+average local result: 665.9166666666666
+average dfs result: 684.0833333333334
+
+xqg237.tsp
+Waga MST: 897
+0 / 16
+1 / 16
+2 / 16
+3 / 16
+4 / 16
+5 / 16
+6 / 16
+7 / 16
+8 / 16
+9 / 16
+10 / 16
+11 / 16
+12 / 16
+13 / 16
+14 / 16
+15 / 16
+best found local:  1203
+average steps:  15.25
+average local result: 1284.125
+average dfs result: 1325.75
+
+pma343.tsp
+Waga MST: 1179
+0 / 19
+1 / 19
+2 / 19
+3 / 19
+4 / 19
+5 / 19
+6 / 19
+7 / 19
+8 / 19
+9 / 19
+10 / 19
+11 / 19
+12 / 19
+13 / 19
+14 / 19
+15 / 19
+16 / 19
+17 / 19
+18 / 19
+best found local:  1656
+average steps:  23.0
+average local result: 1736.7368421052631
+average dfs result: 1797.7368421052631
+
+pka379.tsp
+Waga MST: 1151
+0 / 20
+1 / 20
+2 / 20
+3 / 20
+4 / 20
+5 / 20
+6 / 20
+7 / 20
+8 / 20
+9 / 20
+10 / 20
+11 / 20
+12 / 20
+13 / 20
+14 / 20
+15 / 20
+16 / 20
+17 / 20
+18 / 20
+19 / 20
+best found local:  1653
+average steps:  21.75
+average local result: 1780.65
+average dfs result: 1831.1
+
+bcl380.tsp
+Waga MST: 1444
+0 / 20
+1 / 20
+2 / 20
+3 / 20
+4 / 20
+5 / 20
+6 / 20
+7 / 20
+8 / 20
+9 / 20
+10 / 20
+11 / 20
+12 / 20
+13 / 20
+14 / 20
+15 / 20
+16 / 20
+17 / 20
+18 / 20
+19 / 20
+best found local:  1809
+average steps:  16.3
+average local result: 1894.45
+average dfs result: 1943.75
+
+pbl395.tsp
+Waga MST: 1124
+0 / 20
+1 / 20
+2 / 20
+3 / 20
+4 / 20
+5 / 20
+6 / 20
+7 / 20
+8 / 20
+9 / 20
+10 / 20
+11 / 20
+12 / 20
+13 / 20
+14 / 20
+15 / 20
+16 / 20
+17 / 20
+18 / 20
+19 / 20
+best found local:  1464
+average steps:  14.7
+average local result: 1609.75
+average dfs result: 1650.8
+
+pbk411.tsp
+Waga MST: 1180
+0 / 21
+1 / 21
+2 / 21
+3 / 21
+4 / 21
+5 / 21
+6 / 21
+7 / 21
+8 / 21
+9 / 21
+10 / 21
+11 / 21
+12 / 21
+13 / 21
+14 / 21
+15 / 21
+16 / 21
+17 / 21
+18 / 21
+19 / 21
+20 / 21
+best found local:  1676
+average steps:  28.714285714285715
+average local result: 1740.0
+average dfs result: 1817.2857142857142
+
+pbn423.tsp
+Waga MST: 1201
+0 / 21
+1 / 21
+2 / 21
+3 / 21
+4 / 21
+5 / 21
+6 / 21
+7 / 21
+8 / 21
+9 / 21
+10 / 21
+11 / 21
+12 / 21
+13 / 21
+14 / 21
+15 / 21
+16 / 21
+17 / 21
+18 / 21
+19 / 21
+20 / 21
+best found local:  1589
+average steps:  22.952380952380953
+average local result: 1693.4761904761904
+average dfs result: 1748.857142857143
+
+pbm436.tsp
+Waga MST: 1269
+0 / 21
+1 / 21
+2 / 21
+3 / 21
+4 / 21
+5 / 21
+6 / 21
+7 / 21
+8 / 21
+9 / 21
+10 / 21
+11 / 21
+12 / 21
+13 / 21
+14 / 21
+15 / 21
+16 / 21
+17 / 21
+18 / 21
+19 / 21
+20 / 21
+best found local:  1627
+average steps:  27.666666666666668
+average local result: 1704.2380952380952
+average dfs result: 1761.7142857142858
+
+xql662.tsp
+Waga MST: 2240
+0 / 26
+1 / 26
+2 / 26
+3 / 26
+4 / 26
+5 / 26
+6 / 26
+7 / 26
+8 / 26
+9 / 26
+10 / 26
+11 / 26
+12 / 26
+13 / 26
+14 / 26
+15 / 26
+16 / 26
+17 / 26
+18 / 26
+19 / 26
+20 / 26
+21 / 26
+22 / 26
+23 / 26
+24 / 26
+25 / 26
+best found local:  3070
+average steps:  28.615384615384617
+average local result: 3160.6923076923076
+average dfs result: 3232.576923076923
