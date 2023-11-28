@@ -5,6 +5,8 @@ public class RabinKarpAlgorithm {
 
     public final static int d = 256;
 
+    //Funkcja search pochodzi z geekforgeeks, jej głębsze wytłumaczenie znajdziemy pod tym
+    // linkiem : https://www.geeksforgeeks.org/rabin-karp-algorithm-for-pattern-searching/
     static Integer search(String pattern, String text) {
         int M = pattern.length();
         int N = text.length();
@@ -62,7 +64,10 @@ public class RabinKarpAlgorithm {
 
         for (int i = 1; i < wholePattern.length(); i++) {
             String actualPattern = wholePattern.substring(0, i);
+            System.out.println("Actual pattern: " + actualPattern);
+            System.out.println("Text: " + text);
             newPosition = search(actualPattern, text);
+            System.out.println("New position: " + newPosition);
 
             if (newPosition != null) {
                 oldPosition = newPosition;
