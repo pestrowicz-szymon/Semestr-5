@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +8,7 @@ import java.util.Map;
 
 public class Converter {
 
+    // zwraca ciąg bitów reprezentujący plik fileName
     public byte[] convertFileToByteArray(String fileName) throws IOException {
         File file = new File(fileName);
         return Files.readAllBytes(file.toPath());
@@ -34,26 +34,7 @@ public class Converter {
         return map;
     }
 
-
-    public ArrayList<Tuple> createListOfSymbolPairs(byte[] bytes) {
-
-        ArrayList<Tuple> symbolPairs = new ArrayList<>();
-
-        //dla pierwszego symbolu poprzedzające jest '0'
-        Tuple tuple = new Tuple((byte) 0, bytes[0]);
-        symbolPairs.add(tuple);
-
-
-        for (int i = 1; i < bytes.length; i++) {
-            tuple = new Tuple(bytes[i - 1], bytes[i]);
-            symbolPairs.add(tuple);
-        }
-
-        return symbolPairs;
-    }
-
-
-    public HashMap<Tuple, Float> getCzestoscWarunkowa(ArrayList<Tuple> tuples) {
+    public HashMap<Tuple, Float> getCzestoscTupli(ArrayList<Tuple> tuples) {
         HashMap<Tuple, Float> map = new HashMap<>();
         int length = tuples.size();
 
@@ -107,38 +88,7 @@ public class Converter {
         return H;
     }
 
-    public double calculatingConditionalEntropy(HashMap<Tuple, Float> mapConditional, HashMap<Byte, Float> mapNormal) {
-        double H = 0;
-        double h = 0;
-
-        for (Map.Entry<Byte, Float> entryN : mapNormal.entrySet()) {
-
-            for (Map.Entry<Tuple, Float> entryC : mapConditional.entrySet()) {
-                double P = entryC.getValue();        //P(y|x)
-                double I = log2(1 / P);
-                h = h + P * I;
-            }
-            H = entryN.getValue() * h;
-        }
-        return H;
-    }
-
-
     public static double log2(double N) {
         return (Math.log(N) / Math.log(2));
     }
-
-
-    public static String readAllBytes(String filePath) {
-        String content = "";
-
-        try {
-            content = new String(Files.readAllBytes(Paths.get(filePath)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return content;
-    }
-
-
 }
