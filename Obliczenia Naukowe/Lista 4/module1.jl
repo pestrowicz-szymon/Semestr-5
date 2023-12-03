@@ -30,8 +30,10 @@ function ilorazyRoznicowe(x::Vector{Float64}, f::Vector{Float64})
     n = length(x)
     nt = fx[n];
     for i=n-1 : -1 : 1
+      println(nt," * (",t," - ",x[i],") + ",fx[i])
       nt = nt * (t - x[i]) + fx[i];
     end
+    println(nt)
     return nt;
   end
 
@@ -74,8 +76,8 @@ function rysujNnfx(f,a::Float64,b::Float64,n::Int)
     interpResults[i] = warNewton(x, fx , t);
   end
 
-  p1 = plot(LinRange(a, b, closeness), functionResults, color ="blue", label = "functionResults")
-  p2 = plot!(LinRange(a, b, closeness), interpResults, color ="red", label="interpResults")
-  savefig("6b5.png")
+  #p1 = plot(LinRange(a, b, closeness), functionResults, color ="blue", label = "functionResults")
+  #p2 = plot!(LinRange(a, b, closeness), interpResults, color ="red", label="interpResults")
+  #savefig("6b5.png")
 end
 end
