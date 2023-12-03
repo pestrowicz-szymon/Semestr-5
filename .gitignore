@@ -3,3 +3,5 @@
 *.odt
 *.gz
 Obliczenia\ Naukowe/**/*.png
+*.tab.*
+*.yy.c
