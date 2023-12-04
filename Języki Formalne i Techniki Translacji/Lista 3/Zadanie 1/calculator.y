@@ -2,13 +2,14 @@
 #include <stdio.h>
 #include "operations.cpp"
 
+bool minusAreEven = true;
+
 int yylex(void);
 void yyerror(const char *) {};
 %}
 
 %define api.value.type {int}
 %token NUM
-%precedence NEG
 %left PLUS
 %left MINUS
 %left MULTIPLY
@@ -38,9 +39,11 @@ exp:
 |   exp MINUS exp           { $$ = sub($1, $3); }
 |   exp MULTIPLY exp        { $$ = mul($1, $3); }
 |   exp DIVIDE exp          { $$ = divide($1, $3); }
-|   exp POW NUM             { addExpNumber($3); $$ = power($1, $3); }
-|   exp POW MINUS NUM       { addExpNumber(-$3); $$ = power($1, -$3); }
-|   MINUS NUM %prec NEG     { addNumber(-$2); $$ = -$2; }
+|   exp POW exp             { $$ = power($1, $3); }
+|   MINUS NUM               { addNumber(-$2); $$ = -$2; }
+|   MINUS MINUS NUM               { addNumber($2); $$ = -$2; }
+|   MINUS MINUS MINUS NUM               { addNumber(-$2); $$ = -$2; }
+|   MINUS MINUS MINUS MINUS NUM               { addNumber($2); $$ = -$2; }
 |   LBRACKET exp RBRACKET   { $$ = $2; }
 ;
 
