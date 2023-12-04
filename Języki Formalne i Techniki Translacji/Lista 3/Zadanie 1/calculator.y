@@ -38,12 +38,9 @@ exp:
 |   exp PLUS exp            { $$ = add($1, $3); }
 |   exp MINUS exp           { $$ = sub($1, $3); }
 |   exp MULTIPLY exp        { $$ = mul($1, $3); }
-|   exp DIVIDE exp          { $$ = divide($1, $3); }
+|   exp DIVIDE exp          { $$ = divide($1, $3); if(errorOccured) {errorOccured = false; YYERROR;}}
 |   exp POW exp             { $$ = power($1, $3); }
 |   MINUS NUM               { addNumber(-$2); $$ = -$2; }
-|   MINUS MINUS NUM               { addNumber($2); $$ = -$2; }
-|   MINUS MINUS MINUS NUM               { addNumber(-$2); $$ = -$2; }
-|   MINUS MINUS MINUS MINUS NUM               { addNumber($2); $$ = -$2; }
 |   LBRACKET exp RBRACKET   { $$ = $2; }
 ;
 

@@ -4,6 +4,7 @@
 
 const int SIZE = 1234577;
 std::string expression = "";
+bool errorOccured = false;
 
 int valueFromField(int64_t n) {
     int result = (int)(n % SIZE);
@@ -27,11 +28,30 @@ void addExpNumber(int n) {
     expression += std::to_string(valueFromFieldForExp(n)) + " ";
 }
 
+// Funkcja pomocnicza do obliczania największego wspólnego dzielnika
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+
+// Funkcja sprawdzająca, czy liczba n jest odwracalna modulo m
+bool isReversible(int n, int m) {
+    // Sprawdzenie, czy n i m są względnie pierwsze
+    return gcd(n, m) == 1;
+}
+
 int inverse(int n) {
     int t = 0;
     int r = SIZE;
     int newt = 1;
     int newr = valueFromField(n);
+
+    if(!isReversible(newr, SIZE)) {
+        printf("%d is not reversible modulo %d\n", newr, SIZE);
+        errorOccured = true;
+        return 0;
+    }
 
     while (newr != 0) {
         int quotient = r / newr;
@@ -50,12 +70,12 @@ int inverse(int n) {
 
 int add(int a, int b) {
     expression += "+ ";
-    return valueFromField(valueFromField(a) + valueFromField(b));
+    return valueFromField(a) + valueFromField(b);
 }
 
 int sub(int a, int b) {
     expression += "- ";
-    return valueFromField(valueFromField(a) - valueFromField(b));
+    return valueFromField(a) - valueFromField(b);
 }
 
 int mul(int a, int b) {
@@ -69,7 +89,7 @@ int divide(int a, int b) {
     expression += "/ ";
     int64_t n1 = valueFromField(a);
     int64_t n2 = inverse(b);
-    return valueFromField(n1 * n2);
+    return n1 * n2;
 }
 
 int power(int a, int b) {
