@@ -6,8 +6,8 @@ public class Encoding_LZ77 {
 
     Converter converter = new Converter();
 
-    private final int k = 7; // rozmiar słownika
-    private final int n = 6; // rozmiar bufora wejściowego
+    private final int k = 255; // rozmiar słownika
+    private final int n = 256; // rozmiar bufora wejściowego
 
     StringBuilder dictionaryBuffer = new StringBuilder(k);
     StringBuilder encodingBuffer = new StringBuilder(n);
@@ -28,16 +28,16 @@ public class Encoding_LZ77 {
         // pętla while działa tak długo jak jest jeszcze co wsadzić do encodingBuffera, czyli
         // dopóki nie zakodujemy całego tekstu
         while (encodingBuffer.length() != 0) {
-            Tuple encodedTuple = oneStepOfEncoding();
+            Tuple encodedTuple = singleStepOfEncoding();
             encodedText.add(encodedTuple);
         }
 
-        getValuesDescribingTheCompression(textToEncoding, fileName);
+        printValues(textToEncoding, fileName);
         return encodedText;
     }
 
 
-    public Tuple oneStepOfEncoding() {
+    public Tuple singleStepOfEncoding() {
         // pobieramy obecne bufory do zmiennych
         String dictionary = dictionaryBuffer.toString();
         String ourPattern = encodingBuffer.toString();
@@ -101,9 +101,7 @@ public class Encoding_LZ77 {
     }
 
 
-    public void getValuesDescribingTheCompression(String textToEncoding, String fileName) throws IOException {
-        System.out.println("Wartości opisujące kompresję:");
-
+    public void printValues(String textToEncoding, String fileName) throws IOException {
         //długość kodowanego pliku
         int lengthOfTextToEncoding = textToEncoding.length();
         System.out.println("długość kodowanego pliku: " + lengthOfTextToEncoding);
@@ -112,7 +110,7 @@ public class Encoding_LZ77 {
         int lengthOfCode = encodedText.size();
         System.out.println("długość uzyskanego kodu: " + lengthOfCode);
 
-        //stopień kompresji = dł przed skompresowaniem/dł po skompresowaniu
+        //stopień kompresji = długość przed skompresowaniem/długość po skompresowaniu
         System.out.println("stopień kompresji: " + (float) lengthOfTextToEncoding / lengthOfCode);
 
         //entropia kodowanego tekstu
