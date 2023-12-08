@@ -8,14 +8,14 @@ public class List3 {
         Encoding_LZ77 encoding_lz77 = new Encoding_LZ77();
         Decoding_LZ77 decoding_lz77 = new Decoding_LZ77();
 
-        String fileName = "src/text.txt";
+        String fileName = "src/test3.bin";
         String textToEncoding = convertFileToString(fileName);
 
-        if (textToEncoding.length() <= 1) {
-            throw new IllegalArgumentException("Text to encoding must be longer than 1!");
-        }
-
         ArrayList<Tuple> encodedText = encoding_lz77.encoding(textToEncoding, fileName);
+
+        //for (int i = 0; i < encodedText.size(); i++) {
+        //    Tuple.printTuple(encodedText.get(i));
+        //}
 
         decoding_lz77.decoding(encodedText);
 
@@ -32,6 +32,4 @@ public class List3 {
         }
         return sb.toString();
     }
-
-
 }
