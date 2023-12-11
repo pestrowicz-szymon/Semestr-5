@@ -1,0 +1,61 @@
+% This is a simple sample document.  For more complicated documents take a look in the exercise tab. Note that everything that comes after a % symbol is treated as comment and ignored when the code is compiled.
+
+\documentclass{article} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
+
+\usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage[utf8]{inputenc}
+
+
+\title{Jezyki Formalne i Techniki Translacji\\Lista 3 Zadanie 5} % Sets article title
+\author{Szymon Pestrowicz} % Sets authors name
+\date{\today} % Sets date for date compiled
+
+% The preamble ends with the command \begin{document}
+\begin{document} % All begin commands must be paired with an end command somewhere
+	\maketitle % creates title using information in preamble (title, author, date)
+
+	\section*{1 Treść zadania} % creates a section
+	
+	Znaleźć gramatyke w postaci normalnej Greibach równoważna z nastepujaca gramatyka bezkontekstowa: \\ \centerline{$S \rightarrow AA|0$} \\ \centerline{$A \rightarrow SS|1$} \\ z nieterminalami S i A, oraz terminalami 0 i 1.
+
+	\section*{2 Opis działania}
+
+	Niech G = (N, T, P, S) bedzie gramatyka bezkontekstowa w której \\ N - skończony zbiór zmiennych niterminale \\ T - skończony zbiór symboli końcowych (terminale, alfabet) \\ P - skończony zbiór produkcji postaci $A\rightarrow \alpha$, gdzie $A\in N$ i $\alpha \in (N\cup T)*$ \\ S $\in$ N - symbol poczatkowy. \vspace{0.5cm}
+
+	 Produkcje sa postaci $A\rightarrow a\alpha $ gdzie $A\in N, a\in T i \alpha \in N$*. Określamy jako A-produkcje wszystkie produkcje z nieterminalem A po lewej stronie. \vspace{0.5cm}
+
+	Lemat 1. Niech G = (N, T, P, S) bedzie gramatyka bezkontekstowa. Niech $A\rightarrow \alpha_1B\alpha_2$ bedzie produkcja w P i niech $B \rightarrow \beta_1 |...| \beta_r$ bedzie zbiorem wszystkich B-produkcji. Niech G' = (N, T, P', S) bedzie gramatyka otrzymana z G przez usuniecie produkcji $A\rightarrow \alpha_1B\alpha_2$ i dodanie produkcji $A\rightarrow \alpha_1\beta\alpha_2|...|\alpha_1\beta_r\alpha_2$. Wówczas L(G) = L(G') \vspace{0.5cm}
+
+	Lemat 2. Niech G = Niech G = (N, T, P, S) bedzie gramatyka bezkontekstowa. Niech $A\rightarrow A\alpha_1|...|A\alpha_r$ bedzie zbiorem tych A-produkcji których prawe strony zaczynaja sie od A. Niech $A\rightarrow\beta_1|...|\beta_s$ bedzie zbiorem pozostałych A-produkcji. Niech $G' = (N\cup \{B\}, T, P', S)$ bedzie gramatyka utworzona poprzez dodanie nowego nieterminala B i zastapienie wszystkich A-produkcji przez nastepujace produkcje\\ \centerline{$A\rightarrow \beta_i|\beta_iB, 1 \leq i \leq s$} \\ \centerline{$B\rightarrow \alpha_j|\alpha_jB, 1 \leq j \leq r$} \\ Wtedy L(G) = L(G').
+
+	\section*{3. Rozwiazanie}
+
+	\subsection*{3.1}
+
+	Z lematu 1 dla produkcji A podstawiamy:\\ \centerline{$A\rightarrow AAS|0S|1$} \\ 
+
+	\subsection*{3.2}	
+
+	W nastepnym kroku pozbedziemy sie rekursji z lewej strony. Wykorzystamy w tym celu lemat 2 oraz utworzymy nowy nieterminal B:\\ \centerline{$A\rightarrow 1B|0SB|0S|1$} \\ \centerline{$B\rightarrow AS|ASB$} \\ Po wykonaniu tego kroku A-produkcje spełniaja już założenia postaci Greibach.
+
+	\subsection*{3.3}
+
+	Z lematu 1 doprowadzimy S-produkcje do postaci Greibach: \\ \centerline{$S\rightarrow 1BA|0SBA|0SA|1A|0$}
+
+	\subsection*{3.4}
+
+	Produkcje S oraz A sa już w postaci Greibach, została nam jedynie produkcja B która dodaliśmy podczas rozwiazywania, w celu doprowadzenia jej do postaci Greibach użyjemy lematu 1: \\ \centerline{$B\rightarrow 1BS|0SBS|0SS|1S|1BSB|0SBSB|0SSB|1SB$}
+
+	\section*{4. Rezultat}
+
+	Gramatyka bezkontekstowa: \\ \centerline{$S \rightarrow AA|0$} \\ \centerline{$A \rightarrow SS|1$} \\ W postaci Greibach wyglada w nastepujacy sposób: \\ \centerline{$S\rightarrow 1BA|0SBA|0SA|1A|0$} \\  \centerline{$A\rightarrow 1B|0SB|0S|1$} \\ \centerline{$B\rightarrow 1BS|0SBS|0SS|1S|1BSB|0SBSB|0SSB|1SB$}
+
+	
+
+		
+
+\end{document} % This is the end of the document
