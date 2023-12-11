@@ -7,7 +7,7 @@ using Plots
 
 export ilorazyRoznicowe, warNewton, rysujNnfx, naturalna
 
-function ilorazyRoznicowe(x::Vector{Float64}, f::Vector{Float64})
+  function ilorazyRoznicowe(x::Vector{Float64}, f::Vector{Float64})
     n = length(x);
     if(n != length(f))
       println("error")
@@ -30,10 +30,8 @@ function ilorazyRoznicowe(x::Vector{Float64}, f::Vector{Float64})
     n = length(x)
     nt = fx[n];
     for i=n-1 : -1 : 1
-      println(nt," * (",t," - ",x[i],") + ",fx[i])
       nt = nt * (t - x[i]) + fx[i];
     end
-    println(nt)
     return nt;
   end
 
