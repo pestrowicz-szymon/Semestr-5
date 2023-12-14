@@ -28,6 +28,10 @@ void addExpNumber(int n) {
     expression += std::to_string(valueFromFieldForExp(n)) + " ";
 }
 
+void addMinus() {
+    expression += " - ";
+}
+
 // Funkcja pomocnicza do obliczania największego wspólnego dzielnika
 int gcd(int a, int b) {
     if (b == 0)

@@ -42,7 +42,7 @@ exp:
 |   exp POW exp             { $$ = power($1, $3); }
 |   MINUS NUM               { addNumber(-$2); $$ = -$2; }
 |   LBRACKET exp RBRACKET   { $$ = $2; }
-|   MINUS LBRACKET exp RBRACKET   { $$ = -$3; }
+|   MINUS LBRACKET exp RBRACKET   { $$ = -$3; addMinus(); }
 ;
 
 %%
