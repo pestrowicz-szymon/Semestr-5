@@ -41,7 +41,7 @@
 %type  <num> exp1
 %token <num> NUMBER 
 %token PLUS 
-%token MINUS PLUS_VALUE
+%token MINUS 
 %token MULTIPLY 
 %token DIVIDE 
 %token LEFT 
