@@ -1,60 +1,6 @@
 import sys
 import numpy as np
 from PIL import Image
-
-def read_tga(filename):
-    with open(filename, "br") as f:
-        header = list(map(int, f.read(18))) # naglowek
-        width = header[13]*256+header[12] # szerokosc obrazka
-        height = header[15]*256+header[14] # wysokosc obrazka
-        # tablica reprezentujaca pojedyncze pixele
-        image_array = [[Pixel(0,0,0) for _ in range(width+2)] for _ in range(height+2)]
-        # zczytywanie poszczególnych wartości pixeli i wstawianie ich w odpowiednie miejsca
-        for row in range(height):
-            for col in range(width):
-                image_array[row+1][col+1] = Pixel(*(list(map(int, f.read(3)))[::-1]))
-        # odwracamy kolejność pikseli i zwracamy taki obraz
-        return image_array[::-1]
-    
-class Pixel:
-    def __init__(self, r, g, b):
-        self.r = r
-        self.g = g
-        self.b = b
-
-    def __add__(self, other):
-        return Pixel(
-            (self.r + other.r), 
-            (self.g + other.g), 
-            (self.b + other.b)
-            )
-    
-    def __sub__(self, other):
-        return Pixel(
-            (self.r - other.r),
-            (self.g - other.g), 
-            (self.b - other.b)
-        )
-
-    def __floordiv__(self, n):
-        return Pixel(
-            self.r // 2,
-            self.g // 2,
-            self.b // 2
-            )
-
-    def __mod__(self, n):
-        return Pixel(
-            self.r % n,
-            self.g % n,
-            self.b % n
-        )
-
-    def __repr__(self):
-        return str(self)
-
-    def __str__(self):
-        return str((self.r, self.g, self.b))
     
 def quantize(image, rBit, gBit, bBit):
     redLvl = 2 ** rBit
@@ -82,6 +28,14 @@ def quantize(image, rBit, gBit, bBit):
 
     return newImage
 
+def calcMse(original, quantized):
+    return np.mean((original - quantized) ** 2)
+
+def calcSnr(mse):
+    #snr
+    return (255 ** 2 / mse)
+    # snr w dB
+    # return 10 * np.log10(255 ** 2 / mse)
 
 def main():
     if len(sys.argv) != 6:
@@ -97,6 +51,16 @@ def main():
     image = np.array(Image.open(filenameIn))
 
     quantized_image = quantize(image, rBit, gBit, bBit)
+
+    print("mse   =", calcMse(image, quantized_image))
+    print("mse(r)=", calcMse(image[:, :, 0], quantized_image[:, :, 0]))
+    print("mse(g)=", calcMse(image[:, :, 1], quantized_image[:, :, 1]))
+    print("mse(b)=", calcMse(image[:, :, 2], quantized_image[:, :, 2]))
+    print("snr   =", calcSnr(calcMse(image, quantized_image)))
+    print("snr(r)=", calcSnr(calcMse(image[:, :, 0], quantized_image[:, :, 0])))
+    print("snr(g)=", calcSnr(calcMse(image[:, :, 1], quantized_image[:, :, 1])))
+    print("snr(b)=", calcSnr(calcMse(image[:, :, 2], quantized_image[:, :, 2])))
+    
 
     Image.fromarray(quantized_image).save(filenameOut)
 
