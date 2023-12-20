@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftPLUSleftMINUSleftMULTIPLYleftDIVIDErightPOWrightUMINUSCOMMENT DIVIDE LBRACKET MINUS MULTIPLY NUM PLUS POW RBRACKETstatement : statement : expressionexpression : expression PLUS expressionexpression : expression MINUS expressionexpression : expression MULTIPLY expressionexpression : expression DIVIDE expressionexpression : expression POW NUMexpression : expression POW MINUS NUM %prec UMINUSexpression : MINUS NUM %prec UMINUSexpression : LBRACKET expression RBRACKETexpression : NUM'
+_lr_signature = 'leftPLUSMINUSleftTIMESDIVIDErightPOWERUMINUSCOMMENT DIVIDE LPAREN MINUS NUMBER PLUS POWER RPAREN TIMESstatement : expressionstatement : COMMENTexpression : expression PLUS expression\n                  | expression MINUS expression\n                  | expression TIMES expression\n                  | expression DIVIDE expression\n                  | expression POWER expression1expression1 : expression1 PLUS expression1\n                   | expression1 MINUS expression1\n                   | expression1 TIMES expression1\n                   | expression1 DIVIDE expression1expression : LPAREN expression RPARENexpression : NUMBERexpression : MINUS expression %prec UMINUSexpression1 : LPAREN expression1 RPARENexpression1 : NUMBERexpression1 : MINUS expression1 %prec UMINUS'
     
-_lr_action_items = {'$end':([0,1,2,4,11,13,14,15,16,17,19,20,],[-1,0,-2,-11,-9,-3,-4,-5,-6,-7,-10,-8,]),'MINUS':([0,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,],[3,7,-11,3,3,3,3,3,18,-9,7,7,-4,-5,-6,-7,-10,-8,]),'LBRACKET':([0,5,6,7,8,9,],[5,5,5,5,5,5,]),'NUM':([0,3,5,6,7,8,9,10,18,],[4,11,4,4,4,4,4,17,20,]),'PLUS':([2,4,11,12,13,14,15,16,17,19,20,],[6,-11,-9,6,-3,-4,-5,-6,-7,-10,-8,]),'MULTIPLY':([2,4,11,12,13,14,15,16,17,19,20,],[8,-11,-9,8,8,8,-5,-6,-7,-10,-8,]),'DIVIDE':([2,4,11,12,13,14,15,16,17,19,20,],[9,-11,-9,9,9,9,9,-6,-7,-10,-8,]),'POW':([2,4,11,12,13,14,15,16,17,19,20,],[10,-11,-9,10,10,10,10,10,-7,-10,-8,]),'RBRACKET':([4,11,12,13,14,15,16,17,19,20,],[-11,-9,19,-3,-4,-5,-6,-7,-10,-8,]),}
+_lr_action_items = {'COMMENT':([0,],[3,]),'LPAREN':([0,4,5,7,8,9,10,11,19,20,23,24,25,26,],[5,5,5,5,5,5,5,20,20,20,20,20,20,20,]),'NUMBER':([0,4,5,7,8,9,10,11,19,20,23,24,25,26,],[6,6,6,6,6,6,6,21,21,21,21,21,21,21,]),'MINUS':([0,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,],[4,8,4,4,-13,4,4,4,4,19,-14,8,-3,-4,-5,-6,-7,19,19,-16,-12,19,19,19,19,-17,24,-8,-9,-10,-11,-15,]),'$end':([1,2,3,6,12,14,15,16,17,18,21,22,27,29,30,31,32,33,],[0,-1,-2,-13,-14,-3,-4,-5,-6,-7,-16,-12,-17,-8,-9,-10,-11,-15,]),'PLUS':([2,6,12,13,14,15,16,17,18,21,22,27,28,29,30,31,32,33,],[7,-13,-14,7,-3,-4,-5,-6,-7,-16,-12,-17,23,-8,-9,-10,-11,-15,]),'TIMES':([2,6,12,13,14,15,16,17,18,21,22,27,28,29,30,31,32,33,],[9,-13,-14,9,9,9,-5,-6,-7,-16,-12,-17,25,25,25,-10,-11,-15,]),'DIVIDE':([2,6,12,13,14,15,16,17,18,21,22,27,28,29,30,31,32,33,],[10,-13,-14,10,10,10,-5,-6,-7,-16,-12,-17,26,26,26,-10,-11,-15,]),'POWER':([2,6,12,13,14,15,16,17,18,21,22,27,29,30,31,32,33,],[11,-13,11,11,11,11,11,11,-7,-16,-12,-17,-8,-9,-10,-11,-15,]),'RPAREN':([6,12,13,14,15,16,17,18,21,22,27,28,29,30,31,32,33,],[-13,-14,22,-3,-4,-5,-6,-7,-16,-12,-17,33,-8,-9,-10,-11,-15,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statement':([0,],[1,]),'expression':([0,5,6,7,8,9,],[2,12,13,14,15,16,]),}
+_lr_goto_items = {'statement':([0,],[1,]),'expression':([0,4,5,7,8,9,10,],[2,12,13,14,15,16,17,]),'expression1':([11,19,20,23,24,25,26,],[18,27,28,29,30,31,32,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,15 +27,21 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> statement","S'",1,None,None,None),
-  ('statement -> <empty>','statement',0,'p_statement_empty','calculator.py',97),
-  ('statement -> expression','statement',1,'p_statement_expr','calculator.py',102),
-  ('expression -> expression PLUS expression','expression',3,'p_expression_plus','calculator.py',110),
-  ('expression -> expression MINUS expression','expression',3,'p_expression_minus','calculator.py',117),
-  ('expression -> expression MULTIPLY expression','expression',3,'p_expression_multiply','calculator.py',124),
-  ('expression -> expression DIVIDE expression','expression',3,'p_expression_divide','calculator.py',131),
-  ('expression -> expression POW NUM','expression',3,'p_expression_pow','calculator.py',138),
-  ('expression -> expression POW MINUS NUM','expression',4,'p_expression_pow_with_minus','calculator.py',145),
-  ('expression -> MINUS NUM','expression',2,'p_expression_uminus','calculator.py',152),
-  ('expression -> LBRACKET expression RBRACKET','expression',3,'p_expression_group','calculator.py',159),
-  ('expression -> NUM','expression',1,'p_expression_num','calculator.py',164),
+  ('statement -> expression','statement',1,'p_statement_expr','calc.py',69),
+  ('statement -> COMMENT','statement',1,'p_statement_comment','calc.py',82),
+  ('expression -> expression PLUS expression','expression',3,'p_expression','calc.py',85),
+  ('expression -> expression MINUS expression','expression',3,'p_expression','calc.py',86),
+  ('expression -> expression TIMES expression','expression',3,'p_expression','calc.py',87),
+  ('expression -> expression DIVIDE expression','expression',3,'p_expression','calc.py',88),
+  ('expression -> expression POWER expression1','expression',3,'p_expression','calc.py',89),
+  ('expression1 -> expression1 PLUS expression1','expression1',3,'p_expression1','calc.py',105),
+  ('expression1 -> expression1 MINUS expression1','expression1',3,'p_expression1','calc.py',106),
+  ('expression1 -> expression1 TIMES expression1','expression1',3,'p_expression1','calc.py',107),
+  ('expression1 -> expression1 DIVIDE expression1','expression1',3,'p_expression1','calc.py',108),
+  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','calc.py',123),
+  ('expression -> NUMBER','expression',1,'p_expression_number','calc.py',127),
+  ('expression -> MINUS expression','expression',2,'p_expression_uminus','calc.py',131),
+  ('expression1 -> LPAREN expression1 RPAREN','expression1',3,'p_expression1_group','calc.py',135),
+  ('expression1 -> NUMBER','expression1',1,'p_expression1_number','calc.py',139),
+  ('expression1 -> MINUS expression1','expression1',2,'p_expression1_uminus','calc.py',143),
 ]

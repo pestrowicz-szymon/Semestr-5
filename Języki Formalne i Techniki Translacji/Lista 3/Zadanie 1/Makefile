@@ -1,11 +1,16 @@
-all: parser lexer
-	g++ -o calculator.exe calculator.tab.c lex.yy.c -lfl
+FLAGS = -W -O3
 
-lexer:
-	flex calculator.l
+.PHONY = all clean cleanall
 
-parser:
-	bison -d calculator.y
+all: calc
+
+calc: parser.y scanner.l
+	bison -o parser_y.c -d parser.y
+	flex -o scanner_l.c scanner.l
+	$(CC) $(FLAGS) -o calc parser_y.c scanner_l.c
 
 clean:
-	rm -f calculator.tab.* lex.*
+	rm -f *.c *.h
+
+cleanall: clean
+	rm -f calc

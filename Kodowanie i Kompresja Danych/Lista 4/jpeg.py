@@ -16,7 +16,7 @@ def read_tga(filename):
         # zczytywanie poszczególnych wartości pixeli i wstawianie ich w odpowiednie miejsca
         for row in range(height):
             for col in range(width):
-                image_array[row+1][col+1] = Pixel(*(list(map(int, f.read(3)))))
+                image_array[row+1][col+1] = Pixel(*(list(map(int, f.read(3)))[::-1]))
         # odwracamy kolejność pikseli i zwracamy taki obraz
         return image_array[::-1]
 
