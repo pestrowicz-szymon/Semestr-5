@@ -1,0 +1,73 @@
+% This is a simple sample document.  For more complicated documents take a look in the exercise tab. Note that everything that comes after a % symbol is treated as comment and ignored when the code is compiled.
+
+\documentclass{article} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
+
+\usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage[utf8]{inputenc}
+
+
+\title{Algorytmy Metaheurystyczne Lista 2} % Sets article title
+\author{Szymon Pestrowicz} % Sets authors name
+\date{\today} % Sets date for date compiled
+
+% The preamble ends with the command \begin{document}
+\begin{document} % All begin commands must be paired with an end command somewhere
+	\maketitle % creates title using information in preamble (title, author, date)
+
+	\section*{Zadanie 1} % creates a section
+
+		Parametry dla których wykonałem testy:
+		(zostały dobrane przeze mnie losowo, aby móc zbadać zachowanie algorytmu z różnymi danymi wejściowymi)
+
+		\vspace{0.1cm}
+			\begin{tabularx}{\textwidth}{|c|X|X|X|}
+			\hline
+			ID & Temperatura & Mnożnik temperatury & Liczba prób w epoce \\
+			\hline
+			1 &1000 & 0.99 & 10 \\
+			\hline
+			2 &5000 & 0.99 & 10 \\
+			\hline
+			3 &1000 &0.9 & 10 \\
+			\hline
+			4 &1000 & 0.99 & 50 \\
+			\hline
+			\end{tabularx}
+		\vspace{0.1cm}
+
+		Średnie wyniki dla poszczególnych parametrów:
+
+		\vspace{0.1cm}
+			\begin{tabularx}{\textwidth}{|c|X|X|X|X|}
+			\hline
+			Nazwa pliku & Parametry 1 & Parametry 2 & Parametry 3 & Parametry 4 \\
+			\hline
+			xqf131.tsp & 1535.0382 & 1532.794 & 2584.893 & 1057.771 \\
+			\hline 
+			xqg237.tsp & 4551.827 & 4507.928 & 7724.1436 & 3042.9915 \\
+			\hline
+			pma343.tsp & 10146.8545 & 10153.936 & 20575.646 & 6136.889 \\
+			\hline
+			pka379.tsp & 11028.512 & 11078.019 & 22343.242 & 6415.847 \\
+			\hline
+			bcl380.tsp & 10860.753 & 10621.384 & 17697.457 & 7317.45 \\
+			\hline
+			pbl395.tspp & 8743.765 & 8765.033 & 14166.777 & 5837.276 \\
+			\hline
+			pbk411.tsp & 9765.604 & 9815.336 & 15901.579 & 6550.8955 \\
+			\hline 
+			pbn423.tsp & 10076.567 & 10074.353 & 16312.532 & 6760.8843 \\
+			\hline
+			pbm436.tsp & 10573.143 & 10623.988 & 16715.56 & 7196.9404 \\
+			\hline
+			\end{tabularx}
+		\vspace{0.1cm}
+
+		Wnioski:
+		Temperatura poczatkowa nie ma aż takiego wpływu na wynk algorytmu jak jej mnożnik lub ilość prób w epoce
+
+\end{document} % This is the end of the document
