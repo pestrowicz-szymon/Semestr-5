@@ -32,14 +32,18 @@ def calcMse(original, quantized):
     return np.mean((original - quantized) ** 2)
 
 def calcSnr(mse):
-    #snr
+    if mse == 0:
+        return 0#int('inf')
     return (255 ** 2 / mse)
-    # snr w dB
-    # return 10 * np.log10(255 ** 2 / mse)
+
+def calcSnrInDB(mse):
+    if mse == 0:
+        return 0#int('inf')
+    return 10 * np.log10(255 ** 2 / mse)
 
 def main():
     if len(sys.argv) != 6:
-        print("Usage: ./kwantyzacja.py <input_file> <output_file> <bits_red> <bits_green> <bits_blue>")
+        print("Usage: ./main.py <input_file> <output_file> <bits_red> <bits_green> <bits_blue>")
         sys.exit(1)
 
     filenameIn = sys.argv[1]
@@ -56,10 +60,10 @@ def main():
     print("mse(r)=", calcMse(image[:, :, 0], quantized_image[:, :, 0]))
     print("mse(g)=", calcMse(image[:, :, 1], quantized_image[:, :, 1]))
     print("mse(b)=", calcMse(image[:, :, 2], quantized_image[:, :, 2]))
-    print("snr   =", calcSnr(calcMse(image, quantized_image)))
-    print("snr(r)=", calcSnr(calcMse(image[:, :, 0], quantized_image[:, :, 0])))
-    print("snr(g)=", calcSnr(calcMse(image[:, :, 1], quantized_image[:, :, 1])))
-    print("snr(b)=", calcSnr(calcMse(image[:, :, 2], quantized_image[:, :, 2])))
+    print("snr   =", calcSnr(calcMse(image, quantized_image)), "(dB=", calcSnrInDB(calcMse(image, quantized_image)), ")")
+    print("snr(r)=", calcSnr(calcMse(image[:, :, 0], quantized_image[:, :, 0])), "(dB=", calcSnrInDB(calcMse(image[:, :, 0], quantized_image[:, :, 0])), ")")
+    print("snr(g)=", calcSnr(calcMse(image[:, :, 1], quantized_image[:, :, 1])), "(dB=", calcSnrInDB(calcMse(image[:, :, 1], quantized_image[:, :, 1])), ")")
+    print("snr(b)=", calcSnr(calcMse(image[:, :, 2], quantized_image[:, :, 2])), "(dB=", calcSnrInDB(calcMse(image[:, :, 2], quantized_image[:, :, 2])), ")")
     
 
     Image.fromarray(quantized_image).save(filenameOut)
