@@ -79,52 +79,6 @@ function runDane(index::Int64)
 
 end
 
-function runSingleTest(size::Int64, blockSize::Int64)
-        
-
-    blockmat(size, blockSize, 1.0, "tmp.txt")
-    tmp = open("tmp.txt")
-    M = ReadMatrix(tmp)
-    b = calculateRightSide(M, size, blockSize)
-
-    (solvedGaussWithPivots, timeGaussWithPivots, memoryGaussWithPivots) = @timed GaussWithPivots(M, b, size, blockSize)
-
-    (solvedGauss, timeGauss, memoryGauss) = @timed Gauss(M, b, size, blockSize)
-    
-
- 
-    println("Gauss time, memory usage: ", timeGauss, " ", memoryGauss)
-
-    x = ones(Float64, size)
-
-    open("OutGaussRandomTest", "w") do f
-        err = norm(solvedGauss - x)/norm(x)
-        println(f, err)
-        println("blad wzgledny gauss: ", err)
-        for i in solvedGauss
-            println(f, i)
-        end
-    end
-
-    println("Gauss with pivots time, memory usage: ", timeGaussWithPivots, " ", memoryGaussWithPivots)
-
-    open("OutGaussPivotsRandomTest", "w") do f
-        err = norm(solvedGaussWithPivots - x)/norm(x)
-        println(f, err)
-        println("blad wzgledny gauss with pivots: ", err)
-        for i in solvedGaussWithPivots
-            println(f, i)
-        end
-    end
-    
-
-end
-
-
-#runTest(15000, 500, 4, 50)
-
-#runSingleTest(50000, 4)
-
 runDane(1)
 runDane(2)
 runDane(3)
