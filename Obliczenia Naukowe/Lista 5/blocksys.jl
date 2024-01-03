@@ -7,6 +7,78 @@ module blocksys
     using .matrixgen
     using PyPlot
 
+    function runTest(maxSize::Int64, step::Int64, blockSize::Int64, rep::Int64)
+        sizeVector = []
+
+        timeGaussVector = []
+        memoryGaussVector = []
+
+        timeGaussWithPivotsVector = []
+        memoryGaussWithPivotsVector = []
+
+        for size in step:step:maxSize
+            timeGauss = 0.0
+            memoryGauss = 0.0
+
+            timeGaussWithPivots = 0.0
+            memoryGaussWithPivots = 0.0
+
+            for reps in 1:rep
+                blockmat(size, blockSize, 1.0, "tmp.txt")
+                tmp1 = open("tmp.txt")
+                M1 = ReadMatrix(tmp1)
+                b1 = calculateRightSide(M1, size, blockSize)
+
+                tmp2 = open("tmp.txt")
+                M2 = ReadMatrix(tmp2)
+                b2 = calculateRightSide(M2, size, blockSize)
+
+                (_, t, m) = @timed GaussWithPivots(M1, b1, size, blockSize)
+                timeGaussWithPivots += t;
+                memoryGaussWithPivots += m
+
+
+
+                (_, t, m) = @timed Gauss(M2, b2, size, blockSize)
+                timeGauss += t;
+                memoryGauss += m
+
+            end
+
+            timeGauss /= rep
+            memoryGauss /= rep
+
+            timeGaussWithPivots /= rep
+            memoryGaussWithPivots /= rep
+
+            push!(sizeVector, size)
+
+            push!(timeGaussVector, timeGauss)
+            push!(memoryGaussVector, memoryGauss)
+
+            push!(timeGaussWithPivotsVector, timeGaussWithPivots)
+            push!(memoryGaussWithPivotsVector, memoryGaussWithPivots)
+
+            println(size, ";", timeGauss, ";", memoryGauss, ";", timeGaussWithPivots, ";", memoryGaussWithPivots)
+        end
+        plot(sizeVector, timeGaussVector, label="Gauss")
+        plot(sizeVector, timeGaussWithPivotsVector, label="GaussWithPivots")
+        grid(true)
+        title("Time")
+        legend(loc=2,borderaxespad=0)
+        savefig("Time.png")
+
+
+        clf()
+        plot(sizeVector, memoryGaussVector, label="Gauss")
+        plot(sizeVector, memoryGaussWithPivotsVector, label="GaussWithPivots")
+        grid(true)
+        title("Memory")
+        legend(loc=2,borderaxespad=0)
+        savefig("Memory.png")
+
+    end
+
     function ReadMatrix(file::IOStream) :: SparseMatrixCSC{Float64, Int}
         columns = []
         rows = []

@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Obliczenia Naukowe Lista 5} % Sets article title
+\author{Szymon Pestrowicz} % Sets authors name
+\date{\today} % Sets date for date compiled
+
+\begin{document}
+
+\maketitle
+
+\section{Opis problemu} % creates a section
+    Problem jaki zostaje nam przedstawiony to rozwiazanie ukladu rownan liniowych $Ax = b$, gdzie $A\in R^{n\times n}$, a $b\in R^n$, $n\geq 4$. Macierz $A$ jest macierza rzadka, tj. majaca duzo elementow zerowych, i blokowa.
+
+\section{Rozwiazanie}
+    \subsection{Przechowywanie macierzy}
+        Jako, ze macierz A jest macierza rzadka i ma w sobie duzo 0, to nie ma potrzeby ich przechowywania w pamieci. W celu przechowania macierzy A pomijajac wartosci 0 w niej wystepujace uzylem pakietu SparseArrays jezyka Julia. Pomaga on zredukowac zlozonosc pamieciowa z $O(n^2)$ do $O(3n)$, czyli po prostu $O(n)$. Zamiast przechowywac tablice $n\times n$ przechowuje on 3 tablice jednowymiarowe zawierajace kolumne, rzad oraz wartosc poszczegolnych wartosci.
+
+    \subsection{Algorytm Eliminacji Gaussa}
+        Do obliczenia rownania $Ax = b$ wykorzystam algorytm eliminacji Gaussa zmodyfikowany pod macierze rzadkie (opis modyfikacji znajduje sie w punkcie 2.3). Za pomoca elementarnych operacji najpierw algorytm sprowadzi macierz A do postaci macierzy trojkatnej. Podczas rozwiazywania macierzy $A$ bedziemy rowniez przeprowadzac te same operacje na wektorze stron prawych $b$. W taki sposob otrzymamy uklad rownan rownowazny z ukladem poczatkowym. W celu obliczenia wektora wynikowego $x$ skorzystamy z algorytmu podstawiania wstecz: $x_i = \frac{b_i-\sum^{n}_{j=i+1}a_{ij}}{a_{ii}}$
+
+    \subsection{Modyfikacja algorytmu}
+        Z powodu, ze macierz $A$ jest macierza blokowa, dosc specyficzna mozemy przeprowadzic w naszym algorytmie optymalizacje. Mianowicie bedziemy korzystac z tego, ze zamiast przeprowadzac obliczenia i dzialania na calej macierzy co daloby nam zlozonosc podczas zerowania $O(n^2)$ bedziemy wykonywac tylko na fragmencie dlugosci l, co zredukuje zlozonosc do $O(n)$
+
+
+\section*{Zadanie 2} % creates a section
+
+		W drugim zadaniu należy napisać funkcje obliczajaca wartość wielomianu interpolacyjnego stopnia n w postaci Newtona $N_n(x)$ w punkcie $x=t$ przy użyciu algorytmu hornera. Dane wejsciowe funkcji : x (wezły), fx (ilorazy różnicowe), t (punkt w którym należy obliczyć wartość wielomianu). Koncepcja algorytmu hornera: $W(x) = a_0 + a_1x+a_2x^2+...+a_{n-1}x^{n-1}+a_nx^n$ można przekształcić na $W(x) = a_0 + x(a_1 + x(a_2 + ... + x)a_{n-1} + xa_n)...))$
+
+\section*{Zadanie 3} % creates a section
+		
+		W trzecim zadaniu należy napisać funkcje obliczajaca współczynniki postaci naturalnej wielomianu na podstawie x (wezłów) oraz oraz fx (ilorazów różnicowych). Do obliczania używam wzoru z wykładu na postać  Newtona: \\$\sum_{k=0}^{n} f[x_0,x_1,...,x_k]\prod_{j=0}^{k-1}(x-x_j)$
+
+	\section*{Zadanie 4} % creates a section
+
+\end{document}

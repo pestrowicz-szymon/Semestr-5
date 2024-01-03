@@ -39,6 +39,20 @@ function runDane(index::Int64)
         vectorFile2 = open("./data/Dane100000_1_1/b.txt")
         out = "Dane100000_1_1"
         size = 100000
+    elseif index == 5
+        matrixFile1 = open("./data/Dane300000_1_1/A.txt")
+        vectorFile1 = open("./data/Dane300000_1_1/b.txt")
+        matrixFile2 = open("./data/Dane300000_1_1/A.txt")
+        vectorFile2 = open("./data/Dane300000_1_1/b.txt")
+        out = "Dane300000_1_1"
+        size = 300000
+    elseif index == 6
+        matrixFile1 = open("./data/Dane500000_1_1/A.txt")
+        vectorFile1 = open("./data/Dane500000_1_1/b.txt")
+        matrixFile2 = open("./data/Dane500000_1_1/A.txt")
+        vectorFile2 = open("./data/Dane500000_1_1/b.txt")
+        out = "Dane500000_1_1"
+        size = 500000
     else
         return 
     end
@@ -61,8 +75,9 @@ function runDane(index::Int64)
     err2 = norm(solvedGauss - x)/norm(x)
     
     #print time, memory and error
-    println("Gauss With Pivots ",t1, " ", m1, " ", err1)
-    println("Gauss ", t2, " ", m2, " ", err2)
+    println(out)
+    println("Gauss With Pivots t: ",t1, " m: ", m1, " ", err1)
+    println("Gauss             t: ",t2, " m: ", m2, " ", err2)
 
     #write results to files, f is shortcut for fileName
     open(string("OutGauss",out), "w") do f
@@ -79,7 +94,55 @@ function runDane(index::Int64)
 
 end
 
+function runSingleTest(size::Int64, blockSize::Int64)
+
+
+    blockmat(size, blockSize, 1.0, "tmp.txt")
+    tmp = open("tmp.txt")
+    M = ReadMatrix(tmp)
+    b = calculateRightSide(M, size, blockSize)
+
+    (solvedGaussWithPivots, timeGaussWithPivots, memoryGaussWithPivots) = @timed GaussWithPivots(M, b, size, blockSize)
+
+    (solvedGauss, timeGauss, memoryGauss) = @timed Gauss(M, b, size, blockSize)
+
+
+
+    println("Gauss time, memory usage: ", timeGauss, " ", memoryGauss)
+
+    x = ones(Float64, size)
+
+    open("OutGaussRandomTest", "w") do f
+        err = norm(solvedGauss - x)/norm(x)
+        println(f, err)
+        println("blad wzgledny gauss: ", err)
+        for i in solvedGauss
+            println(f, i)
+        end
+    end
+
+    println("Gauss with pivots time, memory usage: ", timeGaussWithPivots, " ", memoryGaussWithPivots)
+
+    open("OutGaussPivotsRandomTest", "w") do f
+        err = norm(solvedGaussWithPivots - x)/norm(x)
+        println(f, err)
+        println("blad wzgledny gauss with pivots: ", err)
+        for i in solvedGaussWithPivots
+            println(f, i)
+        end
+    end
+
+
+end
+
+
+#runTest(15000, 500, 4, 50)
+
+#runSingleTest(500, 4)
+
 runDane(1)
 runDane(2)
 runDane(3)
 runDane(4)
+runDane(5)
+runDane(6)
