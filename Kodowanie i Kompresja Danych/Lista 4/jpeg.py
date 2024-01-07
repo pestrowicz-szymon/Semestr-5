@@ -1,12 +1,8 @@
 from math import log2
 import sys
-# header struct:
-#   -0-7 bytes - __unimportant__
-#   ...
-#   12-13 bytes - width in pixels
-#   14-15 bytes - height in pixels
-#   16 byte - pixel depth (24)
-#   17 - ...
+
+#   12-13 bajty - szerokosc obrazka
+#   14-15 bajty - wysokosc obrazka
 
 # zczytywanie pliku zgodnie ze standardem fga
 # 18 bajtowy naglowek i 26 bajtowa stopka
@@ -20,7 +16,7 @@ def read_tga(filename):
         # zczytywanie poszczególnych wartości pixeli i wstawianie ich w odpowiednie miejsca
         for row in range(height):
             for col in range(width):
-                image_array[row+1][col+1] = Pixel(*(list(map(int, f.read(3)))))
+                image_array[row+1][col+1] = Pixel(*(list(map(int, f.read(3)))[::-1]))
         # odwracamy kolejność pikseli i zwracamy taki obraz
         return image_array[::-1]
 
