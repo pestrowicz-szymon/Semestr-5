@@ -22,15 +22,59 @@
     \subsection{Modyfikacja algorytmu}
         Z powodu, ze macierz $A$ jest macierza blokowa, dosc specyficzna mozemy przeprowadzic w naszym algorytmie optymalizacje. Mianowicie bedziemy korzystac z tego, ze zamiast przeprowadzac obliczenia i dzialania na calej macierzy co daloby nam zlozonosc podczas zerowania $O(n^2)$ bedziemy wykonywac tylko na fragmencie dlugosci l, co zredukuje zlozonosc do $O(n)$
 
+    \subsection{Wyniki testow}
+        Przedstawione sa w ponizszych tabelach oraz wykresach
+        
+        \vspace{0.2cm}
+        
+        Zwykly Gauss \\
+        \begin{tabular}{c|c|c}
+            \hline
+            n & czas & pamiec \\
+            \hline
+            16 & 2.12e-5 & 6080 \\
+            \hline
+            10000 & 0.1954462 & 1268688 \\
+            \hline
+            50000 & 3.9894325 & 5194416 \\
+            \hline
+            100000 & 24.7713151 & 10588624 \\
+            \hline
+            300000 & 155.8793193 & 22777264 \\
+            \hline
+            500000 & 612.8614491 & 43554480 \\
+            \hline
+        \end{tabular}
+        \vspace{0.2cm}
+        
+        Gauss z czesciowym wyborem elementu glownego \\
+        \begin{tabular}{c|c|c}
+            \hline
+            n & czas & pamiec \\
+            \hline
+            16 & 3.9e-5 & 6272 \\
+            \hline
+            10000 & 0.2035575 & 1348736 \\
+            \hline
+            50000 & 3.9887765 & 800096 \\
+            \hline
+            100000 & 22.7895775 & 1600096 \\
+            \hline
+            300000 & 154.2855166 & 4800096 \\
+            \hline
+            500000 & 630.9767465 & 47554528 \\
+            \hline
+        \end{tabular}
 
-\section*{Zadanie 2} % creates a section
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.5\linewidth]{Time.png}
+        \end{figure}
 
-		W drugim zadaniu należy napisać funkcje obliczajaca wartość wielomianu interpolacyjnego stopnia n w postaci Newtona $N_n(x)$ w punkcie $x=t$ przy użyciu algorytmu hornera. Dane wejsciowe funkcji : x (wezły), fx (ilorazy różnicowe), t (punkt w którym należy obliczyć wartość wielomianu). Koncepcja algorytmu hornera: $W(x) = a_0 + a_1x+a_2x^2+...+a_{n-1}x^{n-1}+a_nx^n$ można przekształcić na $W(x) = a_0 + x(a_1 + x(a_2 + ... + x)a_{n-1} + xa_n)...))$
-
-\section*{Zadanie 3} % creates a section
-		
-		W trzecim zadaniu należy napisać funkcje obliczajaca współczynniki postaci naturalnej wielomianu na podstawie x (wezłów) oraz oraz fx (ilorazów różnicowych). Do obliczania używam wzoru z wykładu na postać  Newtona: \\$\sum_{k=0}^{n} f[x_0,x_1,...,x_k]\prod_{j=0}^{k-1}(x-x_j)$
-
-	\section*{Zadanie 4} % creates a section
+    \vspace{15cm}
+    
+    \subsection{Wnioski}
+    Wartosci w tabeli wskazuja, ze nie da sie jednoznacznie ustalic ktory z algorytmow jest szybszy. Przedstawilem w niej wyniki mojego komputera stacjonarnego pod windowsem, wykonalem rowniez testy na laptopie pod linuxem i rowniez nie było jednoznaczych wynikow, raz jeden, a raz drugi algorytm okazywal sie szybszy. Dzieki wykresowi, ktory bierze srednia z wiekszej liczby pomiarow mozna stwierdzic, ze zwykly Gauss jest szybszy.
+    
 
 \end{document}
