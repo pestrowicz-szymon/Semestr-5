@@ -136,13 +136,13 @@ function runSingleTest(size::Int64, blockSize::Int64)
 end
 
 
-#runTest(15000, 500, 4, 50)
+runTest(15000, 500, 4, 50)
 
 #runSingleTest(500, 4)
 
-runDane(1)
-runDane(2)
-runDane(3)
-runDane(4)
-runDane(5)
-runDane(6)
+#runDane(1)
+#runDane(2)
+#runDane(3)
+#runDane(4)
+#runDane(5)
+#runDane(6)
