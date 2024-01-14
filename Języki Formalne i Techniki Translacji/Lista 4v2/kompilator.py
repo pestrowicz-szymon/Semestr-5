@@ -5,7 +5,7 @@ import sys
 class MyLexer(Lexer):
     tokens = {
         # words that appear in language spec
-        'PROCEDURE', 'IS', 'IN', 'END', 'PROGRAM', 'IF', 'THEN', 'ELSE', 'ENDIF', 'WHILE', 'DO', 'ENDWHILE', 
+        'PROCEDURE', 'IS', 'IN', 'ENDIF', 'END', 'PROGRAM', 'IF', 'THEN', 'ELSE', 'WHILE', 'DO', 'ENDWHILE', 
         'REPEAT', 'UNTIL', 'READ', 'WRITE', 'PIDENTIFIER', 'T', 'NUM', # number 
         'PIDENTIFIER', # name of function/table/variable
         # expressions 
@@ -24,24 +24,27 @@ class MyLexer(Lexer):
         'GEQ', # is greater or equal
         'LEQ', # is less or equal
         # rest
-        'SEMICOLON', # srednik
+        #'SEMICOLON', # srednik
         'LPAREN', # (
         'RPAREN', # )
+        'LBRACK', # [
+        'RBRACK', # ]
     }
 
     ignore = ' \t'
     ignore_comment = r'\#(.*?(\\\n)*)+\n'
     ignore_newline = r'\n+'
+    ignore_semicolon = r';'
 
     PROCEDURE = r'PROCEDURE'
     IS = r'IS'
     IN = r'IN'
+    ENDIF = r'ENDIF'
     END = r'END'
     PROGRAM = r'PROGRAM'
     IF = r'IF'
     THEN = r'THEN'
     ELSE = r'ELSE'
-    ENDIF = r'ENDIF'
     WHILE = r'WHILE'
     DO = r'DO'
     ENDWHILE = r'ENDWHILE'
@@ -66,9 +69,11 @@ class MyLexer(Lexer):
     GEQ = r'>='
     LEQ = r'<='
 
-    SEMICOLON = r';'
+    #SEMICOLON = r';'
     LPAREN = r'\('
     RPAREN = r'\)'
+    LBRACK = r'\['
+    RBRACK = r'\]'
 
     NUM = r'\d+'
     PIDENTIFIER = r'[_a-z]+'
@@ -88,7 +93,12 @@ class MyParser(Parser):
 
     @_('main')
     def program_all(self, p):
-        pass
+        self.result.append('PROGRAM ALL')
+
+    #@_('procedures PROCEDURE proc_head IS declarations IN commands END',
+    #   'procedures PROCEDURE proc_head IS IN commands END')
+    #def procedures(self, p):
+    #    self.result.append('PROCEDURES')
     
     @_('PROGRAM IS declarations IN commands END',
        'PROGRAM IS IN commands END')
@@ -98,16 +108,78 @@ class MyParser(Parser):
     @_('commands command',
        'command')
     def commands(self, p):
-        self.result.append('COMMANDS')
+        #self.result.append('COMMANDS')
+        pass
 
-    @_('PIDENTIFIER')
+    @_('identifier ASS expression',
+       'IF condition THEN commands ENDIF',
+       'IF condition THEN commands ELSE commands ENDIF',
+       'WHILE condition DO commands ENDWHILE',
+       'REPEAT commands UNTIL condition',
+       'proc_call',
+       'READ identifier',
+       'WRITE value')
     def command(self, p):
-        self.result.append('COMMAND' + p[0])
+        self.result.append('COMMAND ' + p[0])
+
+    #@_('PIDENTIFIER LPAREN args_decl RPAREN')
+    #def proc_head(self, p):
+    #    self.result.append("PROC_HEAD")
+
+    @_('PIDENTIFIER LPAREN args RPAREN')
+    def proc_call(self, p):
+        self.result.append('PROC_CALL')
 
     @_('declarations COMA PIDENTIFIER',
-       'PIDENTIFIER')
+       'declarations COMA PIDENTIFIER LBRACK NUM RBRACK',
+       'PIDENTIFIER',
+       'PIDENTIFIER LBRACK NUM RBRACK')
     def declarations(self, p):
-        self.result.append('DECLARATIONS')
+        self.result.append('DECLARATIONS ' + p.PIDENTIFIER)
+
+    #@_('args_decl COMA PIDENTIFIER',
+    #   'args_decl COMA T PIDENTIFIER',
+    #   'PIDENTIFIER',
+    #   'T PIDENTIFIER')
+    #def args_decl(self, p):
+    #    self.result.append('ARGS_DECL')
+
+    @_('args COMA PIDENTIFIER',
+       'PIDENTIFIER')
+    def args(self, p):
+        self.result.append('ARGS')
+
+    @_('value',
+       'value ADD value',
+       'value SUB value',
+       'value MUL value',
+       'value DIV value',
+       'value MOD value',
+       'value ASS value') # maybe it shouldnt be there, idk
+    def expression(self, p):
+        self.result.append('EXPRESSION ' + p[0] + ' ' + p[1] + ' ' + p[2])
+
+    @_('value EQ value',
+       'value NEQ value',
+       'value GT value',
+       'value LT value',
+       'value GEQ value',
+       'value LEQ value')
+    def condition(self, p):
+        self.result.append('CONDITION ' + p[0] + ' ' + p[1] + ' ' + p[2])
+
+    @_('NUM',
+       'identifier')
+    def value(self, p):
+        self.result.append('VALUE ' + p[0])
+        return p[0]
+
+    @_('PIDENTIFIER',
+       'PIDENTIFIER LBRACK NUM RBRACK',
+       'PIDENTIFIER LBRACK PIDENTIFIER RBRACK')
+    def identifier(self, p):
+        self.result.append('IDENTIFIER ' + ' '.join(p))
+        return ' '.join(p)
 
     
 lexer = MyLexer()

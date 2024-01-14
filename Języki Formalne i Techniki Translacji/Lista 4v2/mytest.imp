@@ -1,6 +1,6 @@
-PROGRAM IS 
-    pidolek, xd, xd
-IN 
-    komendauno
-    komendados
+# Binarna postać liczby 
+PROGRAM IS
+	n, p
+IN
+    IF 5 THEN 5 ENDIF
 END
