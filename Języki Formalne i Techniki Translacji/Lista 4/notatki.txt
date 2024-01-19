@@ -1,0 +1,4 @@
+READ:
+    READ        wczytaj wartosc od uzytkownika do r[a]
+    RST b       wpisz 0 w r[b]
+    STORE b     w p[r[b]] czyli p[0] wpisz r[a] czyli wartosc uzytkownika
