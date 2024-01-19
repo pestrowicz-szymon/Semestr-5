@@ -119,20 +119,42 @@ class MyParser(Parser):
     @_('command')
     def commands(self, p):
         return self.codeGenerator.generate_code(Command.COMMANDS_COMMAND, p.command)
-    
-    #@TODO write separate functions for all 'command'
 
-
-    @_('identifier ASS expression',
-       'IF condition THEN commands ENDIF',
-       'IF condition THEN commands ELSE commands ENDIF',
-       'WHILE condition DO commands ENDWHILE',
-       'REPEAT commands UNTIL condition',
-       'proc_call',
-       'READ identifier',
-       'WRITE value')
+    # command -------------------------------------------------------
+    @_('identifier ASS expression')
     def command(self, p):
-        return p[0]
+        return self.codeGenerator.generate_code(Command.COMMAND_ASSIGN, (p.identifier, p.expression))
+    
+    @_('IF condition THEN commands ENDIF')
+    def command(self, p):
+        return self.codeGenerator.generate_code(Command.COMMAND_IF, (p.condition, p.commands))
+    
+    @_('IF condition THEN commands ELSE commands ENDIF')
+    def command(self, p):
+        return self.codeGenerator.generate_code(Command.COMMAND_IF_ELSE, (p.condition, p.commands0, p.commands1))
+    
+    @_('WHILE condition DO commands ENDWHILE')
+    def command(self, p):
+        return self.codeGenerator.generate_code(Command.COMMAND_WHILE, (p.condition, p.commands))
+    
+    @_('REPEAT commands UNTIL condition')
+    def command(self, p):
+        return self.codeGenerator.generate_code(Command.COMMAND_REPEAT, (p.commands, p.condition))
+    
+    @_('proc_call')
+    def command(self, p):
+        return self.codeGenerator.generate_code(Command.COMMAND_PROC_CALL, p.proc_call)
+    
+    @_('READ identifier')
+    def command(self, p):
+        return self.codeGenerator.generate_code(Command.COMMAND_READ, p.identifier)
+    
+    @_('WRITE value')
+    def command(self, p):
+        return self.codeGenerator.generate_code(Command.COMMAND_WRITE, p.value)
+    
+
+
 
     @_('PIDENTIFIER LPAREN args_decl RPAREN')
     def proc_head(self, p):

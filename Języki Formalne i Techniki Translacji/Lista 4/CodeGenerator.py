@@ -30,6 +30,21 @@ class CodeGenerator:
     def __init__(self):
         self.procedure_addresses = {}
 
+    # registers
+    r = {
+        'a': None,
+        'b': None,
+        'c': None,
+        'd': None,
+        'e': None,
+        'f': None,
+        'g': None,
+        'h': None
+    }
+
+    # memory
+    p = []
+
 
     def generate_code(self, code, param):
         return {
@@ -81,34 +96,50 @@ class CodeGenerator:
     #@TODO write functions for 'commands' and 'command
 
     def __commands_command(self, x):
-        return []
+        codes = [x]
+        return codes
     
     def __commands(self, x):
-        return []
-    
-    def __command_(self, x):
-        return []
-    
+        return x
+
     def __command_assign(self, x):
-        return []
+        codes = []
+        (identifier, expression) = x
+        codes += f'STORE {identifier}'
+        return codes
+
     
     def __command_if(self, x):
-        return []
+        codes = []
+        codes += 'IF'
+        return codes
     
     def __command_if_else(self, x):
-        return []
+        codes = []
+        codes += 'IF ELSE'
+        return codes
     
     def __command_while(self, x):
-        return []
+        codes = []
+        codes += 'WHILE'
+        return codes
     
     def __command_repeat(self, x):
-        return []
+        codes = []
+        codes += 'REPEAT'
+        return codes
     
     def __command_proc_call(self, x):
-        return []
+        codes = []
+        codes += 'PROC_CALL'
+        return codes
     
     def __command_read(self, x):
-        return []
+        codes = []
+        codes += 'READ'
+        return codes
     
     def __command_write(x):
-        return []
+        codes = []
+        codes += 'WRITE'
+        return codes
