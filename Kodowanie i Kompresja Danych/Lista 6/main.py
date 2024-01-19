@@ -1,5 +1,3 @@
-""" Filtry dolno i górnoprzepustowe """
-
 from sys import argv
 
 
@@ -69,9 +67,6 @@ class Bitmap:
 
         result = []
         row = []
-        print("width*height: " + str(width*height))
-        print("width*height*3: " + str(width*height*3))
-        print("bitmap size: " + str(len(bitmap)))
         for i in range(width * height):
             row.append(
                 Pixel(
@@ -189,75 +184,6 @@ def quantify_uniform(bitmap, k):
     return [pixel.uniform_quantization(step) for pixel in bitmap]
 
 
-def quantify_nonuniform(bitmap, k):
-    reds = []
-    greens = []
-    blues = []
-    for pixel in bitmap:
-        reds.append(pixel.red)
-        greens.append(pixel.green)
-        blues.append(pixel.blue)
-
-    red_codebook = nonuniform_quantization(reds, k)
-    green_codebook = nonuniform_quantization(greens, k)
-    blues_codebook = nonuniform_quantization(blues, k)
-
-    new_reds = [red_codebook[elem] for elem in reds]
-    new_greens = [green_codebook[elem] for elem in greens]
-    new_blues = [blues_codebook[elem] for elem in blues]
-
-    quantified_bitmap = []
-    for red, green, blue in zip(new_reds, new_greens, new_blues):
-        quantified_bitmap.append(Pixel(red, green, blue))
-
-    return quantified_bitmap
-
-
-def nonuniform_quantization(pixels, k):
-    n = 2 ** k
-    d = {i: 0 for i in range(256)}
-    for p in pixels:
-        d[p] += 1
-    intervals = {(i, i + 1): d[i] + d[i + 1] for i in d if i % 2 == 0}
-
-    while len(intervals) > n:
-        intervals_list = list(intervals)
-        min_interval = min(intervals)
-        i = intervals_list.index(min_interval)
-
-        if i == 0:
-            to_join = intervals_list[1]
-        elif k == len(intervals_list) - 1:
-            to_join = intervals_list[-2]
-        else:
-            to_join = (
-                intervals_list[k - 1]
-                if intervals[intervals_list[k - 1]] < intervals[intervals_list[k + 1]]
-                else intervals_list[k + 1]
-            )
-
-        new_interval = (
-            (min_interval[0], to_join[1])
-            if to_join[0] > min_interval[0]
-            else (to_join[0], min_interval[1])
-        )
-
-        intervals[new_interval] = intervals[min_interval] + intervals[to_join]
-        del intervals[min_interval]
-        del intervals[to_join]
-        intervals = dict(sorted(intervals.items()))
-
-    values = [(interval[0] + interval[1]) // 2 for interval in intervals]
-    codebook = {}
-    j = 0
-    for i in range(256):
-        if j + 1 < n and abs(values[j + 1] - i) <= abs(values[j] - i):
-            j += 1
-        codebook[i] = values[j]
-
-    return codebook
-
-
 def encode(bitmap, k):
     filtered_low = [
         filters(bitmap, x, y)
@@ -269,6 +195,15 @@ def encode(bitmap, k):
         for y in reversed(range(bitmap.height))
         for x in range(bitmap.width)
     ]
+
+    
+    avg_low = (sum(bitmap_to_array(filtered_low))/len(filtered_low))
+    avg_high = (sum(bitmap_to_array(filtered_high))/len(filtered_high))
+    print("avg_low: ", avg_low)
+    print("avg_high: ", avg_high)
+    print("war low: ", sum([x** 2 for x in filtered_low])/len(filtered_low)-avg_low** 2)
+    print("war low: ", sum([x** 2 for x in filtered_high])/len(filtered_high)-avg_high** 2)
+
 
     #differential_coding returns list of differneces between pixels
     low = differential_coding(filtered_low)
@@ -287,8 +222,7 @@ def encode(bitmap, k):
     b = bytes(int(bitstring[i : i + 8], 2) for i in range(0, len(bitstring), 8))
 
     # now stuff for filtered_high
-    # quantified = quantify_uniform(filtered_high, k) #wersja na 4
-    quantified = quantify_nonuniform(filtered_high, k) #wersja na 5
+    quantified = quantify_uniform(filtered_high, k)
     # convert quantification results to bytes
     quantified_bytes = bytes(bitmap_to_array(quantified))
 
@@ -372,7 +306,7 @@ def tests(original, new):
     mserr_red = mse(original_red, new_red)
     mserr_green = mse(original_green, new_green)
     mserr_blue = mse(original_blue, new_blue)
-    snratio = snr(original_array, mserr)
+    snratio = snr(original_array, mserr)    
     return mserr, mserr_red, mserr_green, mserr_blue, snratio
 
 
@@ -385,10 +319,13 @@ def main():
             footer = tga[len(tga) - 26 :]
             width = tga[13] * 256 + tga[12]
             height = tga[15] * 256 + tga[14]
+            print("width*height*3: " + str(width*height*3))
+            print("tga length: " + str(len(tga[18 : len(tga) - 26])))
+            print("dif: " + str((width*height*3) - len(tga[18 : len(tga) - 26])))
 
         if argv[2] == "--encode":
             #create bitmap from 'important' part of file
-            bitmap = Bitmap(tga[18 : len(tga) - 26], width, height)
+            bitmap = Bitmap(tga[18 : len(tga)], width, height) #do example0 usunac -26
 
             #if k isn't given in input use 2
             if len(argv) == 4:

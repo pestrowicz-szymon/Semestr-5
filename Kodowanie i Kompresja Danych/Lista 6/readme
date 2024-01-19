@@ -1,10 +1,4 @@
-Program został napiany w języku Python3.
-
-Uruchamianie:
-
-python3 task1.py <input_file> <--encode/--decode> [k - liczba bitów kwantyzatora, domyślnie 2]
-
-Program podczas kodowania tworzy następujące pliki:
+python main.py <input_file> <--encode/--decode> [k - liczba bitów kwantyzatora, domyślnie 2]
 
 output_high.tga - obrazek po przepuszczeniu przez filtry górnoprzepustowe
 output_high_encoded.tga - obrazek po przepuszczeniu przez filtry górnoprzepustowe i po kwantyzacji
