@@ -1,0 +1,33 @@
+CODE_GENERATOR:
+    DONE:
+        read
+        write 
+        assign
+        expressions
+    TODO:
+        procedure
+        if
+        if else
+        while
+        repeat
+        conditions
+        tables
+
+PARSER
+    TODO:
+        command:
+            if
+            if_else
+            while
+            repeat
+            procedure
+        proc_call
+        args_decl
+        args
+        condition:
+            eq
+            neq
+            geq
+            leq
+            gt
+            lt

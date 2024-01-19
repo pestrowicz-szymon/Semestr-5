@@ -192,8 +192,7 @@ class MyParser(Parser):
        'value DIV value',
        'value MOD value')
     def expression(self, p):
-        #self.result.append('EXPRESSION ' + p[0] + ' ' + p[1] + ' ' + p[2])
-        pass
+        return p[1], p[0], p[2]
 
     @_('value')
     def expression(self, p):

@@ -17,7 +17,7 @@ class CodeGenerator:
         #for procedure in procedures:
         #    self.code.append(procedure)
         for code in main:
-            #print(code)
+            print(code)
             if code[0] == 'read':
                 self.code.append(f'READ')
                 self.code.append(f'RST b')
@@ -41,18 +41,31 @@ class CodeGenerator:
                     for i in range(self.symbols.get_address(code[1])):
                         self.code.append(f'INC b')                      #b = position of identifier in memory
                     self.code.append(f'RST a')                          #a = 0
-                    for i in range(int(code[2])):
-                        self.code.append(f'INC a')                      #a = value
+                    if isinstance(code[2], str):                        #if value to assign is number or identifier
+                        if code[2].isdigit():
+                            for i in range(int(code[2])):
+                                self.code.append(f'INC a')              #a = value
+                        else:
+                            #self.code.append(f'RST c')
+                            for i in range(self.symbols.get_address(code[2])):
+                                self.code.append(f'INC a')
+                            self.code.append(f'LOAD a')
+                    else:                                               #if value to assign is expression
+                        for i in range(self.calculate_expression(code[2][1], code[2][2], code[2][0])):
+                            self.code.append(f'INC a')
                     self.code.append(f'STORE b')                        #store a at position b in memory
 
-                
-
-
-                
-
-
-        #for symbol in self.symbols:
-        #    self.code.append(symbol)
+    def calculate_expression(self, num1, num2, operator):
+        if operator == '+':
+            return int(num1) + int(num2)
+        elif operator == '-':
+            return int(num1) - int(num2)
+        elif operator == '*':
+            return int(num1) * int(num2)
+        elif operator == '/':
+            return int(num1) // int(num2)
+        elif operator == '%':
+            return int(num1) % int(num2)
         
 
     def gen_const(self, const, reg='a'):
@@ -65,199 +78,6 @@ class CodeGenerator:
                 self.code.append(f"SHL {reg}")
             if bits[-1] == '1':
                 self.code.append(f"INC {reg}")
-
-    def calculate_expression(self, expression, target_reg='a', second_reg='b', third_reg='c', fourth_reg='d',
-                             fifth_reg='e'):
-        if expression[0] == "const":
-            self.gen_const(expression[1], target_reg)
-
-        elif expression[0] == "load":
-            if type(expression[1]) == tuple:
-                if expression[1][0] == "undeclared":
-                    self.load_variable(expression[1][1], target_reg, declared=False)
-                elif expression[1][0] == "array":
-                    self.load_array_at(expression[1][1], expression[1][2], target_reg, second_reg)
-            else:
-                if self.symbols[expression[1]].initialized:
-                    self.load_variable(expression[1], target_reg)
-                else:
-                    raise Exception(f"Use of uninitialized variable {expression[1]}")
-
-        else:
-            if expression[1][0] == 'const':
-                const, var = 1, 2
-            elif expression[2][0] == 'const':
-                const, var = 2, 1
-            else:
-                const = None
-
-            if expression[0] == "add":
-                if expression[1][0] == expression[2][0] == "const":
-                    self.gen_const(expression[1][1] + expression[2][1], target_reg)
-
-                elif expression[1] == expression[2]:
-                    self.calculate_expression(expression[1], target_reg, second_reg)
-                    self.code.append(f"SHL {target_reg}")
-
-                elif const and expression[const][1] < 12:
-                    self.calculate_expression(expression[var], target_reg, second_reg)
-                    change = f"INC {target_reg}"
-                    self.code += expression[const][1] * [change]
-
-                else:
-                    self.calculate_expression(expression[1], target_reg, second_reg)
-                    self.calculate_expression(expression[2], second_reg, third_reg)
-                    self.code.append(f"ADD {target_reg} {second_reg}")
-
-            elif expression[0] == "sub":
-                if expression[1][0] == expression[2][0] == "const":
-                    val = max(0, expression[1][1] - expression[2][1])
-                    if val:
-                        self.gen_const(val, target_reg)
-                    else:
-                        self.code.append(f"RESET {target_reg}")
-
-                elif expression[1] == expression[2]:
-                    self.code.append(f"RESET {target_reg}")
-
-                elif const and const == 2 and expression[const][1] < 12:
-                    self.calculate_expression(expression[var], target_reg, second_reg)
-                    change = f"DEC {target_reg}"
-                    self.code += expression[const][1] * [change]
-
-                elif const and const == 1 and expression[const][1] == 0:
-                    self.code.append(f"RESET {target_reg}")
-
-                else:
-                    self.calculate_expression(expression[1], target_reg, second_reg)
-                    self.calculate_expression(expression[2], second_reg, third_reg)
-                    self.code.append(f"SUB {target_reg} {second_reg}")
-
-            elif expression[0] == "mul":
-                if expression[1][0] == expression[2][0] == "const":
-                    self.gen_const(expression[1][1] * expression[2][1], target_reg)
-                    return
-
-                if const:
-                    val = expression[const][1]
-                    if val == 0:
-                        self.code.append(f"RESET {target_reg}")
-                        return
-                    elif val == 1:
-                        self.calculate_expression(expression[var], target_reg, second_reg)
-                        return
-                    elif val & (val - 1) == 0:
-                        self.calculate_expression(expression[var], target_reg, second_reg)
-                        while val > 1:
-                            self.code.append(f"SHL {target_reg}")
-                            val /= 2
-                        return
-
-                if expression[1] == expression[2]:
-                    self.calculate_expression(expression[1], second_reg, target_reg)
-                    self.code.append(f"RESET {third_reg}")
-                    self.code.append(f"ADD {third_reg} {second_reg}")
-                else:
-                    self.calculate_expression(expression[1], second_reg, target_reg)
-                    self.calculate_expression(expression[2], third_reg, target_reg)
-
-                self.code.append(f"RESET {target_reg}")
-                self.code.append(f"JZERO {second_reg} 21")
-                self.code.append(f"JZERO {third_reg} 20")
-                self.code.append(f"ADD {target_reg} {second_reg}")
-                self.code.append(f"SUB {target_reg} {third_reg}")
-                self.code.append(f"JZERO {target_reg} 9")
-
-                # if second >= third it's better to do $2 * $3
-                self.code.append(f"RESET {target_reg}")
-                self.code.append(f"JZERO {third_reg} 15")
-                self.code.append(f"JODD {third_reg} 2")
-                self.code.append("JUMP 2")
-                self.code.append(f"ADD {target_reg} {second_reg}")
-                self.code.append(f"SHR {third_reg}")
-                self.code.append(f"SHL {second_reg}")
-                self.code.append("JUMP -6")
-
-                # if second <= third it's better to do $3 * $2
-                self.code.append(f"RESET {target_reg}")
-                self.code.append(f"JZERO {second_reg} 7")
-                self.code.append(f"JODD {second_reg} 2")
-                self.code.append("JUMP 2")
-                self.code.append(f"ADD {target_reg} {third_reg}")
-                self.code.append(f"SHR {second_reg}")
-                self.code.append(f"SHL {third_reg}")
-                self.code.append("JUMP -6")
-
-            elif expression[0] == "div":
-                if expression[1][0] == expression[2][0] == "const":
-                    if expression[2][1] > 0:
-                        self.gen_const(expression[1][1] // expression[2][1], target_reg)
-                    else:
-                        self.code.append(f"RESET {target_reg}")
-                    return
-
-                elif expression[1] == expression[2]:
-                    self.calculate_expression(expression[1], third_reg, second_reg)
-                    self.code.append(f"RESET {target_reg}")
-                    self.code.append(f"JZERO {third_reg} 2")
-                    self.code.append(f"INC {target_reg}")
-                    return
-
-                elif const and const == 1 and expression[const][1] == 0:
-                    self.code.append(f"RESET {target_reg}")
-                    return
-
-                elif const and const == 2:
-                    val = expression[const][1]
-                    if val == 0:
-                        self.code.append(f"RESET {target_reg}")
-                        return
-                    elif val == 1:
-                        self.calculate_expression(expression[var], target_reg, second_reg)
-                        return
-                    elif val & (val - 1) == 0:
-                        self.calculate_expression(expression[var], target_reg, second_reg)
-                        while val > 1:
-                            self.code.append(f"SHR {target_reg}")
-                            val /= 2
-                        return
-
-                self.calculate_expression(expression[1], third_reg, second_reg)
-                self.calculate_expression(expression[2], fourth_reg, second_reg)
-                self.perform_division(target_reg, second_reg, third_reg, fourth_reg, fifth_reg)
-
-            elif expression[0] == "mod":
-                if expression[1][0] == expression[2][0] == "const":
-                    if expression[2][1] > 0:
-                        self.gen_const(expression[1][1] % expression[2][1], target_reg)
-                    else:
-                        self.code.append(f"RESET {target_reg}")
-                    return
-
-                elif expression[1] == expression[2]:
-                    self.code.append(f"RESET {target_reg}")
-                    return
-
-                elif const and const == 1 and expression[const][1] == 0:
-                    self.code.append(f"RESET {target_reg}")
-                    return
-
-                elif const and const == 2:
-                    val = expression[const][1]
-                    if val < 2:
-                        self.code.append(f"RESET {target_reg}")
-                        return
-                    elif val == 2:
-                        self.calculate_expression(expression[var], second_reg, target_reg)
-                        self.code.append(f"RESET {target_reg}")
-                        self.code.append(f"JODD {second_reg} 2")
-                        self.code.append(f"JUMP 2")
-                        self.code.append(f"INC {target_reg}")
-                        return
-
-                self.calculate_expression(expression[1], third_reg, second_reg)
-                self.calculate_expression(expression[2], fourth_reg, second_reg)
-                self.perform_division(second_reg, target_reg, third_reg, fourth_reg, fifth_reg)
 
     def perform_division(self, quotient_register='a', remainder_register='b', dividend_register='c',
                          divisor_register='d', temp_register='e'):
