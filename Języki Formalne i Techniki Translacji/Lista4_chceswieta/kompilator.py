@@ -120,8 +120,7 @@ class MyParser(Parser):
         return [p[0]]
 
     # command -------------------------------------------------------
-    @_('identifier ASS expression',
-       'IF condition THEN commands ENDIF',
+    @_('IF condition THEN commands ENDIF',
        'IF condition THEN commands ELSE commands ENDIF',
        'WHILE condition DO commands ENDWHILE',
        'REPEAT commands UNTIL condition',
@@ -137,6 +136,10 @@ class MyParser(Parser):
     def command(self, p):
         return 'read', p.identifier
     
+    @_('identifier ASS expression')
+    def command(self, p):
+        return 'assign', p.identifier, p.expression
+
     # proc_head -----------------------------------------------------
     @_('PIDENTIFIER LPAREN args_decl RPAREN')
     def proc_head(self, p):
@@ -183,16 +186,18 @@ class MyParser(Parser):
         pass
 
     # expression ----------------------------------------------------
-    @_('value',
-       'value ADD value',
+    @_('value ADD value',
        'value SUB value',
        'value MUL value',
        'value DIV value',
-       'value MOD value',
-       'value ASS value') # maybe it shouldnt be there, idk
+       'value MOD value')
     def expression(self, p):
         #self.result.append('EXPRESSION ' + p[0] + ' ' + p[1] + ' ' + p[2])
         pass
+
+    @_('value')
+    def expression(self, p):
+        return p.value
 
     # condition -----------------------------------------------------
     @_('value EQ value',

@@ -17,6 +17,7 @@ class CodeGenerator:
         #for procedure in procedures:
         #    self.code.append(procedure)
         for code in main:
+            #print(code)
             if code[0] == 'read':
                 self.code.append(f'READ')
                 self.code.append(f'RST b')
@@ -35,6 +36,16 @@ class CodeGenerator:
                     for i in range(code[1]):
                         self.code.append(f'INC a')
                     self.code.append(f'WRITE')
+            if code[0] == 'assign':
+                    self.code.append(f'RST b')                          #b = 0
+                    for i in range(self.symbols.get_address(code[1])):
+                        self.code.append(f'INC b')                      #b = position of identifier in memory
+                    self.code.append(f'RST a')                          #a = 0
+                    for i in range(int(code[2])):
+                        self.code.append(f'INC a')                      #a = value
+                    self.code.append(f'STORE b')                        #store a at position b in memory
+
+                
 
 
                 
