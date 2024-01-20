@@ -8,6 +8,7 @@ class CodeGenerator:
         self.symbols = symbols
         self.code = []
         self.iterators = []
+        self.IF_JPOS_POSITION = 0
 
     def gen_code(self):
         self.gen_code_from_commands(self.main)
@@ -56,9 +57,10 @@ class CodeGenerator:
             if code[0] == 'if': 
                 pass
                 self.create_condition(code[1])
-                self.code.append(f'PO CONDITION')  
                 self.gen_code_from_commands(code[2])
-                self.code.append(f'PO COMMANDS')   
+                AFTER_COMMANDS_POSITION = len(self.code)-1
+                self.code[self.IF_JPOS_POSITION] = (f'JPOS {AFTER_COMMANDS_POSITION}')
+                
 
     def create_condition(self, code):
         num1 = code[0]
@@ -73,6 +75,7 @@ class CodeGenerator:
             self.code.append(f'GET c')
             self.code.append(f'SUB b')
             self.code.append(f'ADD d')
+            self.IF_JPOS_POSITION = len(self.code)
             self.code.append(f'JPOS pozycja po commandsach')
             pass
         if operator == '!=':
