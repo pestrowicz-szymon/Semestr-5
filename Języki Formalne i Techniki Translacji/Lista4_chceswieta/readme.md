@@ -4,9 +4,9 @@ CODE_GENERATOR:
         write 
         assign
         expressions
+        if
     TODO:
         procedure
-        if
         if else
         while
         repeat
@@ -16,7 +16,6 @@ CODE_GENERATOR:
 PARSER
     TODO:
         command:
-            if
             if_else
             while
             repeat
@@ -24,10 +23,3 @@ PARSER
         proc_call
         args_decl
         args
-        condition:
-            eq
-            neq
-            geq
-            leq
-            gt
-            lt
