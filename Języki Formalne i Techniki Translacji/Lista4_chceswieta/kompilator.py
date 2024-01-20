@@ -120,13 +120,16 @@ class MyParser(Parser):
         return [p[0]]
 
     # command -------------------------------------------------------
-    @_('IF condition THEN commands ENDIF',
-       'IF condition THEN commands ELSE commands ENDIF',
+    @_('IF condition THEN commands ELSE commands ENDIF',
        'WHILE condition DO commands ENDWHILE',
        'REPEAT commands UNTIL condition',
        'proc_call')
     def command(self, p):
         pass
+
+    @_('IF condition THEN commands ENDIF')
+    def command(self, p):
+        return 'if', p.condition, p.commands
 
     @_('WRITE value')
     def command(self, p):
@@ -206,8 +209,7 @@ class MyParser(Parser):
        'value GEQ value',
        'value LEQ value')
     def condition(self, p):
-        #self.result.append('CONDITION ' + p[0] + ' ' + p[1] + ' ' + p[2])
-        pass
+        return p.value0, p[1], p.value1
 
     # value ---------------------------------------------------------
     @_('NUM',

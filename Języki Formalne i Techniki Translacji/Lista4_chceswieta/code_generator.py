@@ -10,20 +10,25 @@ class CodeGenerator:
         self.iterators = []
 
     def gen_code(self):
-        self.gen_code_from_commands(self.procedures, self.main)
+        self.gen_code_from_commands(self.main)
         self.code.append("HALT")
 
-    def gen_code_from_commands(self, procedures, main):
+    def gen_code_from_commands(self, main):
         #for procedure in procedures:
         #    self.code.append(procedure)
         for code in main:
             print(code)
+
+            # ---------- READ -------------------------------------
             if code[0] == 'read':
                 self.code.append(f'READ')
                 self.code.append(f'RST b')
                 for i in range(self.symbols.get_address(code[1])):
                     self.code.append(f'INC b')
                 self.code.append(f'STORE b')
+
+
+            # ---------- WRITE -------------------------------------
             if code[0] == 'write':
                 if isinstance(code[1], str):
                     self.code.append(f'RST b')
@@ -36,26 +41,84 @@ class CodeGenerator:
                     for i in range(code[1]):
                         self.code.append(f'INC a')
                     self.code.append(f'WRITE')
-            if code[0] == 'assign':
-                    self.code.append(f'RST b')                          #b = 0
-                    for i in range(self.symbols.get_address(code[1])):
-                        self.code.append(f'INC b')                      #b = position of identifier in memory
-                    self.code.append(f'RST a')                          #a = 0
-                    if isinstance(code[2], str):                        #if value to assign is number or identifier
-                        if code[2].isdigit():
-                            for i in range(int(code[2])):
-                                self.code.append(f'INC a')              #a = value
-                        else:
-                            #self.code.append(f'RST c')
-                            for i in range(self.symbols.get_address(code[2])):
-                                self.code.append(f'INC a')
-                            self.code.append(f'LOAD a')
-                    else:                                               #if value to assign is expression
-                        for i in range(self.calculate_expression(code[2][1], code[2][2], code[2][0])):
-                            self.code.append(f'INC a')
-                    self.code.append(f'STORE b')                        #store a at position b in memory
 
-    def calculate_expression(self, num1, num2, operator):
+
+            # ---------- ASSIGN -------------------------------------
+            if code[0] == 'assign':     
+                    self.code.append(f'RST b')                          
+                    for i in range(self.symbols.get_address(code[1])):
+                        self.code.append(f'INC b')                       
+                    self.create_expression(code[2], 'a')                       
+                    self.code.append(f'STORE b')   
+
+
+            # ---------- IF ------------------------------------- 
+            if code[0] == 'if': 
+                pass
+                self.create_condition(code[1])
+                self.code.append(f'PO CONDITION')  
+                self.gen_code_from_commands(code[2])
+                self.code.append(f'PO COMMANDS')   
+
+    def create_condition(self, code):
+        num1 = code[0]
+        num2 = code[2]
+        operator = code[1]
+        if operator == '=':
+            self.get_value(num1, 'b')
+            self.get_value(num2, 'c')
+            self.code.append(f'GET b')
+            self.code.append(f'SUB c')
+            self.code.append(f'PUT d')
+            self.code.append(f'GET c')
+            self.code.append(f'SUB b')
+            self.code.append(f'ADD d')
+            self.code.append(f'JPOS pozycja po commandsach')
+            pass
+        if operator == '!=':
+            pass
+        if operator == '>':
+            pass
+        if operator == '<':
+            pass
+        if operator == '>=':
+            pass
+        if operator == '<=':
+            pass
+
+    def get_value(self, value, register):
+        self.code.append(f'RST {register}')
+        if value.isdigit():
+            for i in range(int(value)):
+                self.code.append(f'INC {register}')              
+        else:
+            for i in range(self.symbols.get_address(value)):
+                self.code.append(f'INC {register}')
+            self.code.append(f'LOAD {register}')
+            self.code.append(f'PUT {register}')
+
+
+    # code - tuple from parser or number
+    # register - at which register save result
+    def create_expression(self, code, register):
+        self.code.append(f'RST {register}') 
+        if isinstance(code, str):                        
+            if code.isdigit():
+                for i in range(int(code)):
+                    self.code.append(f'INC {register}')              
+            else:
+                for i in range(self.symbols.get_address(code)):
+                    self.code.append(f'INC {register}')
+                self.code.append(f'LOAD {register}')
+        else:                                               
+            for i in range(self.calculate_expression(code)):
+                self.code.append(f'INC {register}')
+                
+    # return expression result
+    def calculate_expression(self, code):
+        num1 = code[1]
+        num2 = code[2]
+        operator = code[0]
         if operator == '+':
             return int(num1) + int(num2)
         elif operator == '-':
