@@ -31,16 +31,16 @@ class CodeGenerator:
 
             # ---------- WRITE -------------------------------------
             if code[0] == 'write':
-                if isinstance(code[1], str):
+                if code[1].isdigit:
+                    self.code.append(f'RST a')
+                    for i in range(int(code[1])):
+                        self.code.append(f'INC a')
+                    self.code.append(f'WRITE')
+                else:
                     self.code.append(f'RST b')
                     for i in range(self.symbols.get_address(code[1])):
                         self.code.append(f'INC b')
                     self.code.append(f'LOAD b')
-                    self.code.append(f'WRITE')
-                else:
-                    self.code.append(f'RST a')
-                    for i in range(code[1]):
-                        self.code.append(f'INC a')
                     self.code.append(f'WRITE')
 
 
@@ -86,6 +86,15 @@ class CodeGenerator:
                 self.code[JUMP_POSITION] = self.code[JUMP_POSITION].replace('to_change', str(OUT_WHILE_POSITION))
                 self.code.append(f'JUMP {CONDITION_POSITION}')
 
+            # ---------- REPEAT -------------------------------------
+            if code[0] == 'repeat':
+                BEFORE_COMMANDS_POSITION = len(self.code)
+                self.gen_code_from_commands(code[1])
+                self.create_condition(code[2])
+                JUMP_POSITION = self.IF_JUMPS_POSITIONS.pop()
+                self.code[JUMP_POSITION] = f'JPOS {BEFORE_COMMANDS_POSITION}'
+
+
 
 
 
@@ -118,7 +127,13 @@ class CodeGenerator:
             self.IF_JUMPS_POSITIONS.append(len(self.code))
             self.code.append(f'JZERO to_change')
         if operator == '>':
-            pass
+            self.get_value(num1, 'b')
+            self.get_value(num2, 'c')
+            self.code.append('GET b')
+            self.code.append('SUB c')
+            self.IF_JUMPS_POSITIONS.append(len(self.code))
+            self.code.append(f'JZERO to_change')
+            
         if operator == '<':
             pass
         if operator == '>=':
@@ -160,11 +175,75 @@ class CodeGenerator:
                 if code[0] == '+':
                     self.code.append(f'GET c')
                     self.code.append(f'ADD d')
-                    self.code.append(f'PUT {register}')
+                    self.code.append(f'PUT e')
                 elif code[0] == '-':
                     self.code.append(f'GET c')
                     self.code.append(f'SUB d')
-                    self.code.append(f'PUT {register}')
+                    self.code.append(f'PUT e')
+                elif code[0] == '*':
+                    self.code.append(f'RST e')
+                    LABEL_LOOP = len(self.code)
+                    self.code.append(f'SHR c')
+                    self.code.append(f'SHL c')
+                    self.code.append(f'SUB c')
+                    JZERO = len(self.code)
+                    self.code.append(f'JZERO to_change')
+                    self.code.append(f'GET e')
+                    self.code.append(f'ADD d')
+                    self.code.append(f'PUT e')
+                    LABEL_EVEN = len(self.code)
+                    self.code[JZERO] = self.code[JZERO].replace('to_change', str(LABEL_EVEN))
+                    self.code.append(f'SHL d')
+                    self.code.append(f'SHR c')
+                    self.code.append(f'GET c')
+                    self.code.append(f'JPOS {LABEL_LOOP}')
+                    self.code.append(f'GET e')
+                elif code[0] == '/' or code[0] == '%':
+                    self.code.append(f'RST e')
+                    BEGIN_JUMP = len(self.code)
+                    self.code.append(f'JUMP to_change')
+                    LABEL_LOOP = len(self.code)
+                    self.code.append(f'SUB f')
+                    LABEL_BEGIN = len(self.code)
+                    self.code[BEGIN_JUMP] = self.code[BEGIN_JUMP].replace('to_change', str(LABEL_BEGIN))
+                    self.code.append(f'PUT c')
+                    self.code.append(f'GET d')
+                    self.code.append(f'SUB c')
+                    END_JUMP = len(self.code)
+                    self.code.append(f'JPOS to_change')
+                    self.code.append(f'GET d')
+                    self.code.append(f'PUT f')
+                    self.code.append(f'RST h')
+                    self.code.append(f'INC h')
+                    SHL_EXIT = len(self.code)
+                    self.code.append(f'GET c')
+                    self.code.append(f'SHL f')
+                    self.code.append(f'SUB f')
+                    JUMP_SHL_ENTER = len(self.code)
+                    self.code.append(f'JPOS to_change')
+                    self.code.append(f'SHR f')
+                    self.code.append(f'GET e')
+                    self.code.append(f'ADD h')
+                    self.code.append(f'PUT e')
+                    self.code.append(f'GET c')
+                    self.code.append(f'JUMP {LABEL_LOOP}')
+                    SHL_ENTER = len(self.code)
+                    self.code.append(f'SHL h')
+                    self.code[JUMP_SHL_ENTER] = self.code[JUMP_SHL_ENTER].replace('to_change', str(SHL_ENTER))
+                    self.code.append(f'JUMP {SHL_EXIT}')
+
+                    LABEL_END = len(self.code)
+                    self.code[END_JUMP] = self.code[END_JUMP].replace('to_change', str(LABEL_END))
+                    if code[0] == '/':
+                        self.code.append(f'GET e')
+                    else:
+                        self.code.append(f'GET c')
+
+
+
+
+                    
+
 
                 
     # return expression result

@@ -120,10 +120,13 @@ class MyParser(Parser):
         return [p[0]]
 
     # command -------------------------------------------------------
-    @_('REPEAT commands UNTIL condition',
-       'proc_call')
+    @_('proc_call')
     def command(self, p):
         pass
+
+    @_('REPEAT commands UNTIL condition')
+    def command(self, p):
+        return 'repeat', p.commands, p.condition
 
     @_('WHILE condition DO commands ENDWHILE')
     def command(self, p):
