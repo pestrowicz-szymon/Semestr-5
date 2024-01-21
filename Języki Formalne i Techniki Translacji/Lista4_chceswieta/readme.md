@@ -3,12 +3,12 @@ CODE_GENERATOR:
         read
         write 
         assign
-        expressions
         if
-    TODO:
-        procedure
         if else
         while
+    TODO:
+        expressions
+        procedure
         repeat
         conditions
         tables
