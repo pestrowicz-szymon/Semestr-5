@@ -2,25 +2,17 @@ from sly import Lexer
 
 
 class MyLexer(Lexer):
-    tokens = {PROCEDURE, PROGRAM, IS, IN, END,
-              IF, THEN, ELSE, ENDIF,
-              WHILE, DO, ENDWHILE,
-              REPEAT, UNTIL,
-              READ, WRITE,
-              ASSIGN,
-              EQ, NEQ, GT, LT, GE, LE,
-              PIDENTIFIER, NUM}
+    tokens = { # words that appear in alnguage spec
+        'PROCEDURE', 'PROGRAM', 'IS', 'IN', 'END', 'IF', 'THEN', 'ELSE', 'ENDIF', 'WHILE', 'DO', 'ENDWHILE',
+        'REPEAT', 'UNTIL', 'READ', 'WRITE', 'ASSIGN', 'EQ', 'NEQ', 'GT', 'LT', 'GE', 'LE', 'PIDENTIFIER', 'NUM'
+        }
 
     literals = {';', ',', '(', ')', '[', ']', 'T',
                 '+', '-', '*', '/', '%'}
 
     ignore = ' \t'
-
     ignore_comment = r'\#.*'
-
-    @_(r'\n+')
-    def ignore_newline(self, t):
-        self.lineno += t.value.count('\n')
+    ignore_newline = r'\n+'
 
     PROCEDURE = r'PROCEDURE'
     PROGRAM = r'PROGRAM'

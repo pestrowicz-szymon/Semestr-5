@@ -122,50 +122,23 @@ class MyParser(Parser):
     def expression(self, p):
         return ('val', p.value)
 
-    @_('value "+" value')
+    @_('value "+" value',
+       'value "-" value',
+       'value "*" value',
+       'value "/" value',
+       'value "%" value')
     def expression(self, p):
-        return ('+', p.value0, p.value1)
+        return (p[1], p.value0, p.value1)
 
-    @_('value "-" value')
-    def expression(self, p):
-        return ('-', p.value0, p.value1)
-
-    @_('value "*" value')
-    def expression(self, p):
-        return ('*', p.value0, p.value1)
-
-    @_('value "/" value')
-    def expression(self, p):
-        return ('/', p.value0, p.value1)
-
-    @_('value "%" value')
-    def expression(self, p):
-        return ('%', p.value0, p.value1)
-
-    @_('value EQ value')
+    @_('value EQ value',
+       'value NEQ value',
+       'value GT value',
+       'value LT value',
+       'value GE value',
+       'value LE value')
     def condition(self, p):
-        return ('eq', p.value0, p.value1)
-
-    @_('value NEQ value')
-    def condition(self, p):
-        return ('neq', p.value0, p.value1)
-
-    @_('value GT value')
-    def condition(self, p):
-        return ('gt', p.value0, p.value1)
-
-    @_('value LT value')
-    def condition(self, p):
-        return ('lt', p.value0, p.value1)
-
-    @_('value GE value')
-    def condition(self, p):
-        return ('ge', p.value0, p.value1)
-
-    @_('value LE value')
-    def condition(self, p):
-        return ('le', p.value0, p.value1)
-
+        return (p[1], p.value0, p.value1)
+    
     @_('NUM')
     def value(self, p):
         return p.NUM

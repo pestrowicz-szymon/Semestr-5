@@ -448,7 +448,7 @@ class Generator:
         operator = cond[0]
         num1 = cond[1]
         num2 = cond[2]
-        if operator == 'eq' or operator == 'neq':
+        if operator == '=' or operator == '!=':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [(Code('GET', 'd'))]
@@ -461,24 +461,24 @@ class Generator:
                 codes += [(Code('JPOS', label_false))]
             else:
                 codes += [(Code('JZERO', label_false))]
-        elif operator == 'gt':
+        elif operator == '>':
             codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
             # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
             codes += [Code('JZERO', label_false)]
-        elif operator == 'lt':
+        elif operator == '<':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
             # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
             codes += [Code('JZERO', label_false)]
-        elif operator == 'ge':
+        elif operator == '>=':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
             codes += [Code('JPOS', label_false)]
-        elif operator == 'le':
+        elif operator == '<=':
             codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
