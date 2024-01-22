@@ -436,46 +436,59 @@ class Generator:
 
     def evaluate_condition(self, cond, label_true, label_false, proc_name='main'):
         codes = []
-        print("XDDDDDDDDD", cond[0])
-        if cond[0] == '=':
-            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('PUT', 'd')]
+        num1 = cond[1]
+        num2 = cond[2]
+        operator = cond[0]
+        if operator == '=' or operator == '!=':
+            codes += self.prepare_value(num1, target_reg='d', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'd')]
             codes += [Code('SUB', 'c')]
-            codes += [Code('JPOS', label_false)]
+            codes += [Code('PUT', 'e')]
             codes += [Code('GET', 'c')]
             codes += [Code('SUB', 'd')]
-            codes += [Code('JPOS', label_false)]
-        elif cond[0] == '!=':
-            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('PUT', 'd')]
+            codes += [Code('ADD', 'e')]
+            if operator == '=':
+                codes += [Code('JPOS', label_false)]
+            else:
+                codes += [Code('JZERO', label_false)]
+        #if operator == '=':
+            #codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
+            #codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
+            #codes += [Code('PUT', 'd')]
+            #codes += [Code('SUB', 'c')]
+            #codes += [Code('JPOS', label_false)]
+            #codes += [Code('GET', 'c')]
+            #codes += [Code('SUB', 'd')]
+            #codes += [Code('JPOS', label_false)]
+        #elif operator == '!=':
+            #codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
+            #codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
+            #codes += [Code('PUT', 'd')]
+            #codes += [Code('SUB', 'c')]
+            #codes += [Code('JPOS', label_true)]
+            #codes += [Code('GET', 'c')]
+            #codes += [Code('SUB', 'd')]
+            #codes += [Code('JPOS', label_true)]
+            #codes += [Code('JUMP', label_false)]
+        elif operator == '>':
+            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
-            codes += [Code('JPOS', label_true)]
-            codes += [Code('GET', 'c')]
-            codes += [Code('SUB', 'd')]
-            codes += [Code('JPOS', label_true)]
-            codes += [Code('JUMP', label_false)]
-        elif cond[0] == '>':
-            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('SUB', 'c')]
-            # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
             codes += [Code('JZERO', label_false)]
-        elif cond[0] == '<':
-            codes += self.prepare_value(cond[1], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(cond[2], target_reg='a', temp_reg='b', proc_name=proc_name)
+        elif operator == '<':
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
-            # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
             codes += [Code('JZERO', label_false)]
-        elif cond[0] == '>=':
-            codes += self.prepare_value(cond[1], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(cond[2], target_reg='a', temp_reg='b', proc_name=proc_name)
+        elif operator == '>=':
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
             codes += [Code('JPOS', label_false)]
-        elif cond[0] == '<=':
-            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
+        elif operator == '<=':
+            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
             codes += [Code('JPOS', label_false)]
         return codes
