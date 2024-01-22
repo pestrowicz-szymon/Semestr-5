@@ -465,14 +465,14 @@ class Generator:
             codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
-            # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
-            codes += [Code('JZERO', label_false)]
+            codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
+            #codes += [Code('JZERO', label_false)]
         elif operator == '<':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
-            # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
-            codes += [Code('JZERO', label_false)]
+            codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
+            #codes += [Code('JZERO', label_false)]
         elif operator == '>=':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
