@@ -14,16 +14,16 @@ class Generator:
 
     def remove_labels(self, codes):
         labels = dict()
-        for i in range(len(codes)):
-            for label in codes[i].labels:
-                if label[1] == '+':
-                    labels[label] = i + 1
-                else:
-                    labels[label] = i
+
+        for i, code in enumerate(codes):
+            for label in code.labels:
+                labels[label] = i + 1 if label[1] == '+' else i
+
         for code in codes:
             code.labels = []
-            if code.arg is not None and str(code.arg)[0] == 'l':
-                code.arg = labels[code.arg]
+            if code.arg and str(code.arg).startswith('l'):
+                code.arg = labels.get(code.arg, code.arg)
+
 
     def generate_all(self, ast):
         proc_code = []
