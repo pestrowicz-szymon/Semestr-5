@@ -76,7 +76,6 @@ class SymbolTable:
         variable = self.variables[name]
         if not write and not variable.initialized:
             print(f'BŁĄD: zmienna \"{var_name}\" jest niezainicjalizowana')
-            exit(4)
         if write:
             variable.initialized = True
         return variable.address
