@@ -1,6 +1,5 @@
 from utils import *
 
-
 class Generator:
     def __init__(self):
         self.symbol_table = SymbolTable()
@@ -109,35 +108,29 @@ class Generator:
                 codes += [Code('STORE', 'b')]
             elif command[0] == 'if':
                 then_commands = self.generate_from_commands(command[2], proc_name)
-                label_true = self.labeler.get_label()
-                then_commands[0].labels += [label_true]
                 label_false = self.labeler.get_label(off_by_one=True)
                 then_commands[-1].labels += [label_false]
-                codes += self.evaluate_condition(command[1], label_true, label_false, proc_name)
+                codes += self.evaluate_condition(command[1], label_false, proc_name)
                 codes += then_commands
             elif command[0] == 'ifelse':
                 then_commands = self.generate_from_commands(command[2], proc_name)
                 else_commands = self.generate_from_commands(command[3], proc_name)
 
-                label_true = self.labeler.get_label()
                 label_false = self.labeler.get_label()
                 label_endif = self.labeler.get_label(off_by_one=True)
 
                 then_commands += [Code('JUMP', label_endif)]
-                then_commands[0].labels += [label_true]
 
                 else_commands[0].labels += [label_false]
                 else_commands[-1].labels += [label_endif]
 
-                codes += self.evaluate_condition(command[1], label_true, label_false, proc_name)
+                codes += self.evaluate_condition(command[1], label_false, proc_name)
                 codes += then_commands
                 codes += else_commands
             elif command[0] == 'while':
                 do_commands = self.generate_from_commands(command[2], proc_name)
-                label_true = self.labeler.get_label()
-                do_commands[0].labels += [label_true]
                 label_false = self.labeler.get_label(off_by_one=True)
-                cond_code = self.evaluate_condition(command[1], label_true, label_false, proc_name)
+                cond_code = self.evaluate_condition(command[1], label_false, proc_name)
                 label_loop = self.labeler.get_label()
                 cond_code[0].labels += [label_loop]
                 do_commands += [Code('JUMP', label_loop)]
@@ -146,11 +139,9 @@ class Generator:
                 codes += do_commands
             elif command[0] == 'repeat':
                 do_commands = self.generate_from_commands(command[1], proc_name)
-                label_true = self.labeler.get_label(off_by_one=True)
                 label_false = self.labeler.get_label()
                 do_commands[0].labels += [label_false]
-                cond_code = self.evaluate_condition(command[2], label_true, label_false, proc_name)
-                cond_code[-1].labels += [label_true]
+                cond_code = self.evaluate_condition(command[2], label_false, proc_name)
                 codes += do_commands
                 codes += cond_code
             elif command[0] == 'proc_call':
@@ -443,7 +434,7 @@ class Generator:
 
         return codes
 
-    def evaluate_condition(self, cond, label_true, label_false, proc_name='main'):
+    def evaluate_condition(self, cond, label_false, proc_name='main'):
         codes = []
         operator = cond[0]
         num1 = cond[1]
@@ -462,25 +453,27 @@ class Generator:
             else:
                 codes += [(Code('JZERO', label_false))]
         elif operator == '>':
-            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('SUB', 'c')]
-            codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
-            #codes += [Code('JZERO', label_false)]
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'c')]
+            codes += [Code('SUB', 'd')]
+            codes += [Code('JZERO', label_false)]
         elif operator == '<':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'd')]
             codes += [Code('SUB', 'c')]
-            codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
-            #codes += [Code('JZERO', label_false)]
+            codes += [Code('JZERO', label_false)]
         elif operator == '>=':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'd')]
             codes += [Code('SUB', 'c')]
             codes += [Code('JPOS', label_false)]
         elif operator == '<=':
-            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('SUB', 'c')]
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'c')]
+            codes += [Code('SUB', 'd')]
             codes += [Code('JPOS', label_false)]
         return codes
