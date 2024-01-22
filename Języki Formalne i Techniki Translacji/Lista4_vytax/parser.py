@@ -41,11 +41,11 @@ class MyParser(Parser):
         return [p[0]]
 
     # command -------------------------------------------------------
-    @_('proc_call ";"')
+    @_('proc_call')
     def command(self, p):
         return p.proc_call
 
-    @_('REPEAT commands UNTIL condition ";"')
+    @_('REPEAT commands UNTIL condition')
     def command(self, p):
         return ('repeat', p.commands, p.condition)
 
@@ -61,15 +61,15 @@ class MyParser(Parser):
     def command(self, p):
         return ('if', p.condition, p.commands)
 
-    @_('WRITE value ";"')
+    @_('WRITE value')
     def command(self, p):
         return ('write', p.value)
 
-    @_('READ identifier ";"')
+    @_('READ identifier')
     def command(self, p):
         return ('read', p.identifier)
     
-    @_('identifier ASS expression ";"')
+    @_('identifier ASS expression')
     def command(self, p):
         return ('assign', p.identifier, p.expression)
 

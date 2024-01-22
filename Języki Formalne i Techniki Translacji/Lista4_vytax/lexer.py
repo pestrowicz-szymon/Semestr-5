@@ -29,12 +29,10 @@ class MyLexer(Lexer):
         'RBRACK', # ]
     }
 
-    literals = {';', ',', '(', ')', '[', ']', 'T',
-                '+', '-', '*', '/', '%'}
-
     ignore = ' \t'
     ignore_comment = r'\#(.*?(\\\n)*)+\n'
     ignore_newline = r'\n+'
+    ignore_semicolon = r';'
 
     PROCEDURE = r'PROCEDURE'
     IS = r'IS'

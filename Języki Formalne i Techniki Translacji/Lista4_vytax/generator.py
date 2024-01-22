@@ -8,7 +8,7 @@ class Generator:
 
     def generate_const(self, num, reg='a'):
         codes = [Code('RST', reg)]
-        for i in range(int(num)):
+        for i in range(num):
             codes += [Code('INC', reg)]
         return codes
 
@@ -207,9 +207,9 @@ class Generator:
 
         codes = []
         if type(identifier) is tuple:
-            if type(identifier[1]) is int:  # pidentifier[num]
+            if identifier[1].isdigit():  # pidentifier[num]
                 if self.symbol_table.is_array(identifier[0], proc_name):
-                    adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, proc_name)
+                    adr = self.symbol_table.get_array_element_adr_const(identifier[0], int(identifier[1]), write, proc_name)
                     codes += self.generate_const(adr, target_reg)
                 else:
                     adr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
@@ -283,8 +283,8 @@ class Generator:
     def prepare_identifier_address_main(self, identifier, target_reg='a', temp_reg='b', write=True):
         codes = []
         if type(identifier) is tuple:
-            if type(identifier[1]) is int:  # pidentifier[num]
-                adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, 'main')
+            if identifier[1].isdigit():  # pidentifier[num]
+                adr = self.symbol_table.get_array_element_adr_const(identifier[0], int(identifier[1]), write, 'main')
                 codes += self.generate_const(adr, target_reg)
             else:  # pidentifier[pidentifier]
                 array_addr = self.symbol_table.get_array_address(identifier[0], 'main')
@@ -304,15 +304,15 @@ class Generator:
         codes = []
         if expr[0] == 'val':
             codes += self.prepare_value(expr[1], target_reg='a', temp_reg='b', proc_name=proc_name)
-        elif expr[0] == 'ADD':
+        elif expr[0] == '+':
             codes += self.prepare_value(expr[1], target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(expr[2], target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('ADD', 'c')]
-        elif expr[0] == 'SUB':
+        elif expr[0] == '-':
             codes += self.prepare_value(expr[2], target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(expr[1], target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
-        elif expr[0] == 'MUL':
+        elif expr[0] == '*':
             label_skip = self.labeler.get_label(off_by_one=True)
             codes += self.prepare_value(expr[2], target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
@@ -357,7 +357,7 @@ class Generator:
                 # return result
                 Code('GET', 'd', [label_skip]),
             ]
-        elif expr[0] == 'DIV' or expr[0] == 'MOD':
+        elif expr[0] == '/' or expr[0] == '%':
             label_skip = self.labeler.get_label(off_by_one=True)
             codes += self.prepare_value(expr[2], target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
@@ -427,7 +427,7 @@ class Generator:
             ]
 
             # end (return result)
-            if expr[0] == 'DIV':
+            if expr[0] == '/':
                 codes += [Code('GET', 'e', [label_end, label_skip])]
             else:
                 codes += [Code('GET', 'f', [label_end, label_skip])]
@@ -436,6 +436,7 @@ class Generator:
 
     def evaluate_condition(self, cond, label_true, label_false, proc_name='main'):
         codes = []
+        print("XDDDDDDDDD", cond[0])
         if cond[0] == '=':
             codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
@@ -456,7 +457,6 @@ class Generator:
             codes += [Code('JPOS', label_true)]
             codes += [Code('JUMP', label_false)]
         elif cond[0] == '>':
-            print('cond2: ', cond[2], 'cond1: ', cond[1])
             codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
