@@ -1,77 +1,59 @@
 from sly import Lexer
 
+
 class MyLexer(Lexer):
-    tokens = {
-        # words that appear in language spec
-        'PROCEDURE', 'IS', 'IN', 'ENDIF', 'END', 'PROGRAM', 'IF', 'THEN', 'ELSE', 'WHILE', 'DO', 'ENDWHILE', 
-        'REPEAT', 'UNTIL', 'READ', 'WRITE', 'PIDENTIFIER', 'T', 'NUM', # number 
-        'PIDENTIFIER', # name of function/table/variable
-        # expressions 
-        'ADD', # addition
-        'SUB', # substraction
-        'MUL', # multiplication
-        'DIV', # division
-        'MOD', # modulo division
-        'ASS', # assign value to pidentifier
-        'COMA',# ,
-        # conditions
-        'EQ',  # is equal
-        'NEQ', # is not equal
-        'GT',  # is greater than
-        'LT',  # is less than
-        'GEQ', # is greater or equal
-        'LEQ', # is less or equal
-        # rest
-        #'SEMICOLON', # srednik
-        'LPAREN', # (
-        'RPAREN', # )
-        'LBRACK', # [
-        'RBRACK', # ]
-    }
+    tokens = {PROCEDURE, PROGRAM, IS, IN, END,
+              IF, THEN, ELSE, ENDIF,
+              WHILE, DO, ENDWHILE,
+              REPEAT, UNTIL,
+              READ, WRITE,
+              ASSIGN,
+              EQ, NEQ, GT, LT, GE, LE,
+              PIDENTIFIER, NUM}
+
+    literals = {';', ',', '(', ')', '[', ']', 'T',
+                '+', '-', '*', '/', '%'}
 
     ignore = ' \t'
-    ignore_comment = r'\#(.*?(\\\n)*)+\n'
-    ignore_newline = r'\n+'
-    ignore_semicolon = r';'
+
+    ignore_comment = r'\#.*'
+
+    @_(r'\n+')
+    def ignore_newline(self, t):
+        self.lineno += t.value.count('\n')
 
     PROCEDURE = r'PROCEDURE'
+    PROGRAM = r'PROGRAM'
     IS = r'IS'
     IN = r'IN'
-    ENDIF = r'ENDIF'
-    PROGRAM = r'PROGRAM'
     IF = r'IF'
     THEN = r'THEN'
     ELSE = r'ELSE'
+    ENDIF = r'ENDIF'
     WHILE = r'WHILE'
     DO = r'DO'
     ENDWHILE = r'ENDWHILE'
+    END = r'END'
     REPEAT = r'REPEAT'
     UNTIL = r'UNTIL'
     READ = r'READ'
     WRITE = r'WRITE'
-    T = r'T'
-    END = r'END'
 
-    ADD = r'\+'
-    SUB = r'\-'
-    MUL = r'\*'
-    DIV = r'/'
-    MOD = r'%'
-    ASS = r':='
-    COMA =r','
-
+    ASSIGN = r':='
     NEQ = r'!='
-    GEQ = r'>='
-    LEQ = r'<='
+    GE = r'>='
+    LE = r'<='
+    EQ = r'='
     GT = r'>'
     LT = r'<'
-    EQ = r'='
 
-    #SEMICOLON = r';'
-    LPAREN = r'\('
-    RPAREN = r'\)'
-    LBRACK = r'\['
-    RBRACK = r'\]'
-
-    NUM = r'\d+'
     PIDENTIFIER = r'[_a-z]+'
+
+    @_(r'[0-9]+')
+    def NUM(self, t):
+        t.value = int(t.value)
+        return t
+
+    def error(self, t):
+        print(f'BŁĄD: linia {self.lineno}, nieprawidłowy symbol \"{t.value[0]}\"')
+        exit(2)

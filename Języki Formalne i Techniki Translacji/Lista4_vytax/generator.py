@@ -8,22 +8,31 @@ class Generator:
 
     def generate_const(self, num, reg='a'):
         codes = [Code('RST', reg)]
-        for i in range(num):
+        if num == 0:
+            return codes
+        if num == 1:
+            return codes + [Code('INC', reg)]
+        s = str(bin(num))[2:]
+        for char in s[:-1]:
+            if char == '1':
+                codes += [Code('INC', reg)]
+            codes += [Code('SHL', reg)]
+        if s[len(s) - 1] == '1':
             codes += [Code('INC', reg)]
         return codes
 
     def remove_labels(self, codes):
         labels = dict()
-
-        for i, code in enumerate(codes):
-            for label in code.labels:
-                labels[label] = i + 1 if label[1] == '+' else i
-
+        for i in range(len(codes)):
+            for label in codes[i].labels:
+                if label[1] == '+':
+                    labels[label] = i + 1
+                else:
+                    labels[label] = i
         for code in codes:
             code.labels = []
-            if code.arg and str(code.arg).startswith('l'):
-                code.arg = labels.get(code.arg, code.arg)
-
+            if code.arg is not None and str(code.arg)[0] == 'l':
+                code.arg = labels[code.arg]
 
     def generate_all(self, ast):
         proc_code = []
@@ -192,8 +201,8 @@ class Generator:
 
     def prepare_value(self, val, target_reg='a', temp_reg='b', proc_name='main'):
         codes = []
-        if val.isdigit():
-            codes += self.generate_const(int(val), target_reg)
+        if type(val) is int:
+            codes += self.generate_const(val, target_reg)
         else:
             codes += self.prepare_identifier_address(val, target_reg, temp_reg, False, proc_name)
             codes += [Code('LOAD', target_reg)]
@@ -207,9 +216,9 @@ class Generator:
 
         codes = []
         if type(identifier) is tuple:
-            if identifier[1].isdigit():  # pidentifier[num]
+            if type(identifier[1]) is int:  # pidentifier[num]
                 if self.symbol_table.is_array(identifier[0], proc_name):
-                    adr = self.symbol_table.get_array_element_adr_const(identifier[0], int(identifier[1]), write, proc_name)
+                    adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, proc_name)
                     codes += self.generate_const(adr, target_reg)
                 else:
                     adr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
@@ -283,8 +292,8 @@ class Generator:
     def prepare_identifier_address_main(self, identifier, target_reg='a', temp_reg='b', write=True):
         codes = []
         if type(identifier) is tuple:
-            if identifier[1].isdigit():  # pidentifier[num]
-                adr = self.symbol_table.get_array_element_adr_const(identifier[0], int(identifier[1]), write, 'main')
+            if type(identifier[1]) is int:  # pidentifier[num]
+                adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, 'main')
                 codes += self.generate_const(adr, target_reg)
             else:  # pidentifier[pidentifier]
                 array_addr = self.symbol_table.get_array_address(identifier[0], 'main')
@@ -436,59 +445,45 @@ class Generator:
 
     def evaluate_condition(self, cond, label_true, label_false, proc_name='main'):
         codes = []
-        num1 = cond[1]
-        num2 = cond[2]
-        operator = cond[0]
-        if operator == '=' or operator == '!=':
-            codes += self.prepare_value(num1, target_reg='d', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += [Code('GET', 'd')]
-            codes += [Code('SUB', 'c')]
-            codes += [Code('PUT', 'e')]
-            codes += [Code('GET', 'c')]
-            codes += [Code('SUB', 'd')]
-            codes += [Code('ADD', 'e')]
-            if operator == '=':
-                codes += [Code('JPOS', label_false)]
-            else:
-                codes += [Code('JZERO', label_false)]
-        #if operator == '=':
-            #codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
-            #codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
-            #codes += [Code('PUT', 'd')]
-            #codes += [Code('SUB', 'c')]
-            #codes += [Code('JPOS', label_false)]
-            #codes += [Code('GET', 'c')]
-            #codes += [Code('SUB', 'd')]
-            #codes += [Code('JPOS', label_false)]
-        #elif operator == '!=':
-            #codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
-            #codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
-            #codes += [Code('PUT', 'd')]
-            #codes += [Code('SUB', 'c')]
-            #codes += [Code('JPOS', label_true)]
-            #codes += [Code('GET', 'c')]
-            #codes += [Code('SUB', 'd')]
-            #codes += [Code('JPOS', label_true)]
-            #codes += [Code('JUMP', label_false)]
-        elif operator == '>':
-            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('SUB', 'c')]
-            codes += [Code('JZERO', label_false)]
-        elif operator == '<':
-            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('SUB', 'c')]
-            codes += [Code('JZERO', label_false)]
-        elif operator == '>=':
-            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num2, target_reg='a', temp_reg='b', proc_name=proc_name)
+        if cond[0] == 'eq':
+            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += [Code('PUT', 'd')]
             codes += [Code('SUB', 'c')]
             codes += [Code('JPOS', label_false)]
-        elif operator == '<=':
-            codes += self.prepare_value(num2, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'c')]
+            codes += [Code('SUB', 'd')]
+            codes += [Code('JPOS', label_false)]
+        elif cond[0] == 'neq':
+            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += [Code('PUT', 'd')]
+            codes += [Code('SUB', 'c')]
+            codes += [Code('JPOS', label_true)]
+            codes += [Code('GET', 'c')]
+            codes += [Code('SUB', 'd')]
+            codes += [Code('JPOS', label_true)]
+            codes += [Code('JUMP', label_false)]
+        elif cond[0] == 'gt':
+            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += [Code('SUB', 'c')]
+            # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
+            codes += [Code('JZERO', label_false)]
+        elif cond[0] == 'lt':
+            codes += self.prepare_value(cond[1], target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(cond[2], target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += [Code('SUB', 'c')]
+            # codes += [Code('JPOS', label_true), Code('JUMP', label_false)]
+            codes += [Code('JZERO', label_false)]
+        elif cond[0] == 'ge':
+            codes += self.prepare_value(cond[1], target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(cond[2], target_reg='a', temp_reg='b', proc_name=proc_name)
+            codes += [Code('SUB', 'c')]
+            codes += [Code('JPOS', label_false)]
+        elif cond[0] == 'le':
+            codes += self.prepare_value(cond[2], target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(cond[1], target_reg='a', temp_reg='b', proc_name=proc_name)
             codes += [Code('SUB', 'c')]
             codes += [Code('JPOS', label_false)]
         return codes
