@@ -1,4 +1,9 @@
-from utils import *
+from my_array import Array
+from my_code import Code
+from my_labeler import Labeler
+from my_procedure_data import ProcedureData
+from my_symbol_table import SymbolTable
+from my_variable import Variable
 
 class Generator:
     def __init__(self):
@@ -302,22 +307,28 @@ class Generator:
 
     def calculate_expression(self, expr, proc_name='main'):
         codes = []
-        if expr[0] == 'val':
-            codes += self.prepare_value(expr[1], target_reg='a', temp_reg='b', proc_name=proc_name)
-        elif expr[0] == '+':
-            codes += self.prepare_value(expr[1], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(expr[2], target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('ADD', 'c')]
-        elif expr[0] == '-':
-            codes += self.prepare_value(expr[2], target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(expr[1], target_reg='a', temp_reg='b', proc_name=proc_name)
-            codes += [Code('SUB', 'c')]
-        elif expr[0] == '*':
+        operator = expr[0]
+        num1 = expr[1]
+        if operator == 'val':
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
+        else:
+            num2 = expr[2]
+        if operator == '+':
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'c')]
+            codes += [Code('ADD', 'd')]
+        elif operator == '-':
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
+            codes += [Code('GET', 'c')]
+            codes += [Code('SUB', 'd')]
+        elif operator == '*':
             label_skip = self.labeler.get_label(off_by_one=True)
-            codes += self.prepare_value(expr[2], target_reg='a', temp_reg='c', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
                       Code('PUT', 'b')]
-            codes += self.prepare_value(expr[1], target_reg='a', temp_reg='c', proc_name=proc_name)
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
                       Code('PUT', 'c')]
 
@@ -357,12 +368,14 @@ class Generator:
                 # return result
                 Code('GET', 'd', [label_skip]),
             ]
-        elif expr[0] == '/' or expr[0] == '%':
+            #print('CHUj', label_skip)
+            #print('xDDDDd', [label_skip])
+        elif operator == '/' or operator == '%':
             label_skip = self.labeler.get_label(off_by_one=True)
-            codes += self.prepare_value(expr[2], target_reg='a', temp_reg='c', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
                       Code('PUT', 'b')]
-            codes += self.prepare_value(expr[1], target_reg='a', temp_reg='c', proc_name=proc_name)
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip)]
 
             label_begin = self.labeler.get_label()
@@ -427,7 +440,7 @@ class Generator:
             ]
 
             # end (return result)
-            if expr[0] == '/':
+            if operator == '/':
                 codes += [Code('GET', 'e', [label_end, label_skip])]
             else:
                 codes += [Code('GET', 'f', [label_end, label_skip])]

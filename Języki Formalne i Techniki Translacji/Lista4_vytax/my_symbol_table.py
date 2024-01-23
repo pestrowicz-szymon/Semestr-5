@@ -1,36 +1,3 @@
-class Code:
-    def __init__(self, name, arg=None, labels=None):
-        if labels is None:
-            labels = []
-        self.name = name
-        self.arg = arg
-        self.labels = labels
-
-    def __str__(self):
-        s = ''
-        if len(self.labels) > 0:
-            for label in self.labels:
-                s += f'{label} '
-            s += ': '
-        s += self.name
-        if self.arg is not None:
-            s += f' {self.arg}'
-        return s
-
-
-class Labeler:
-    def __init__(self):
-        self.label_number = 0
-
-    def get_label(self, off_by_one=False):
-        self.label_number += 1
-        s = 'l'
-        if off_by_one:
-            s += '+'
-        s += f'{self.label_number}'
-        return s
-
-
 class SymbolTable:
     def __init__(self):
         self.memory_offset = 0
@@ -152,25 +119,3 @@ class SymbolTable:
                 if arg == param_name:
                     return True
         return False
-
-
-class Variable:
-    def __init__(self, name):
-        self.name = name
-        self.address = 0
-        self.initialized = False
-
-
-class Array:
-    def __init__(self, name, size):
-        self.name = name
-        self.size = size
-        self.address = 0
-        self.initialized = [False for _ in range(size)]
-
-
-class ProcedureData:
-    def __init__(self, name, args):
-        self.name = name
-        self.address = 0
-        self.args = args
