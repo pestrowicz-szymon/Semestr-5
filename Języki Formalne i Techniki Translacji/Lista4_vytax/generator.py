@@ -202,103 +202,98 @@ class Generator:
 
     def prepare_identifier_address(self, identifier, target_reg='a', temp_reg='b', write=True, proc_name='main'):
         if proc_name == 'main':
-            return self.prepare_identifier_address_main(identifier, target_reg, temp_reg, write)
-
-        codes = []
-        if type(identifier) is tuple:
-            if type(identifier[1]) is int:  # pidentifier[num]
-                if self.symbol_table.is_array(identifier[0], proc_name):
-                    adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, proc_name)
+            codes = []
+            if type(identifier) is tuple:
+                if type(identifier[1]) is int:  # pidentifier[num]
+                    adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, 'main')
                     codes += self.generate_value(adr, target_reg)
-                else:
-                    adr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
-                    codes += self.generate_value(adr, temp_reg)
-                    codes += [Code('LOAD', temp_reg)]
-                    codes += self.generate_value(identifier[1], temp_reg)
-                    codes += [Code('ADD', temp_reg)]
-                    if target_reg != 'a':
-                        codes += [Code('PUT', target_reg)]
-            else:  # pidentifier[pidentifier]
-                if self.symbol_table.is_array(identifier[0], proc_name) and self.symbol_table.is_variable(identifier[1], proc_name):
-                    # variable[variable]
-                    array_addr = self.symbol_table.get_array_address(identifier[0], proc_name)
-                    index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, proc_name)
+                else:  # pidentifier[pidentifier]
+                    array_addr = self.symbol_table.get_array_address(identifier[0], 'main')
+                    index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, 'main')
                     codes += self.generate_value(index_var_addr, temp_reg)
                     codes += [Code('LOAD', temp_reg)]
                     codes += self.generate_value(array_addr, temp_reg)
                     codes += [Code('ADD', temp_reg)]
                     if target_reg != 'a':
                         codes += [Code('PUT', target_reg)]
-                elif self.symbol_table.is_array(identifier[0], proc_name) and (not self.symbol_table.is_variable(identifier[1], proc_name)):
-                    # variable[parameter]
-                    array_addr = self.symbol_table.get_array_address(identifier[0], proc_name)
-                    index_var_addr = self.symbol_table.get_procedure_parameter_address(identifier[1], proc_name)
-                    codes += self.generate_value(index_var_addr, temp_reg)
-                    codes += [Code('LOAD', temp_reg)]
-                    codes += [Code('LOAD', 'a')]
-                    codes += self.generate_value(array_addr, temp_reg)
-                    codes += [Code('ADD', temp_reg)]
-                    if target_reg != 'a':
-                        codes += [Code('PUT', target_reg)]
-                elif (not self.symbol_table.is_array(identifier[0], proc_name)) and self.symbol_table.is_variable(identifier[1], proc_name):
-                    # parameter[variable]
-                    array_addr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
-                    index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, proc_name)
-                    codes += self.generate_value(index_var_addr, temp_reg)
-                    codes += [Code('LOAD', temp_reg)]
-                    codes += [Code('PUT', temp_reg)]
-                    codes += self.generate_value(array_addr, target_reg)
-                    codes += [Code('LOAD', target_reg)]
-                    codes += [Code('ADD', temp_reg)]
-                    if target_reg != 'a':
-                        codes += [Code('PUT', target_reg)]
-                else:
-                    # parameter[parameter]
-                    array_addr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
-                    index_var_addr = self.symbol_table.get_procedure_parameter_address(identifier[1], proc_name)
-                    codes += self.generate_value(index_var_addr, temp_reg)
-                    codes += [Code('LOAD', temp_reg)]
-                    codes += [Code('LOAD', 'a')]
-                    codes += [Code('PUT', temp_reg)]
-                    codes += self.generate_value(array_addr, target_reg)
-                    codes += [Code('LOAD', target_reg)]
-                    codes += [Code('ADD', temp_reg)]
-                    if target_reg != 'a':
-                        codes += [Code('PUT', target_reg)]
-
-        else:  # pidentifier
-            if self.symbol_table.is_variable(identifier, proc_name):
-                var_addr = self.symbol_table.get_variable_address(identifier, write, proc_name)
+            else:  # pidentifier
+                var_addr = self.symbol_table.get_variable_address(identifier, write, 'main')
                 codes += self.generate_value(var_addr, target_reg)
-            else:
-                var_addr = self.symbol_table.get_procedure_parameter_address(identifier, proc_name)
-                codes += self.generate_value(var_addr, temp_reg)
-                codes += [Code('LOAD', temp_reg)]
-                if target_reg != 'a':
-                    codes += [Code('PUT', target_reg)]
-
-        return codes
-
-    def prepare_identifier_address_main(self, identifier, target_reg='a', temp_reg='b', write=True):
-        codes = []
-        if type(identifier) is tuple:
-            if type(identifier[1]) is int:  # pidentifier[num]
-                adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, 'main')
-                codes += self.generate_value(adr, target_reg)
-            else:  # pidentifier[pidentifier]
-                array_addr = self.symbol_table.get_array_address(identifier[0], 'main')
-                index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, 'main')
-                codes += self.generate_value(index_var_addr, temp_reg)
-                codes += [Code('LOAD', temp_reg)]
-                codes += self.generate_value(array_addr, temp_reg)
-                codes += [Code('ADD', temp_reg)]
-                if target_reg != 'a':
-                    codes += [Code('PUT', target_reg)]
-        else:  # pidentifier
-            var_addr = self.symbol_table.get_variable_address(identifier, write, 'main')
-            codes += self.generate_value(var_addr, target_reg)
-        return codes
-
+            return codes
+        else:
+            codes = []
+            if type(identifier) is tuple:
+                if type(identifier[1]) is int:  # pidentifier[num]
+                    if self.symbol_table.is_array(identifier[0], proc_name):
+                        adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, proc_name)
+                        codes += self.generate_value(adr, target_reg)
+                    else:
+                        adr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
+                        codes += self.generate_value(adr, temp_reg)
+                        codes += [Code('LOAD', temp_reg)]
+                        codes += self.generate_value(identifier[1], temp_reg)
+                        codes += [Code('ADD', temp_reg)]
+                        if target_reg != 'a':
+                            codes += [Code('PUT', target_reg)]
+                else:  # pidentifier[pidentifier]
+                    if self.symbol_table.is_array(identifier[0], proc_name) and self.symbol_table.is_variable(identifier[1], proc_name):
+                        # variable[variable]
+                        array_addr = self.symbol_table.get_array_address(identifier[0], proc_name)
+                        index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, proc_name)
+                        codes += self.generate_value(index_var_addr, temp_reg)
+                        codes += [Code('LOAD', temp_reg)]
+                        codes += self.generate_value(array_addr, temp_reg)
+                        codes += [Code('ADD', temp_reg)]
+                        if target_reg != 'a':
+                            codes += [Code('PUT', target_reg)]
+                    elif self.symbol_table.is_array(identifier[0], proc_name) and (not self.symbol_table.is_variable(identifier[1], proc_name)):
+                        # variable[parameter]
+                        array_addr = self.symbol_table.get_array_address(identifier[0], proc_name)
+                        index_var_addr = self.symbol_table.get_procedure_parameter_address(identifier[1], proc_name)
+                        codes += self.generate_value(index_var_addr, temp_reg)
+                        codes += [Code('LOAD', temp_reg)]
+                        codes += [Code('LOAD', 'a')]
+                        codes += self.generate_value(array_addr, temp_reg)
+                        codes += [Code('ADD', temp_reg)]
+                        if target_reg != 'a':
+                            codes += [Code('PUT', target_reg)]
+                    elif (not self.symbol_table.is_array(identifier[0], proc_name)) and self.symbol_table.is_variable(identifier[1], proc_name):
+                        # parameter[variable]
+                        array_addr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
+                        index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, proc_name)
+                        codes += self.generate_value(index_var_addr, temp_reg)
+                        codes += [Code('LOAD', temp_reg)]
+                        codes += [Code('PUT', temp_reg)]
+                        codes += self.generate_value(array_addr, target_reg)
+                        codes += [Code('LOAD', target_reg)]
+                        codes += [Code('ADD', temp_reg)]
+                        if target_reg != 'a':
+                            codes += [Code('PUT', target_reg)]
+                    else:
+                        # parameter[parameter]
+                        array_addr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
+                        index_var_addr = self.symbol_table.get_procedure_parameter_address(identifier[1], proc_name)
+                        codes += self.generate_value(index_var_addr, temp_reg)
+                        codes += [Code('LOAD', temp_reg)]
+                        codes += [Code('LOAD', 'a')]
+                        codes += [Code('PUT', temp_reg)]
+                        codes += self.generate_value(array_addr, target_reg)
+                        codes += [Code('LOAD', target_reg)]
+                        codes += [Code('ADD', temp_reg)]
+                        if target_reg != 'a':
+                            codes += [Code('PUT', target_reg)]
+            else:  # pidentifier
+                if self.symbol_table.is_variable(identifier, proc_name):
+                    var_addr = self.symbol_table.get_variable_address(identifier, write, proc_name)
+                    codes += self.generate_value(var_addr, target_reg)
+                else:
+                    var_addr = self.symbol_table.get_procedure_parameter_address(identifier, proc_name)
+                    codes += self.generate_value(var_addr, temp_reg)
+                    codes += [Code('LOAD', temp_reg)]
+                    if target_reg != 'a':
+                        codes += [Code('PUT', target_reg)]
+            return codes
+            
     def calculate_expression(self, expr, proc_name='main'):
         codes = []
         operator = expr[0]
