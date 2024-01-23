@@ -37,8 +37,7 @@ class SymbolTable:
     def get_variable_address(self, var_name, write, func_name='main'):
         name = f'{func_name}:{var_name}'
         if name not in self.variables:
-            #raise Exception(f'BŁĄD: brak zmiennej o nazwie \"{name}\"')
-            print(f'BŁĄD: brak zmiennej o nazwie \"{name}\"')
+            print(f'BŁĄD: brak zmiennej o nazwie \"{var_name}\" w funkcji \"{func_name}\"')
             exit(4)
         variable = self.variables[name]
         if not write and not variable.initialized:
