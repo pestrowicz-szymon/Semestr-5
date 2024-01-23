@@ -10,7 +10,7 @@ class Generator:
         self.symbol_table = SymbolTable()
         self.labeler = Labeler()
 
-    def generate_const(self, num, reg='a'):
+    def generate_value(self, num, reg='a'):
         codes = [Code('RST', reg)]
         if num == 0:
             return codes
@@ -25,7 +25,7 @@ class Generator:
             codes += [Code('INC', reg)]
         return codes
 
-    def remove_labels(self, codes):
+    def remove_jump_labels(self, codes):
         labels = dict()
         for i in range(len(codes)):
             for label in codes[i].labels:
@@ -38,19 +38,19 @@ class Generator:
             if code.arg is not None and str(code.arg)[0] == 'l':
                 code.arg = labels[code.arg]
 
-    def generate_all(self, ast):
+    def compile_all(self, ast):
         proc_code = []
         for procedure in ast[1]:
-            proc_code += self.generate_procedure(procedure)
+            proc_code += self.compile_procedure(procedure)
 
-        codes = self.generate_main(ast[2])
+        codes = self.compile_main(ast[2])
         codes += [Code('HALT')]
         codes += proc_code
 
-        self.remove_labels(codes)
+        self.remove_jump_labels(codes)
         return codes
 
-    def generate_procedure(self, ast):
+    def compile_procedure(self, ast):
         proc_head = ast[1]
         proc_name = proc_head[1]
         self.symbol_table.put_procedure(ProcedureData(proc_name, proc_head[2]))
@@ -65,13 +65,13 @@ class Generator:
         codes[0].labels += [f'l_PROC_{proc_name}']
 
         return_addr = self.symbol_table.get_procedure_parameter_address('RET', proc_name)
-        codes += self.generate_const(return_addr, 'a')
+        codes += self.generate_value(return_addr, 'a')
         codes += [Code('LOAD', 'a')]
         codes += [Code('JUMPR', 'a')]
         
         return codes
 
-    def generate_main(self, ast):
+    def compile_main(self, ast):
         var_declarations = ast[1]
         for var in var_declarations:
             if type(var) is tuple:
@@ -114,7 +114,7 @@ class Generator:
                 then_commands = self.generate_from_commands(command[2], proc_name)
                 label_false = self.labeler.get_label(off_by_one=True)
                 then_commands[-1].labels += [label_false]
-                codes += self.evaluate_condition(command[1], label_false, proc_name)
+                codes += self.check_condition(command[1], label_false, proc_name)
                 codes += then_commands
             elif command[0] == 'ifelse':
                 then_commands = self.generate_from_commands(command[2], proc_name)
@@ -128,13 +128,13 @@ class Generator:
                 else_commands[0].labels += [label_false]
                 else_commands[-1].labels += [label_endif]
 
-                codes += self.evaluate_condition(command[1], label_false, proc_name)
+                codes += self.check_condition(command[1], label_false, proc_name)
                 codes += then_commands
                 codes += else_commands
             elif command[0] == 'while':
                 do_commands = self.generate_from_commands(command[2], proc_name)
                 label_false = self.labeler.get_label(off_by_one=True)
-                cond_code = self.evaluate_condition(command[1], label_false, proc_name)
+                cond_code = self.check_condition(command[1], label_false, proc_name)
                 label_loop = self.labeler.get_label()
                 cond_code[0].labels += [label_loop]
                 do_commands += [Code('JUMP', label_loop)]
@@ -145,7 +145,7 @@ class Generator:
                 do_commands = self.generate_from_commands(command[1], proc_name)
                 label_false = self.labeler.get_label()
                 do_commands[0].labels += [label_false]
-                cond_code = self.evaluate_condition(command[2], label_false, proc_name)
+                cond_code = self.check_condition(command[2], label_false, proc_name)
                 codes += do_commands
                 codes += cond_code
             elif command[0] == 'proc_call':
@@ -153,7 +153,7 @@ class Generator:
                 if len(procedure.args) != len(command[2]):
                     print(f'BŁĄD: procedura \"{command[1]}\" wymaga {len(procedure.args)} argumentów, a podano {len(command[2])}')
                 argv_pointer = procedure.address
-                codes += self.generate_const(argv_pointer, 'a')
+                codes += self.generate_value(argv_pointer, 'a')
                 codes += [Code('PUT', 'b')]
                 codes += [Code('PUT', 'c')]
                 for i in range(len(procedure.args)):
@@ -171,7 +171,7 @@ class Generator:
                         else:
                             addr = self.symbol_table.get_procedure_parameter_address(command[2][i], proc_name)
                             is_param = True
-                    codes += self.generate_const(addr, 'a')
+                    codes += self.generate_value(addr, 'a')
                     if is_param:
                         codes += [Code('LOAD', 'a')]
                     codes += [Code('STORE', 'b')]
@@ -192,7 +192,7 @@ class Generator:
     def prepare_value(self, val, target_reg='a', temp_reg='b', proc_name='main'):
         codes = []
         if type(val) is int:
-            codes += self.generate_const(val, target_reg)
+            codes += self.generate_value(val, target_reg)
         else:
             codes += self.prepare_identifier_address(val, target_reg, temp_reg, False, proc_name)
             codes += [Code('LOAD', target_reg)]
@@ -209,12 +209,12 @@ class Generator:
             if type(identifier[1]) is int:  # pidentifier[num]
                 if self.symbol_table.is_array(identifier[0], proc_name):
                     adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, proc_name)
-                    codes += self.generate_const(adr, target_reg)
+                    codes += self.generate_value(adr, target_reg)
                 else:
                     adr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
-                    codes += self.generate_const(adr, temp_reg)
+                    codes += self.generate_value(adr, temp_reg)
                     codes += [Code('LOAD', temp_reg)]
-                    codes += self.generate_const(identifier[1], temp_reg)
+                    codes += self.generate_value(identifier[1], temp_reg)
                     codes += [Code('ADD', temp_reg)]
                     if target_reg != 'a':
                         codes += [Code('PUT', target_reg)]
@@ -223,9 +223,9 @@ class Generator:
                     # variable[variable]
                     array_addr = self.symbol_table.get_array_address(identifier[0], proc_name)
                     index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, proc_name)
-                    codes += self.generate_const(index_var_addr, temp_reg)
+                    codes += self.generate_value(index_var_addr, temp_reg)
                     codes += [Code('LOAD', temp_reg)]
-                    codes += self.generate_const(array_addr, temp_reg)
+                    codes += self.generate_value(array_addr, temp_reg)
                     codes += [Code('ADD', temp_reg)]
                     if target_reg != 'a':
                         codes += [Code('PUT', target_reg)]
@@ -233,10 +233,10 @@ class Generator:
                     # variable[parameter]
                     array_addr = self.symbol_table.get_array_address(identifier[0], proc_name)
                     index_var_addr = self.symbol_table.get_procedure_parameter_address(identifier[1], proc_name)
-                    codes += self.generate_const(index_var_addr, temp_reg)
+                    codes += self.generate_value(index_var_addr, temp_reg)
                     codes += [Code('LOAD', temp_reg)]
                     codes += [Code('LOAD', 'a')]
-                    codes += self.generate_const(array_addr, temp_reg)
+                    codes += self.generate_value(array_addr, temp_reg)
                     codes += [Code('ADD', temp_reg)]
                     if target_reg != 'a':
                         codes += [Code('PUT', target_reg)]
@@ -244,10 +244,10 @@ class Generator:
                     # parameter[variable]
                     array_addr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
                     index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, proc_name)
-                    codes += self.generate_const(index_var_addr, temp_reg)
+                    codes += self.generate_value(index_var_addr, temp_reg)
                     codes += [Code('LOAD', temp_reg)]
                     codes += [Code('PUT', temp_reg)]
-                    codes += self.generate_const(array_addr, target_reg)
+                    codes += self.generate_value(array_addr, target_reg)
                     codes += [Code('LOAD', target_reg)]
                     codes += [Code('ADD', temp_reg)]
                     if target_reg != 'a':
@@ -256,11 +256,11 @@ class Generator:
                     # parameter[parameter]
                     array_addr = self.symbol_table.get_procedure_parameter_address(identifier[0], proc_name)
                     index_var_addr = self.symbol_table.get_procedure_parameter_address(identifier[1], proc_name)
-                    codes += self.generate_const(index_var_addr, temp_reg)
+                    codes += self.generate_value(index_var_addr, temp_reg)
                     codes += [Code('LOAD', temp_reg)]
                     codes += [Code('LOAD', 'a')]
                     codes += [Code('PUT', temp_reg)]
-                    codes += self.generate_const(array_addr, target_reg)
+                    codes += self.generate_value(array_addr, target_reg)
                     codes += [Code('LOAD', target_reg)]
                     codes += [Code('ADD', temp_reg)]
                     if target_reg != 'a':
@@ -269,10 +269,10 @@ class Generator:
         else:  # pidentifier
             if self.symbol_table.is_variable(identifier, proc_name):
                 var_addr = self.symbol_table.get_variable_address(identifier, write, proc_name)
-                codes += self.generate_const(var_addr, target_reg)
+                codes += self.generate_value(var_addr, target_reg)
             else:
                 var_addr = self.symbol_table.get_procedure_parameter_address(identifier, proc_name)
-                codes += self.generate_const(var_addr, temp_reg)
+                codes += self.generate_value(var_addr, temp_reg)
                 codes += [Code('LOAD', temp_reg)]
                 if target_reg != 'a':
                     codes += [Code('PUT', target_reg)]
@@ -284,19 +284,19 @@ class Generator:
         if type(identifier) is tuple:
             if type(identifier[1]) is int:  # pidentifier[num]
                 adr = self.symbol_table.get_array_element_adr_const(identifier[0], identifier[1], write, 'main')
-                codes += self.generate_const(adr, target_reg)
+                codes += self.generate_value(adr, target_reg)
             else:  # pidentifier[pidentifier]
                 array_addr = self.symbol_table.get_array_address(identifier[0], 'main')
                 index_var_addr = self.symbol_table.get_variable_address(identifier[1], False, 'main')
-                codes += self.generate_const(index_var_addr, temp_reg)
+                codes += self.generate_value(index_var_addr, temp_reg)
                 codes += [Code('LOAD', temp_reg)]
-                codes += self.generate_const(array_addr, temp_reg)
+                codes += self.generate_value(array_addr, temp_reg)
                 codes += [Code('ADD', temp_reg)]
                 if target_reg != 'a':
                     codes += [Code('PUT', target_reg)]
         else:  # pidentifier
             var_addr = self.symbol_table.get_variable_address(identifier, write, 'main')
-            codes += self.generate_const(var_addr, target_reg)
+            codes += self.generate_value(var_addr, target_reg)
         return codes
 
     def calculate_expression(self, expr, proc_name='main'):
@@ -439,7 +439,7 @@ class Generator:
 
         return codes
 
-    def evaluate_condition(self, cond, label_false, proc_name='main'):
+    def check_condition(self, cond, label_false, proc_name='main'):
         codes = []
         operator = cond[0]
         num1 = cond[1]
