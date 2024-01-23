@@ -95,7 +95,7 @@ class Generator:
                 codes += self.calculate_expression(command[2], proc_name)
                 move_to_h = False
                 if type(command[1]) is tuple and type(
-                        command[1][1]) is not int:  # reg a will be overwritten, copy to reg h
+                        command[1][1]) is not int:
                     move_to_h = True
                 if proc_name != 'main':
                     if type(command[1]) is tuple:
@@ -149,10 +149,6 @@ class Generator:
                 codes += do_commands
                 codes += cond_code
             elif command[0] == 'proc_call':
-                # reg_a: arg data
-                # reg_b: argv pointer
-                # reg_c: return address pointer
-                # reg_d: return address calculation (ret addr = reg_d + 4)
                 procedure = self.symbol_table.get_procedure(command[1], from_func=proc_name)
                 if len(procedure.args) != len(command[2]):
                     print(f'BŁĄD: procedura \"{command[1]}\" wymaga {len(procedure.args)} argumentów, a podano {len(command[2])}')
