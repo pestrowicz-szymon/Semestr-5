@@ -196,13 +196,8 @@ def encode(bitmap, k):
         for x in range(bitmap.width)
     ]
 
-    
-    avg_low = (sum(bitmap_to_array(filtered_low))/len(filtered_low))
-    avg_high = (sum(bitmap_to_array(filtered_high))/len(filtered_high))
-    print("avg_low: ", avg_low)
-    print("avg_high: ", avg_high)
-    print("war low: ", sum([x** 2 for x in filtered_low])/len(filtered_low)-avg_low** 2)
-    print("war low: ", sum([x** 2 for x in filtered_high])/len(filtered_high)-avg_high** 2)
+    print('TTATUASJTATAUASTUAS', type(filtered_low))
+    print('TTATUASJTATAUASTUAS', type(filtered_high))
 
 
     #differential_coding returns list of differneces between pixels
@@ -311,7 +306,7 @@ def tests(original, new):
 
 
 def main():
-    if len(argv) >= 3:
+    if len(argv) >= 1:
         with open(argv[1], "rb") as f:
             #read tga file
             tga = f.read()
