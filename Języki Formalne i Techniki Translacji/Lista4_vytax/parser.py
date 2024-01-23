@@ -1,7 +1,5 @@
 from sly import Parser
 from lexer import MyLexer
-from generator import Generator
-
 
 class MyParser(Parser):
     tokens = MyLexer.tokens

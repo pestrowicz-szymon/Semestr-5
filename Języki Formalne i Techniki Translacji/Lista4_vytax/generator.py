@@ -48,7 +48,6 @@ class Generator:
         codes += proc_code
 
         self.remove_labels(codes)
-        print(self.symbol_table)
         return codes
 
     def generate_procedure(self, ast):
@@ -172,7 +171,6 @@ class Generator:
                             is_param = True
                     else:
                         if self.symbol_table.is_variable(command[2][i], proc_name):
-                            #print(f'mak {command[2][i]} {proc_name}')
                             addr = self.symbol_table.get_variable_address(command[2][i], True, proc_name)
                         else:
                             addr = self.symbol_table.get_procedure_parameter_address(command[2][i], proc_name)
@@ -368,8 +366,6 @@ class Generator:
                 # return result
                 Code('GET', 'd', [label_skip]),
             ]
-            #print('CHUj', label_skip)
-            #print('xDDDDd', [label_skip])
         elif operator == '/' or operator == '%':
             label_skip = self.labeler.get_label(off_by_one=True)
             codes += self.prepare_value(num2, target_reg='a', temp_reg='c', proc_name=proc_name)
