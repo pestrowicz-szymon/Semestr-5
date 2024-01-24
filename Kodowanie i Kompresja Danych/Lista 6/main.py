@@ -196,10 +196,6 @@ def encode(bitmap, k):
         for x in range(bitmap.width)
     ]
 
-    print('TTATUASJTATAUASTUAS', type(filtered_low))
-    print('TTATUASJTATAUASTUAS', type(filtered_high))
-
-
     #differential_coding returns list of differneces between pixels
     low = differential_coding(filtered_low)
     byte_array = bitmap_to_array(low)

@@ -1,4 +1,5 @@
 from sys import argv
+import numpy as np
 
 class Pixel:
     def __init__(self, red, green, blue):
@@ -72,68 +73,160 @@ class Bitmap:
 
         return self.bitmap[ret_y][ret_x]
     
-def calc_y(bitmap, x, y):
-    if x+y == 0:
-        pix = bitmap[x, y]
-        return pix
-    else:
-        pix = Pixel(0, 0, 0)
-        pix += bitmap[x, y]
-        pix += bitmap[x-1, y-1]
-        pix = pix // 2
-        #('pixel1: ', bitmap[x, y], 'pixel2: ', bitmap[x-1, y-1], 'avg: ', pix)
-        return pix   
-
-def calc_z(bitmap, x, y):
-    if x+y == 0:
-        pass
-    else:
-        pix = Pixel(0, 0, 0)
-        pix += bitmap[2*x, 2*y]
-        pix -= bitmap[(2*x)-1, (2*y)-1]
-        pix = pix // 2
-        #print('pixel1: ', bitmap[2*x, 2*y], 'pixel2: ', bitmap[(2*x)-1, (2*y)-1], 'avg: ', pix)
-        return pix
+def calc_y(list):
+    result_list = []
+    for i in range(len(list)):
+        if i%2 == 0:
+            result_list.append((list[i]+list[i+1])//2)
+    result_list = calc_differences(result_list)
+    return result_list
     
-def quantify_uniform(bitmap, k):
-    step = 256 // (2 ** k)
-    return [pixel.uniform_quantization(step) for pixel in bitmap]
 
-def encode(bitmap, k):
-    half_width = bitmap.width
-    half_height = bitmap.height
-    y = [
-        calc_y(bitmap, x, y)
-        for y in range(half_height)
-        for x in range(half_width)
-    ]
-    z = [
-        calc_z(bitmap, x, y)
-        for y in range(half_height)
-        for x in range(half_width)
-    ]
-    quantified_y = quantify_uniform(y, k)
-    quantified_z = quantify_uniform(z, k)
+def calc_differences(list):
+    result_list = []
+    for i in range(len(list)):
+        if i==0:
+            result_list.append(list[i])
+        else:
+            result_list.append(list[i]-list[i-1])
+    return result_list
+
+def undo_differences(list):
+    result_list = []
+    for i in range(len(list)):
+        if i==0:
+            result_list.append(list[i])
+        else:
+            result_list.append(result_list[i-1]+list[i])
+    return result_list
+
+def calc_z(list, k):
+    in_list = quantify_uniform(list, k)
+    result_list = []
+    for i in range(len(in_list)):
+        if i%2 == 0:
+            result_list.append((in_list[i+1]-in_list[i])//2)
+    for i in range(len(list)):
+        if i%2 == 0:
+            print(list[i], '|', in_list[i], '|', result_list[i//2])
+        else:
+            print(list[i], '|', in_list[i])
+    #result_list = quantify_uniform(result_list, k)
+    return result_list
+
+def quantify_uniform(list, k):
+    result_list = []
+    quantify_level = 2**int(k)
+    linspace = np.linspace(0, 255, quantify_level+1, dtype=np.uint16)
+    for pixel in list:
+        #print('original', pixel)
+        newRed = linspace[np.digitize(abs(pixel.red), linspace, True)].astype(np.int32)
+        newGreen = linspace[np.digitize(abs(pixel.green), linspace, True)].astype(np.int32)
+        newBlue = linspace[np.digitize(abs(pixel.blue), linspace, True)].astype(np.int32)
+        if pixel.red < 0:
+            newRed = -newRed
+        if pixel.green < 0:
+            newGreen = -newGreen
+        if pixel.blue < 0:
+            newBlue = -newBlue
+        newPixel = Pixel(newRed, newGreen, newBlue)
+        #print('new', newPixel)
+        result_list.append(newPixel)
+    return result_list
+
+def przypisz_wartosc(liczba, przedzialy):
+    negative = liczba < 0
+    if negative:
+        liczba = -liczba
+    for i in range(len(przedzialy)-1):
+        if przedzialy[i] <= liczba <= przedzialy[i+1]:
+            #print(liczba)
+            if negative:
+                return 0 - przedzialy[i]
+            else:
+                return przedzialy[i]
+        else:
+            #print(liczba)
+            pass
 
 
+def calc_x(y, z):
+    if len(y) != len(z):
+        print('ERROR len(y) != len(z)')
+    result_list = []
+    for i in range(len(y)):
+        result_list.append(y[i]-z[i])
+        result_list.append(y[i]+z[i])
+    return result_list
+
+
+
+def assign_to_space(linspace, value):
+    for i in range(len(linspace)-1):
+        if linspace[i] <= value <= linspace[i+1]:
+            return i
+        else:
+            print(value)
+
+def encode(list, k):
+    y = calc_y(list)
+    z = calc_z(list, k)
+    return y, z
+
+def decode(y, z):
+    y_non_diff = undo_differences(y)
+    x = calc_x(y_non_diff, z)
+    for pix in x:
+        pix.red = 0 if pix.red < 0 else pix.red
+        pix.green = 0 if pix.green < 0 else pix.green
+        pix.blue = 0 if pix.blue < 0 else pix.blue
+
+        pix.red = 255 if pix.red > 255 else pix.red
+        pix.green = 255 if pix.green > 255 else pix.green
+        pix.blue = 255 if pix.blue > 255 else pix.blue
+    return x
+
+def convert_bitmap_to_pixel_list(bitmap, k):
+    result = []
+    for y in reversed(range(bitmap.height)):
+        for x in range(bitmap.width):
+            result.append(bitmap[x, y])
+    return result
+
+def convert_pixel_list_to_array(bitmap):
+    payload = []
+    for pixel in bitmap:
+        payload += [pixel.blue, pixel.green, pixel.red]
+    return payload
 
 def main():
     if len(argv) == 3:
         with open(argv[1], "rb") as f:
-            #read tga file
             tga = f.read()
             header = tga[:18]
             footer = tga[len(tga) - 26 :]
             width = tga[13] * 256 + tga[12]
             height = tga[15] * 256 + tga[14]
+            print('width and height', width, height)
         
-        #create bitmap from 'important' part of file
         #bitmap = Bitmap(tga[18 : len(tga) - 26], width, height) #normalnie
         bitmap = Bitmap(tga[18 : len(tga)], width, height) #example0
 
         k = argv[2]
 
-        encoded = encode(bitmap, int(k))
+        pixel_list = convert_bitmap_to_pixel_list(bitmap, k)
+
+        y, z = encode(pixel_list, k)
+
+        x = decode(y, z)
+
+        result = bytes(convert_pixel_list_to_array(x))
+
+        #hope = bytes(convert_pixel_list_to_array(hope))
+
+        with open(f'output_{argv[1]}', "wb") as f:
+                f.write(header + result + footer)
+
 
 
     else:
