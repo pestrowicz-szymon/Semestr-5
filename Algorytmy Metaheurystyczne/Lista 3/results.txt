@@ -33,3 +33,7 @@ Najlepsze uzyskane rozwiązanie: 19580
 Plik: pbm436.tsp
 Średnie rozwiązanie: 23646.729
 Najlepsze uzyskane rozwiązanie: 20634
+
+Plik: xql662.tsp
+Średnie rozwiązanie: 52602.606
+Najlepsze uzyskane rozwiązanie: 47532
