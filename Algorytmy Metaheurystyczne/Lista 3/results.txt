@@ -1,0 +1,39 @@
+Plik: xqf131.tsp
+Średnie rozwiązanie: 4505.9998
+Najlepsze uzyskane rozwiązanie: 3577
+
+Plik: xqg237.tsp
+Średnie rozwiązanie: 12205.582
+Najlepsze uzyskane rozwiązanie: 10401
+
+Plik: pma343.tsp
+Średnie rozwiązanie: 34443.384
+Najlepsze uzyskane rozwiązanie: 29743
+
+Plik: pka379.tsp
+Średnie rozwiązanie: 35757.18
+Najlepsze uzyskane rozwiązanie: 31181
+
+Plik: bcl380.tsp
+Średnie rozwiązanie: 24745.685
+Najlepsze uzyskane rozwiązanie: 22464
+
+Plik: pbl395.tsp
+Średnie rozwiązanie: 19554.068
+Najlepsze uzyskane rozwiązanie: 17527
+
+Plik: pbk411.tsp
+Średnie rozwiązanie: 22195.251
+Najlepsze uzyskane rozwiązanie: 19790
+
+Plik: pbn423.tsp
+Średnie rozwiązanie: 22701.514
+Najlepsze uzyskane rozwiązanie: 19580
+
+Plik: pbm436.tsp
+Średnie rozwiązanie: 23646.729
+Najlepsze uzyskane rozwiązanie: 20634
+
+Plik: xql662.tsp
+Średnie rozwiązanie: 52602.606
+Najlepsze uzyskane rozwiązanie: 47532
