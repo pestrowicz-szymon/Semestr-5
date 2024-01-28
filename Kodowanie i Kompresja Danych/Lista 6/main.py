@@ -178,7 +178,6 @@ def differential_decoding(diffs):
         result.append(a)
     return result
 
-
 def quantify_uniform(bitmap, k):
     step = 256 // (2 ** k)
     return [pixel.uniform_quantization(step) for pixel in bitmap]

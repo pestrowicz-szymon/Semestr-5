@@ -101,17 +101,17 @@ def undo_differences(list):
     return result_list
 
 def calc_z(list, k):
-    in_list = quantify_uniform(list, k)
+    #in_list = quantify_uniform(list, k)
     result_list = []
-    for i in range(len(in_list)):
-        if i%2 == 0:
-            result_list.append((in_list[i+1]-in_list[i])//2)
     for i in range(len(list)):
         if i%2 == 0:
-            print(list[i], '|', in_list[i], '|', result_list[i//2])
-        else:
-            print(list[i], '|', in_list[i])
-    #result_list = quantify_uniform(result_list, k)
+            result_list.append((list[i+1]-list[i])//2)
+    #for i in range(len(list)):
+    #    if i%2 == 0:
+            #print(list[i], '|', in_list[i], '|', result_list[i//2])
+    #    else:
+            #print(list[i], '|', in_list[i])
+    result_list = quantify_uniform(result_list, k)
     return result_list
 
 def quantify_uniform(list, k):
@@ -165,8 +165,8 @@ def assign_to_space(linspace, value):
     for i in range(len(linspace)-1):
         if linspace[i] <= value <= linspace[i+1]:
             return i
-        else:
-            print(value)
+        #else:
+            #print(value)
 
 def encode(list, k):
     y = calc_y(list)
@@ -199,6 +199,53 @@ def convert_pixel_list_to_array(bitmap):
         payload += [pixel.blue, pixel.green, pixel.red]
     return payload
 
+def d(a, b):
+    return (a - b) ** 2
+
+def mse(original, new):
+    return (1 / len(original)) * sum([d(a, b) for a, b in zip(original, new)])
+
+def tests(bitmap, new):
+    original = [
+        bitmap[x, y]
+        for y in reversed(range(bitmap.height))
+        for x in range(bitmap.width)
+    ]
+    original_array = []
+    for pixel in original:
+        original_array += [pixel.blue, pixel.green, pixel.red]
+
+    original_red = [pixel.red for pixel in original]
+    original_green = [pixel.green for pixel in original]
+    original_blue = [pixel.blue for pixel in original]
+
+    new_array = []
+    for i in range(len(new) // 3):
+        new_array += [new[i*3+0], new[i*3+1], new[i*3+2]]
+
+    new_red = []
+    for i in range(len(new) // 3):
+        new_red += [new[i*3+2]]
+
+    new_green = []
+    for i in range(len(new) // 3):
+        new_green += [new[i*3+1]]
+
+    new_blue = []
+    for i in range(len(new) // 3):
+        new_blue += [new[i*3+0]]
+
+    mserr = mse(original_array, new_array)
+    mserr_red = mse(original_red, new_red)
+    mserr_green = mse(original_green, new_green)
+    mserr_blue = mse(original_blue, new_blue)   
+    return mserr, mserr_red, mserr_green, mserr_blue
+
+def signal_to_noise():
+    #suma kwadratow oryginalow przez mse
+    pass
+
+
 def main():
     if len(argv) == 3:
         with open(argv[1], "rb") as f:
@@ -207,10 +254,10 @@ def main():
             footer = tga[len(tga) - 26 :]
             width = tga[13] * 256 + tga[12]
             height = tga[15] * 256 + tga[14]
-            print('width and height', width, height)
+            #print('width and height', width, height)
         
-        #bitmap = Bitmap(tga[18 : len(tga) - 26], width, height) #normalnie
-        bitmap = Bitmap(tga[18 : len(tga)], width, height) #example0
+        bitmap = Bitmap(tga[18 : len(tga) - 26], width, height) #normalnie
+        #bitmap = Bitmap(tga[18 : len(tga)], width, height) #example0
 
         k = argv[2]
 
@@ -226,6 +273,12 @@ def main():
 
         with open(f'output_{argv[1]}', "wb") as f:
                 f.write(header + result + footer)
+
+        start_mse, start_mser, start_mseg, start_mseb= tests(bitmap, result)
+        print('MSE', start_mse)
+        print('MSE(red)', start_mser)
+        print('MSE(green)', start_mseg)
+        print('MSE(blue)', start_mseb)
 
 
 
