@@ -2,7 +2,7 @@ from my_array import Array
 from my_code import Code
 from my_labeler import Labeler
 from my_procedure_data import ProcedureData
-from my_symbol_table import SymbolTable
+from my_symbol_table import SymbolTable, DataType
 from my_variable import Variable
 
 class Generator:
@@ -39,13 +39,13 @@ class Generator:
     def compile_procedure(self, ast):
         proc_head = ast[1]
         proc_name = proc_head[1]
-        self.symbol_table.put_procedure(ProcedureData(proc_name, proc_head[2]))
+        self.symbol_table.put(ProcedureData(proc_name, proc_head[2]), DataType.PROCEDURE)
         var_declarations = ast[2]
         for var in var_declarations:
             if type(var) is tuple:
-                self.symbol_table.put_array(Array(var[0], var[1]), proc_name)
+                self.symbol_table.put(Array(var[0], var[1]), DataType.ARRAY, proc_name)
             else:
-                self.symbol_table.put_variable(Variable(var), proc_name)
+                self.symbol_table.put(Variable(var), DataType.VARIABLE,proc_name)
         commands = ast[3]
         codes = self.generate_from_commands(commands, proc_name)
         codes[0].labels += [f'l_PROC_{proc_name}']
@@ -61,9 +61,9 @@ class Generator:
         var_declarations = ast[1]
         for var in var_declarations:
             if type(var) is tuple:
-                self.symbol_table.put_array(Array(var[0], var[1]))
+                self.symbol_table.put(Array(var[0], var[1]), DataType.ARRAY)
             else:
-                self.symbol_table.put_variable(Variable(var))
+                self.symbol_table.put(Variable(var), DataType.VARIABLE)
         commands = ast[2]
         codes = self.generate_from_commands(commands, 'main')
         return codes
