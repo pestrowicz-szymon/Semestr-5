@@ -17,8 +17,8 @@ generator = Generator()
 with open(path_in) as file:
     input_text = file.read()
     tokens = lexer.tokenize(input_text)
-    parser_result = parser.parse(tokens)
-    codes = generator.compile_all(parser_result)
+    ast = parser.parse(tokens)
+    codes = generator.compile_all(ast)
 
 with open(path_out, "w") as file:
     for code in codes:

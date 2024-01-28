@@ -10,48 +10,61 @@ class Generator:
         self.symbol_table = SymbolTable()
         self.labeler = Labeler()
 
-    def compile_all(self, parser_result):
-        procedures_result = []
-        for procedure in parser_result[1]:
-            procedures_result += self.compile_procedure(procedure)
+    def generate_value(self, num, reg='a'):
+        codes = [Code('RST', reg)]
+        if num == 0:
+            return codes
+        if num == 1:
+            return codes + [Code('INC', reg)]
+        s = str(bin(num))[2:]
+        for char in s[:-1]:
+            if char == '1':
+                codes += [Code('INC', reg)]
+            codes += [Code('SHL', reg)]
+        if s[len(s) - 1] == '1':
+            codes += [Code('INC', reg)]
+        return codes
 
-        main_result = self.compile_main(parser_result[2])
-
-        assembly_code = main_result
-        assembly_code += [Code('HALT')]
-        assembly_code += procedures_result
-
-        #remove labels from jump functions
+    def remove_jump_labels(self, codes):
         labels = dict()
-        for i in range(len(assembly_code)):
-            for label in assembly_code[i].labels:
+        for i in range(len(codes)):
+            for label in codes[i].labels:
                 if label[1] == '+':
                     labels[label] = i + 1
                 else:
                     labels[label] = i
-        for code in assembly_code:
+        for code in codes:
             code.labels = []
             if code.arg is not None and str(code.arg)[0] == 'l':
                 code.arg = labels[code.arg]
 
-        return assembly_code
+    def compile_all(self, ast):
+        proc_code = []
+        for procedure in ast[1]:
+            proc_code += self.compile_procedure(procedure)
+
+        codes = self.compile_main(ast[2])
+        codes += [Code('HALT')]
+        codes += proc_code
+
+        self.remove_jump_labels(codes)
+        return codes
 
     def compile_procedure(self, ast):
-        procedure_head = ast[1]
-        procedure_name = procedure_head[1]
-        procedure_variables = procedure_head[2]
-        self.symbol_table.put(ProcedureData(procedure_name, procedure_variables), 3)
-        procedure_vairables_declarations = ast[2]
-        for variable in procedure_vairables_declarations:
-            if type(variable) is tuple:
-                self.symbol_table.put(Array(variable[0], variable[1]), 2, procedure_name,)
+        proc_head = ast[1]
+        proc_name = proc_head[1]
+        self.symbol_table.put_procedure(ProcedureData(proc_name, proc_head[2]))
+        var_declarations = ast[2]
+        for var in var_declarations:
+            if type(var) is tuple:
+                self.symbol_table.put_array(Array(var[0], var[1]), proc_name)
             else:
-                self.symbol_table.put(Variable(variable), 1, procedure_name)
+                self.symbol_table.put_variable(Variable(var), proc_name)
         commands = ast[3]
-        codes = self.generate_from_commands(commands, procedure_name)
-        codes[0].labels += [f'l_PROC_{procedure_name}']
+        codes = self.generate_from_commands(commands, proc_name)
+        codes[0].labels += [f'l_PROC_{proc_name}']
 
-        return_addr = self.symbol_table.get_procedure_parameter_address('RET', procedure_name)
+        return_addr = self.symbol_table.get_procedure_parameter_address('RET', proc_name)
         codes += self.generate_value(return_addr, 'a')
         codes += [Code('LOAD', 'a')]
         codes += [Code('JUMPR', 'a')]
@@ -62,29 +75,12 @@ class Generator:
         var_declarations = ast[1]
         for var in var_declarations:
             if type(var) is tuple:
-                self.symbol_table.put(Array(var[0], var[1]), 2)
+                self.symbol_table.put_array(Array(var[0], var[1]))
             else:
-                self.symbol_table.put(Variable(var), 1)
+                self.symbol_table.put_variable(Variable(var))
         commands = ast[2]
         codes = self.generate_from_commands(commands, 'main')
         return codes
-    
-    def generate_value(self, num, reg='a'):
-        codes = [Code('RST', reg)]
-        if num == 0:
-            return codes
-        elif num == 1:
-            codes += [Code('INC', reg)]
-            return codes
-        else:
-            s = str(bin(num))[2:]
-            for char in s[:-1]:
-                if char == '1':
-                    codes += [Code('INC', reg)]
-                codes += [Code('SHL', reg)]
-            if s[len(s) - 1] == '1':
-                codes += [Code('INC', reg)]
-            return codes
 
     def generate_from_commands(self, commands, proc_name):
         codes = []
@@ -303,25 +299,25 @@ class Generator:
         operator = expr[0]
         num1 = expr[1]
         if operator == 'val':
-            codes += self.prepare_value(num1, 'a', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
         else:
             num2 = expr[2]
         if operator == '+':
-            codes += self.prepare_value(num1, 'c', 'b', proc_name)
-            codes += self.prepare_value(num2, 'd', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [Code('GET', 'c')]
             codes += [Code('ADD', 'd')]
         elif operator == '-':
-            codes += self.prepare_value(num1,'c', 'b', proc_name)
-            codes += self.prepare_value(num2,'d', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [Code('GET', 'c')]
             codes += [Code('SUB', 'd')]
         elif operator == '*':
             label_skip = self.labeler.get_label(off_by_one=True)
-            codes += self.prepare_value(num2,'a', 'c', proc_name)
+            codes += self.prepare_value(num2, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
                       Code('PUT', 'b')]
-            codes += self.prepare_value(num1,'a', 'c', proc_name)
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
                       Code('PUT', 'c')]
 
@@ -363,10 +359,10 @@ class Generator:
             ]
         elif operator == '/' or operator == '%':
             label_skip = self.labeler.get_label(off_by_one=True)
-            codes += self.prepare_value(num2, 'a', 'c', proc_name)
+            codes += self.prepare_value(num2, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
                       Code('PUT', 'b')]
-            codes += self.prepare_value(num1, 'a', 'c', proc_name)
+            codes += self.prepare_value(num1, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip)]
 
             label_begin = self.labeler.get_label()
@@ -444,8 +440,8 @@ class Generator:
         num1 = cond[1]
         num2 = cond[2]
         if operator == '=' or operator == '!=':
-            codes += self.prepare_value(num1, 'c', 'b', proc_name)
-            codes += self.prepare_value(num2, 'd', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [(Code('GET', 'd'))]
             codes += [(Code('SUB', 'c'))]
             codes += [(Code('PUT', 'e'))]
@@ -457,26 +453,26 @@ class Generator:
             else:
                 codes += [(Code('JZERO', label_false))]
         elif operator == '>':
-            codes += self.prepare_value(num1, 'c', 'b', proc_name)
-            codes += self.prepare_value(num2, 'd', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [Code('GET', 'c')]
             codes += [Code('SUB', 'd')]
             codes += [Code('JZERO', label_false)]
         elif operator == '<':
-            codes += self.prepare_value(num1, 'c', 'b', proc_name)
-            codes += self.prepare_value(num2, 'd', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [Code('GET', 'd')]
             codes += [Code('SUB', 'c')]
             codes += [Code('JZERO', label_false)]
         elif operator == '>=':
-            codes += self.prepare_value(num1, 'c', 'b', proc_name)
-            codes += self.prepare_value(num2, 'd', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [Code('GET', 'd')]
             codes += [Code('SUB', 'c')]
             codes += [Code('JPOS', label_false)]
         elif operator == '<=':
-            codes += self.prepare_value(num1, 'c', 'b', proc_name)
-            codes += self.prepare_value(num2, 'd', 'b', proc_name)
+            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
+            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [Code('GET', 'c')]
             codes += [Code('SUB', 'd')]
             codes += [Code('JPOS', label_false)]

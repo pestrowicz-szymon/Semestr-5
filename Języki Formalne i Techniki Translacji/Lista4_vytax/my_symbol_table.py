@@ -1,11 +1,3 @@
-from enum import Enum
-
-class DataType(Enum):
-    VARIABLE = 1
-    ARRAY = 2
-    PROCEDURE = 3
-
-
 class SymbolTable:
     def __init__(self):
         self.memory_offset = 0
@@ -26,34 +18,21 @@ class SymbolTable:
             for i in range(len(proc.args)):
                 s += f'\targ {proc.args[i]} at address {proc.address + i + 1}\n'
         return s
-    
-    def put(self, data, type, func_name='main'):
-        data.address = self.memory_offset
-        if type == DataType.VARIABLE:
-            self.memory_offset += 1
-            self.variables[f'{func_name}:{data.name}'] = data
-        if type == DataType.ARRAY:
-            self.memory_offset += data.size
-            self.arrays[f'{func_name}:{data.name}'] = data
-        if type == DataType.PROCEDURE:
-                self.memory_offset += len(data.args) + 1
-                self.procedures += [data]
 
-        
-    #def put_variable(self, var, func_name='main'):
-    #    var.address = self.memory_offset
-    #    self.memory_offset += 1
-    #    self.variables[f'{func_name}:{var.name}'] = var
+    def put_variable(self, var, func_name='main'):
+        var.address = self.memory_offset
+        self.memory_offset += 1
+        self.variables[f'{func_name}:{var.name}'] = var
 
-    #def put_array(self, arr, func_name='main'):
-    #    arr.address = self.memory_offset
-    #    self.memory_offset += arr.size
-    #    self.arrays[f'{func_name}:{arr.name}'] = arr
+    def put_array(self, arr, func_name='main'):
+        arr.address = self.memory_offset
+        self.memory_offset += arr.size
+        self.arrays[f'{func_name}:{arr.name}'] = arr
 
-    #def put_procedure(self, proc):
-    #    proc.address = self.memory_offset
-    #    self.memory_offset += len(proc.args) + 1
-    #    self.procedures += [proc]
+    def put_procedure(self, proc):
+        proc.address = self.memory_offset
+        self.memory_offset += len(proc.args) + 1
+        self.procedures += [proc]
 
     def get_variable_address(self, var_name, write, func_name='main'):
         name = f'{func_name}:{var_name}'
