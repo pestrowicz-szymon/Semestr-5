@@ -10,45 +10,31 @@ class Generator:
         self.symbol_table = SymbolTable()
         self.labeler = Labeler()
 
-    def generate_value(self, num, reg='a'):
-        codes = [Code('RST', reg)]
-        if num == 0:
-            return codes
-        if num == 1:
-            return codes + [Code('INC', reg)]
-        s = str(bin(num))[2:]
-        for char in s[:-1]:
-            if char == '1':
-                codes += [Code('INC', reg)]
-            codes += [Code('SHL', reg)]
-        if s[len(s) - 1] == '1':
-            codes += [Code('INC', reg)]
-        return codes
+    def compile_all(self, parser_result):
+        procedures_result = []
+        for procedure in parser_result[1]:
+            procedures_result += self.compile_procedure(procedure)
 
-    def remove_jump_labels(self, codes):
+        main_result = self.compile_main(parser_result[2])
+
+        assembly_code = main_result
+        assembly_code += [Code('HALT')]
+        assembly_code += procedures_result
+
+        #remove labels from jump function
         labels = dict()
-        for i in range(len(codes)):
-            for label in codes[i].labels:
+        for i in range(len(assembly_code)):
+            for label in assembly_code[i].labels:
                 if label[1] == '+':
                     labels[label] = i + 1
                 else:
                     labels[label] = i
-        for code in codes:
+        for code in assembly_code:
             code.labels = []
             if code.arg is not None and str(code.arg)[0] == 'l':
                 code.arg = labels[code.arg]
 
-    def compile_all(self, ast):
-        proc_code = []
-        for procedure in ast[1]:
-            proc_code += self.compile_procedure(procedure)
-
-        codes = self.compile_main(ast[2])
-        codes += [Code('HALT')]
-        codes += proc_code
-
-        self.remove_jump_labels(codes)
-        return codes
+        return assembly_code
 
     def compile_procedure(self, ast):
         proc_head = ast[1]
@@ -80,6 +66,21 @@ class Generator:
                 self.symbol_table.put_variable(Variable(var))
         commands = ast[2]
         codes = self.generate_from_commands(commands, 'main')
+        return codes
+    
+    def generate_value(self, num, reg='a'):
+        codes = [Code('RST', reg)]
+        if num == 0:
+            return codes
+        if num == 1:
+            return codes + [Code('INC', reg)]
+        s = str(bin(num))[2:]
+        for char in s[:-1]:
+            if char == '1':
+                codes += [Code('INC', reg)]
+            codes += [Code('SHL', reg)]
+        if s[len(s) - 1] == '1':
+            codes += [Code('INC', reg)]
         return codes
 
     def generate_from_commands(self, commands, proc_name):
