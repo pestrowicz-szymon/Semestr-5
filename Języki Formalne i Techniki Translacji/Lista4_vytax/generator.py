@@ -84,16 +84,16 @@ class Generator:
         return codes
 
     def generate_from_commands(self, commands, proc_name):
-        codes = []
+        assembly = []
         for command in commands:
             if command[0] == 'read':
-                codes += self.prepare_identifier_address(command[1], 'b', 'c', True, proc_name)
-                codes += [Code('READ'), Code('STORE', 'b')]
+                assembly += self.prepare_identifier_address(command[1], 'b', 'c', True, proc_name)
+                assembly += [Code('READ'), Code('STORE', 'b')]
             elif command[0] == 'write':
-                codes += self.prepare_value(command[1], 'a', 'b', proc_name)
-                codes += [Code('WRITE')]
+                assembly += self.prepare_value(command[1], 'a', 'b', proc_name)
+                assembly += [Code('WRITE')]
             elif command[0] == 'assign':
-                codes += self.calculate_expression(command[2], proc_name)
+                assembly += self.calculate_expression(command[2], proc_name)
                 move_to_h = False
                 if type(command[1]) is tuple and type(
                         command[1][1]) is not int:
@@ -106,17 +106,17 @@ class Generator:
                         if self.symbol_table.is_param(command[1], proc_name):
                             move_to_h = True
                 if move_to_h:
-                    codes += [Code('PUT', 'h')]
-                codes += self.prepare_identifier_address(command[1], 'b', 'c', True, proc_name)
+                    assembly += [Code('PUT', 'h')]
+                assembly += self.prepare_identifier_address(command[1], 'b', 'c', True, proc_name)
                 if move_to_h:
-                    codes += [Code('GET', 'h')]
-                codes += [Code('STORE', 'b')]
+                    assembly += [Code('GET', 'h')]
+                assembly += [Code('STORE', 'b')]
             elif command[0] == 'if':
                 then_commands = self.generate_from_commands(command[2], proc_name)
                 label_false = self.labeler.get_label(off_by_one=True)
                 then_commands[-1].labels += [label_false]
-                codes += self.check_condition(command[1], label_false, proc_name)
-                codes += then_commands
+                assembly += self.check_condition(command[1], label_false, proc_name)
+                assembly += then_commands
             elif command[0] == 'ifelse':
                 then_commands = self.generate_from_commands(command[2], proc_name)
                 else_commands = self.generate_from_commands(command[3], proc_name)
@@ -129,9 +129,9 @@ class Generator:
                 else_commands[0].labels += [label_false]
                 else_commands[-1].labels += [label_endif]
 
-                codes += self.check_condition(command[1], label_false, proc_name)
-                codes += then_commands
-                codes += else_commands
+                assembly += self.check_condition(command[1], label_false, proc_name)
+                assembly += then_commands
+                assembly += else_commands
             elif command[0] == 'while':
                 do_commands = self.generate_from_commands(command[2], proc_name)
                 label_false = self.labeler.get_label(off_by_one=True)
@@ -140,25 +140,25 @@ class Generator:
                 cond_code[0].labels += [label_loop]
                 do_commands += [Code('JUMP', label_loop)]
                 do_commands[-1].labels += [label_false]
-                codes += cond_code
-                codes += do_commands
+                assembly += cond_code
+                assembly += do_commands
             elif command[0] == 'repeat':
                 do_commands = self.generate_from_commands(command[1], proc_name)
                 label_false = self.labeler.get_label()
                 do_commands[0].labels += [label_false]
                 cond_code = self.check_condition(command[2], label_false, proc_name)
-                codes += do_commands
-                codes += cond_code
+                assembly += do_commands
+                assembly += cond_code
             elif command[0] == 'proc_call':
                 procedure = self.symbol_table.get_procedure(command[1], from_func=proc_name)
                 if len(procedure.args) != len(command[2]):
                     print(f'BŁĄD: procedura \"{command[1]}\" wymaga {len(procedure.args)} argumentów, a podano {len(command[2])}')
                 argv_pointer = procedure.address
-                codes += self.generate_value(argv_pointer, 'a')
-                codes += [Code('PUT', 'b')]
-                codes += [Code('PUT', 'c')]
+                assembly += self.generate_value(argv_pointer, 'a')
+                assembly += [Code('PUT', 'b')]
+                assembly += [Code('PUT', 'c')]
                 for i in range(len(procedure.args)):
-                    codes += [Code('INC', 'b')]
+                    assembly += [Code('INC', 'b')]
                     is_param = False
                     if type(procedure.args[i]) is tuple:
                         if self.symbol_table.is_array(command[2][i], proc_name):
@@ -172,12 +172,12 @@ class Generator:
                         else:
                             addr = self.symbol_table.get_procedure_parameter_address(command[2][i], proc_name)
                             is_param = True
-                    codes += self.generate_value(addr, 'a')
+                    assembly += self.generate_value(addr, 'a')
                     if is_param:
-                        codes += [Code('LOAD', 'a')]
-                    codes += [Code('STORE', 'b')]
+                        assembly += [Code('LOAD', 'a')]
+                    assembly += [Code('STORE', 'b')]
 
-                codes += [
+                assembly += [
                     Code('RST', 'a'),
                     Code('INC', 'a'),
                     Code('SHL', 'a'),
@@ -188,7 +188,7 @@ class Generator:
                     Code('STORE', 'c'),
                     Code('JUMP', f'l_PROC_{command[1]}')
                 ]
-        return codes
+        return assembly
 
     def prepare_value(self, val, target_reg='a', temp_reg='b', proc_name='main'):
         codes = []
@@ -303,16 +303,14 @@ class Generator:
             codes += self.prepare_value(num1, target_reg='a', temp_reg='b', proc_name=proc_name)
         else:
             num2 = expr[2]
-        if operator == '+':
+        if operator == '+' or operator == '-':
             codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
             codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
             codes += [Code('GET', 'c')]
-            codes += [Code('ADD', 'd')]
-        elif operator == '-':
-            codes += self.prepare_value(num1, target_reg='c', temp_reg='b', proc_name=proc_name)
-            codes += self.prepare_value(num2, target_reg='d', temp_reg='b', proc_name=proc_name)
-            codes += [Code('GET', 'c')]
-            codes += [Code('SUB', 'd')]
+            if operator == '+':
+                codes += [Code('ADD', 'd')]
+            else:
+                codes += [Code('SUB', 'd')]
         elif operator == '*':
             label_skip = self.labeler.get_label(off_by_one=True)
             codes += self.prepare_value(num2, target_reg='a', temp_reg='c', proc_name=proc_name)
@@ -321,41 +319,21 @@ class Generator:
             codes += self.prepare_value(num1, target_reg='a', temp_reg='c', proc_name=proc_name)
             codes += [Code('JZERO', label_skip),
                       Code('PUT', 'c')]
-
             label_loop = self.labeler.get_label()
             label_even = self.labeler.get_label()
-
-            # input: a * b
-            #
-            # reg_b : b
-            # reg_c : a
-            # reg_d : result
-
             codes += [
-                # result := 0
                 Code('RST', 'd'),
-
-                # loop: if a % 2 > 0:
                 Code('SHR', 'c', [label_loop]),
                 Code('SHL', 'c'),
                 Code('SUB', 'c'),
                 Code('JZERO', label_even),
-
-                # then: result := result + b
                 Code('GET', 'd'),
                 Code('ADD', 'b'),
                 Code('PUT', 'd'),
-
-                # endif
-                # b := b * 2; a := a / 2
                 Code('SHL', 'b', [label_even]),
                 Code('SHR', 'c'),
-
-                # if a > 0 goto loop
                 Code('GET', 'c'),
                 Code('JPOS', label_loop),
-
-                # return result
                 Code('GET', 'd', [label_skip]),
             ]
         elif operator == '/' or operator == '%':
@@ -371,63 +349,31 @@ class Generator:
             label_end = self.labeler.get_label()
             label_shl_enter = self.labeler.get_label()
             label_shl_exit = self.labeler.get_label()
-
-            # input: a / b or a % b
-            #
-            # reg_b : b
-            # reg_c : k
-            # reg_d : q
-            # reg_e : quotient (result of /)
-            # reg_f : a (result of %)
-
             codes += [
-                # quotient := 0
                 Code('RST', 'e'),
-
                 Code('JUMP', label_begin),
-
-                # a := a - k
                 Code('SUB', 'c', [label_loop]),
                 Code('PUT', 'f', [label_begin]),
-
-                # loop: if a < b goto end
                 Code('GET', 'b'),
                 Code('SUB', 'f'),
                 Code('JPOS', label_end),
-
-                # k := b
                 Code('GET', 'b'),
                 Code('PUT', 'c'),
-
-                # q := 1
                 Code('RST', 'd'),
                 Code('INC', 'd'),
-
-                # x: k := k * 2
-                # if k < a then q := q * 2 and goto x
                 Code('GET', 'f', [label_shl_exit]),
                 Code('SHL', 'c'),
                 Code('SUB', 'c'),
                 Code('JPOS', label_shl_enter),
-
-                # k := k / 2
                 Code('SHR', 'c'),
-
-                # quotient := quotient + q
                 Code('GET', 'e'),
                 Code('ADD', 'd'),
                 Code('PUT', 'e'),
-
-                # goto loop
                 Code('GET', 'f'),
                 Code('JUMP', label_loop),
-
-                # q := q * 2 routine
                 Code('SHL', 'd', [label_shl_enter]),
                 Code('JUMP', label_shl_exit),
             ]
-
-            # end (return result)
             if operator == '/':
                 codes += [Code('GET', 'e', [label_end, label_skip])]
             else:
