@@ -16,16 +16,16 @@ class SymbolTable:
         data.address = self.memory_offset
         if type == DataType.VARIABLE:
             self.memory_offset += 1
-            self.variables[f'{func_name}:{data.name}'] = data
+            self.variables[f'{func_name}>{data.name}'] = data
         if type == DataType.ARRAY:
             self.memory_offset += data.size
-            self.arrays[f'{func_name}:{data.name}'] = data
+            self.arrays[f'{func_name}>{data.name}'] = data
         if type == DataType.PROCEDURE:
             self.memory_offset += len(data.args) + 1
             self.procedures += [data]
 
     def get_variable_address(self, var_name, is_initialized, func_name='main'):
-        name = f'{func_name}:{var_name}'
+        name = f'{func_name}>{var_name}'
         if name not in self.variables:
             print(f'Error: name not recognized \"{var_name}\"')
             exit(4)
@@ -37,7 +37,7 @@ class SymbolTable:
         return variable.address
 
     def get_array_address(self, arr_name, func_name='main'):
-        name = f'{func_name}:{arr_name}'
+        name = f'{func_name}>{arr_name}'
         if not name in self.arrays:
             print(f'Error: name not recognized \"{arr_name}\"')
             exit(4)
@@ -45,7 +45,7 @@ class SymbolTable:
         return array.address
 
     def get_array_element_adr_const(self, arr_name, index, write, func_name='main'):
-        name = f'{func_name}:{arr_name}'
+        name = f'{func_name}>{arr_name}'
         if name not in self.arrays:
             print(f'Error: name not recognized \"{arr_name}\"')
             exit(4)
@@ -86,11 +86,11 @@ class SymbolTable:
         exit(4)
 
     def is_variable(self, var_name, func_name='main'):
-        name = f'{func_name}:{var_name}'
+        name = f'{func_name}>{var_name}'
         return name in self.variables
 
     def is_array(self, arr_name, func_name='main'):
-        name = f'{func_name}:{arr_name}'
+        name = f'{func_name}>{arr_name}'
         return name in self.arrays
 
     def is_param(self, param_name, proc_name):
