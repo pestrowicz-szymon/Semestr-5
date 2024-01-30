@@ -6,6 +6,6 @@ class Labeler:
         self.label_number += 1
         s = 'l'
         if off_by_one:
-            s += '+'
+            s += '-'
         s += f'{self.label_number}'
         return s
