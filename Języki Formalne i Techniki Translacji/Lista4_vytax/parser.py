@@ -119,7 +119,7 @@ class MyParser(Parser):
 
     @_('PIDENTIFIER')
     def args_decl(self, p):
-        return [('V', p.PIDENTIFIER)]
+        return [(p.PIDENTIFIER)]
 
     @_('"T" PIDENTIFIER')
     def args_decl(self, p):

@@ -44,7 +44,7 @@ class Generator:
         self.symbols.put(ProcedureData(proc_name, proc_head[2]), DataType.PROCEDURE)
         var_declarations = procedure[2]
         for var in var_declarations:
-            if var[0] == 'T':
+            if type(var) is tuple:
                 self.symbols.put(Array(var[0], var[1]), DataType.ARRAY, proc_name)
             else:
                 self.symbols.put(Variable(var), DataType.VARIABLE,proc_name)
@@ -62,7 +62,7 @@ class Generator:
     def compile_main(self, main):
         var_declarations = main[1]
         for var in var_declarations:
-            if var[0] == 'T':
+            if type(var) is tuple:
                 self.symbols.put(Array(var[0], var[1]), DataType.ARRAY)
             else:
                 self.symbols.put(Variable(var), DataType.VARIABLE)
@@ -145,7 +145,7 @@ class Generator:
                 for i in range(len(procedure.args)):
                     assembly += [Code('INC', 'b')]
                     is_param = False
-                    if procedure.args[i] == 'T':
+                    if type(procedure.args[i]) is tuple:
                         if self.symbols.is_array(command[2][i], proc_name):
                             addr = self.symbols.get_array_address(command[2][i], proc_name)
                         else:
