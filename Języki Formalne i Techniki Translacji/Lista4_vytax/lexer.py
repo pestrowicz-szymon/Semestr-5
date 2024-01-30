@@ -3,12 +3,45 @@ from sly import Lexer
 
 class MyLexer(Lexer):
     tokens = { # words that appear in alnguage spec
-        'PROCEDURE', 'PROGRAM', 'IS', 'IN', 'END', 'IF', 'THEN', 'ELSE', 'ENDIF', 'WHILE', 'DO', 'ENDWHILE',
-        'REPEAT', 'UNTIL', 'READ', 'WRITE', 'ASSIGN', 'EQ', 'NEQ', 'GT', 'LT', 'GE', 'LE', 'PIDENTIFIER', 'NUM'
+        'PROCEDURE', 
+        'PROGRAM', 
+        'IS', 
+        'IN', 
+        'END', 
+        'IF', 
+        'THEN', 
+        'ELSE', 
+        'ENDIF', 
+        'WHILE', 
+        'DO', 
+        'ENDWHILE',
+        'REPEAT', 
+        'UNTIL', 
+        'READ', 
+        'WRITE', 
+        'ASSIGN', 
+        'EQ', 
+        'NEQ', 
+        'GT', 
+        'LT', 
+        'GE', 
+        'LE', 
+        'PIDENTIFIER', 
+        'NUM'
         }
 
-    literals = {';', ',', '(', ')', '[', ']', 'T',
-                '+', '-', '*', '/', '%'}
+    literals = {';', 
+                ',', 
+                '(', 
+                ')', 
+                '[', 
+                ']', 
+                'T',
+                '+', 
+                '-',
+                '*', 
+                '/', 
+                '%'}
 
     ignore = ' \t'
     ignore_comment = r'\#.*'
