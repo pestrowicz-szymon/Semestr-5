@@ -145,7 +145,7 @@ class Generator:
                 for i in range(len(procedure.args)):
                     assembly += [Code('INC', 'b')]
                     is_param = False
-                    if type(procedure.args[i]) is tuple:
+                    if procedure.args[i] == 'T':
                         if self.symbols.is_array(command[2][i], proc_name):
                             addr = self.symbols.get_array_address(command[2][i], proc_name)
                         else:

@@ -83,8 +83,9 @@ class SymbolTable:
                 exit(4)
             elif proc_name == self.procedures[i].name:
                 return self.procedures[i]
-        print(f'BŁĄD: brak procedury o nazwie {proc_name}')
-        exit(4)
+        #print(f'BŁĄD: brak procedury o nazwie {proc_name}')
+        #exit(4)
+        raise Exception('mak')
 
     def get_procedure_parameter_address(self, param, proc_name):
         procedure = self.get_procedure(proc_name)
