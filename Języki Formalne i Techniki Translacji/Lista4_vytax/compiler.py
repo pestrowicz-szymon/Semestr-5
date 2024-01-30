@@ -1,7 +1,7 @@
 import sys
 from lexer import MyLexer
 from parser import MyParser
-from generator import Generator
+from my_code_gen import Generator
 
 if len(sys.argv) != 3:
     print('Usage: python3 kompilator.py <input.imp> <output.mr>')
