@@ -5,6 +5,8 @@ from my_procedure_data import ProcedureData
 from my_symbol_table import SymbolTable, DataType
 from my_variable import Variable
 
+#@TODO change labels
+
 class Generator:
     def __init__(self):
         self.symbols = SymbolTable()
@@ -94,9 +96,9 @@ class Generator:
                 assembly += [Pair('WRITE')]
             elif line[0] == 'assign':
                 assembly += self.get_operation_value(line[2], current_procedure_name)
-                assembly += [Pair('PUT', 'h')]
+                assembly += [Pair('PUT', 'g')]
                 assembly += self.get_id_at_address(line[1], 'b', 'c', True, current_procedure_name)
-                assembly += [Pair('GET', 'h')]
+                assembly += [Pair('GET', 'g')]
                 assembly += [Pair('STORE', 'b')]
             elif line[0] == 'if':
                 then_code = self.make_all(line[2], current_procedure_name)
@@ -135,7 +137,7 @@ class Generator:
             elif line[0] == 'proc_call':
                 procedure = self.symbols.get_procedure(line[1], current_procedure_name)
                 if len(procedure.args) != len(line[2]):
-                    print(f'ERROR: \"{line[1]}\" needs {len(procedure.args)} values')
+                    print(f'Error: \"{line[1]}\" needs {len(procedure.args)} values')
                 argv_pointer = procedure.address
                 assembly += self.generate_value(argv_pointer, 'a')
                 assembly += [Pair('PUT', 'b')]
