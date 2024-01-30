@@ -5,11 +5,6 @@ from my_procedure_data import ProcedureData
 from my_symbol_table import SymbolTable, DataType
 from my_variable import Variable
 
-#change labels
-#wywolania usunac nazwy
-#@TODO mnozenie
-#@TODO dzielenie
-
 class Generator:
     def __init__(self):
         self.symbols = SymbolTable()
