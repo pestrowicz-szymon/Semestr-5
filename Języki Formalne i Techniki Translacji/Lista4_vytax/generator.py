@@ -83,42 +83,42 @@ class Generator:
             assembly_code += [Pair('INC', reg)]
         return assembly_code
 
-    def make_all(self, lines, proc_name):
+    def make_all(self, lines, current_procedure_name):
         assembly = []
         for line in lines:
             if line[0] == 'read':
-                assembly += self.get_id_at_address(line[1], 'b', 'c', True, proc_name)
+                assembly += self.get_id_at_address(line[1], 'b', 'c', True, current_procedure_name)
                 assembly += [Pair('READ'), Pair('STORE', 'b')]
             elif line[0] == 'write':
-                assembly += self.get_value(line[1], 'a', 'b', proc_name)
+                assembly += self.get_value(line[1], 'a', 'b', current_procedure_name)
                 assembly += [Pair('WRITE')]
             elif line[0] == 'assign':
-                assembly += self.get_operation_value(line[2], proc_name)
+                assembly += self.get_operation_value(line[2], current_procedure_name)
                 assembly += [Pair('PUT', 'h')]
-                assembly += self.get_id_at_address(line[1], 'b', 'c', True, proc_name)
+                assembly += self.get_id_at_address(line[1], 'b', 'c', True, current_procedure_name)
                 assembly += [Pair('GET', 'h')]
                 assembly += [Pair('STORE', 'b')]
             elif line[0] == 'if':
-                then_code = self.make_all(line[2], proc_name)
+                then_code = self.make_all(line[2], current_procedure_name)
                 l_false = self.labeler.get_label(off_by_one=True)
                 then_code[-1].labels += [l_false]
-                assembly += self.check_condition(line[1], l_false, proc_name)
+                assembly += self.check_condition(line[1], l_false, current_procedure_name)
                 assembly += then_code
             elif line[0] == 'ifelse':
-                then_code = self.make_all(line[2], proc_name)
-                else_code = self.make_all(line[3], proc_name)
+                then_code = self.make_all(line[2], current_procedure_name)
+                else_code = self.make_all(line[3], current_procedure_name)
                 l_false = self.labeler.get_label()
                 l_endif = self.labeler.get_label(off_by_one=True)
                 then_code += [Pair('JUMP', l_endif)]
                 else_code[0].labels += [l_false]
                 else_code[-1].labels += [l_endif]
-                assembly += self.check_condition(line[1], l_false, proc_name)
+                assembly += self.check_condition(line[1], l_false, current_procedure_name)
                 assembly += then_code
                 assembly += else_code
             elif line[0] == 'while':
-                do_lines = self.make_all(line[2], proc_name)
+                do_lines = self.make_all(line[2], current_procedure_name)
                 l_false = self.labeler.get_label(off_by_one=True)
-                cond_code = self.check_condition(line[1], l_false, proc_name)
+                cond_code = self.check_condition(line[1], l_false, current_procedure_name)
                 l_loop = self.labeler.get_label()
                 cond_code[0].labels += [l_loop]
                 do_lines += [Pair('JUMP', l_loop)]
@@ -126,16 +126,16 @@ class Generator:
                 assembly += cond_code
                 assembly += do_lines
             elif line[0] == 'repeat':
-                do_lines = self.make_all(line[1], proc_name)
+                do_lines = self.make_all(line[1], current_procedure_name)
                 l_false = self.labeler.get_label()
                 do_lines[0].labels += [l_false]
-                cond_code = self.check_condition(line[2], l_false, proc_name)
+                cond_code = self.check_condition(line[2], l_false, current_procedure_name)
                 assembly += do_lines
                 assembly += cond_code
             elif line[0] == 'proc_call':
-                procedure = self.symbols.get_procedure(line[1], proc_name)
-                if len(procedure.args) != len(line[2]): #@TODO zmienic na angielski
-                    print(f'ERROR: \"{line[1]}\" needs {len(procedure.args)} values, but {len(line[2])} were given')
+                procedure = self.symbols.get_procedure(line[1], current_procedure_name)
+                if len(procedure.args) != len(line[2]):
+                    print(f'ERROR: \"{line[1]}\" needs {len(procedure.args)} values')
                 argv_pointer = procedure.address
                 assembly += self.generate_value(argv_pointer, 'a')
                 assembly += [Pair('PUT', 'b')]
@@ -144,16 +144,16 @@ class Generator:
                     assembly += [Pair('INC', 'b')]
                     is_param = False
                     if type(procedure.args[i]) is tuple:
-                        if self.symbols.is_array(line[2][i], proc_name):
-                            addr = self.symbols.get_array_address(line[2][i], proc_name)
+                        if self.symbols.is_array(line[2][i], current_procedure_name):
+                            addr = self.symbols.get_array_address(line[2][i], current_procedure_name)
                         else:
-                            addr = self.symbols.get_procedure_parameter_address(line[2][i], proc_name)
+                            addr = self.symbols.get_procedure_parameter_address(line[2][i], current_procedure_name)
                             is_param = True
                     else:
-                        if self.symbols.is_variable(line[2][i], proc_name):
-                            addr = self.symbols.get_variable_address(line[2][i], True, proc_name)
+                        if self.symbols.is_variable(line[2][i], current_procedure_name):
+                            addr = self.symbols.get_variable_address(line[2][i], True, current_procedure_name)
                         else:
-                            addr = self.symbols.get_procedure_parameter_address(line[2][i], proc_name)
+                            addr = self.symbols.get_procedure_parameter_address(line[2][i], current_procedure_name)
                             is_param = True
                     assembly += self.generate_value(addr, 'a')
                     if is_param:
@@ -181,14 +181,14 @@ class Generator:
             assembly_code += [Pair('PUT', target_reg)]
         return assembly_code
 
-    def get_id_at_address(self, identifier, target_reg='a', temp_reg='h', write=True, procedure_name='main'):
+    def get_id_at_address(self, identifier, target_reg='a', temp_reg='h', is_initialized=True, procedure_name='main'):
         if procedure_name == 'main':
             assembly_code = []
             if type(identifier) is tuple:
-                if type(identifier[1]) is int:  # pidentifier[num]
-                    address = self.symbols.get_array_element_adr_const(identifier[0], identifier[1], write, 'main')
+                if type(identifier[1]) is int:
+                    address = self.symbols.get_array_element_adr_const(identifier[0], identifier[1], is_initialized, 'main')
                     assembly_code += self.generate_value(address, target_reg)
-                else:  # pidentifier[pidentifier]
+                else:
                     array_addr = self.symbols.get_array_address(identifier[0], 'main')
                     index_var_addr = self.symbols.get_variable_address(identifier[1], False, 'main')
                     assembly_code += self.generate_value(index_var_addr, temp_reg)
@@ -197,16 +197,16 @@ class Generator:
                     assembly_code += [Pair('ADD', temp_reg)]
                     if target_reg != 'a':
                         assembly_code += [Pair('PUT', target_reg)]
-            else:  # pidentifier
-                var_addr = self.symbols.get_variable_address(identifier, write, 'main')
+            else:
+                var_addr = self.symbols.get_variable_address(identifier, is_initialized, 'main')
                 assembly_code += self.generate_value(var_addr, target_reg)
             return assembly_code
         else:
             assembly_code = []
             if type(identifier) is tuple:
-                if type(identifier[1]) is int:  # pidentifier[num]
+                if type(identifier[1]) is int:
                     if self.symbols.is_array(identifier[0], procedure_name):
-                        address = self.symbols.get_array_element_adr_const(identifier[0], identifier[1], write, procedure_name)
+                        address = self.symbols.get_array_element_adr_const(identifier[0], identifier[1], is_initialized, procedure_name)
                         assembly_code += self.generate_value(address, target_reg)
                     else:
                         address = self.symbols.get_procedure_parameter_address(identifier[0], procedure_name)
@@ -216,9 +216,8 @@ class Generator:
                         assembly_code += [Pair('ADD', temp_reg)]
                         if target_reg != 'a':
                             assembly_code += [Pair('PUT', target_reg)]
-                else:  # pidentifier[pidentifier]
+                else:
                     if self.symbols.is_array(identifier[0], procedure_name) and self.symbols.is_variable(identifier[1], procedure_name):
-                        # variable[variable]
                         array_addr = self.symbols.get_array_address(identifier[0], procedure_name)
                         index_var_addr = self.symbols.get_variable_address(identifier[1], False, procedure_name)
                         assembly_code += self.generate_value(index_var_addr, temp_reg)
@@ -228,7 +227,6 @@ class Generator:
                         if target_reg != 'a':
                             assembly_code += [Pair('PUT', target_reg)]
                     elif self.symbols.is_array(identifier[0], procedure_name) and (not self.symbols.is_variable(identifier[1], procedure_name)):
-                        # variable[parameter]
                         array_addr = self.symbols.get_array_address(identifier[0], procedure_name)
                         index_var_addr = self.symbols.get_procedure_parameter_address(identifier[1], procedure_name)
                         assembly_code += self.generate_value(index_var_addr, temp_reg)
@@ -239,7 +237,6 @@ class Generator:
                         if target_reg != 'a':
                             assembly_code += [Pair('PUT', target_reg)]
                     elif (not self.symbols.is_array(identifier[0], procedure_name)) and self.symbols.is_variable(identifier[1], procedure_name):
-                        # parameter[variable]
                         array_addr = self.symbols.get_procedure_parameter_address(identifier[0], procedure_name)
                         index_var_addr = self.symbols.get_variable_address(identifier[1], False, procedure_name)
                         assembly_code += self.generate_value(index_var_addr, temp_reg)
@@ -251,7 +248,6 @@ class Generator:
                         if target_reg != 'a':
                             assembly_code += [Pair('PUT', target_reg)]
                     else:
-                        # parameter[parameter]
                         array_addr = self.symbols.get_procedure_parameter_address(identifier[0], procedure_name)
                         index_var_addr = self.symbols.get_procedure_parameter_address(identifier[1], procedure_name)
                         assembly_code += self.generate_value(index_var_addr, temp_reg)
@@ -263,9 +259,9 @@ class Generator:
                         assembly_code += [Pair('ADD', temp_reg)]
                         if target_reg != 'a':
                             assembly_code += [Pair('PUT', target_reg)]
-            else:  # pidentifier
+            else:
                 if self.symbols.is_variable(identifier, procedure_name):
-                    var_addr = self.symbols.get_variable_address(identifier, write, procedure_name)
+                    var_addr = self.symbols.get_variable_address(identifier, is_initialized, procedure_name)
                     assembly_code += self.generate_value(var_addr, target_reg)
                 else:
                     var_addr = self.symbols.get_procedure_parameter_address(identifier, procedure_name)
@@ -275,14 +271,14 @@ class Generator:
                         assembly_code += [Pair('PUT', target_reg)]
             return assembly_code
         
-    def check_condition(self, cond, l_false, proc_name='main'):
+    def check_condition(self, cond, l_false, procedure_name='main'):
         assembly_code = []
         operator = cond[0]
         num1 = cond[1]
         num2 = cond[2]
         if operator == '=' or operator == '!=':
-            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=proc_name)
-            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=proc_name)
+            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=procedure_name)
+            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=procedure_name)
             assembly_code += [(Pair('GET', 'd'))]
             assembly_code += [(Pair('SUB', 'c'))]
             assembly_code += [(Pair('PUT', 'e'))]
@@ -294,26 +290,26 @@ class Generator:
             else:
                 assembly_code += [(Pair('JZERO', l_false))]
         elif operator == '>':
-            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=proc_name)
-            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=proc_name)
+            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=procedure_name)
+            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=procedure_name)
             assembly_code += [Pair('GET', 'c')]
             assembly_code += [Pair('SUB', 'd')]
             assembly_code += [Pair('JZERO', l_false)]
         elif operator == '<':
-            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=proc_name)
-            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=proc_name)
+            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=procedure_name)
+            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=procedure_name)
             assembly_code += [Pair('GET', 'd')]
             assembly_code += [Pair('SUB', 'c')]
             assembly_code += [Pair('JZERO', l_false)]
         elif operator == '>=':
-            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=proc_name)
-            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=proc_name)
+            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=procedure_name)
+            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=procedure_name)
             assembly_code += [Pair('GET', 'd')]
             assembly_code += [Pair('SUB', 'c')]
             assembly_code += [Pair('JPOS', l_false)]
         elif operator == '<=':
-            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=proc_name)
-            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=proc_name)
+            assembly_code += self.get_value(num1, target_reg='c', temp_reg='h', proc_name=procedure_name)
+            assembly_code += self.get_value(num2, target_reg='d', temp_reg='h', proc_name=procedure_name)
             assembly_code += [Pair('GET', 'c')]
             assembly_code += [Pair('SUB', 'd')]
             assembly_code += [Pair('JPOS', l_false)]

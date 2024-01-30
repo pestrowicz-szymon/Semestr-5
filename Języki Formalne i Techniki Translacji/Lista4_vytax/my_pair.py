@@ -8,10 +8,6 @@ class Pair:
 
     def __str__(self):
         s = ''
-        if len(self.labels) > 0:
-            for label in self.labels:
-                s += f'{label} '
-            s += ': '
         s += self.name
         if self.arg is not None:
             s += f' {self.arg}'

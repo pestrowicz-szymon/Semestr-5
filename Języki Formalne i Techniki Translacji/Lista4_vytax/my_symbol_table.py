@@ -11,20 +11,6 @@ class SymbolTable:
         self.variables = dict()
         self.arrays = dict()
         self.procedures = []
-
-    def __str__(self):
-        s = ''
-        for var_key in self.variables:
-            var = self.variables[var_key]
-            s += f'var {var_key} at address {var.address}\n'
-        for arr_key in self.arrays:
-            arr = self.arrays[arr_key]
-            s += f'arr {arr_key} size {arr.size} at address {arr.address}\n'
-        for proc in self.procedures:
-            s += f'proc {proc.name}: return at address {proc.address}\n'
-            for i in range(len(proc.args)):
-                s += f'\targ {proc.args[i]} at address {proc.address + i + 1}\n'
-        return s
     
     def put(self, data, type, func_name='main'):
         data.address = self.memory_offset
@@ -38,15 +24,15 @@ class SymbolTable:
             self.memory_offset += len(data.args) + 1
             self.procedures += [data]
 
-    def get_variable_address(self, var_name, write, func_name='main'):
+    def get_variable_address(self, var_name, is_initialized, func_name='main'):
         name = f'{func_name}:{var_name}'
         if name not in self.variables:
             print(f'ERROR: name not recognized \"{var_name}\"')
             exit(4)
         variable = self.variables[name]
-        if not write and not variable.initialized:
+        if not is_initialized and not variable.initialized:
             print(f'WARNING: \"{var_name}\" may not be initialized')
-        if write:
+        if is_initialized:
             variable.initialized = True
         return variable.address
 
@@ -65,8 +51,6 @@ class SymbolTable:
             exit(4)
         array = self.arrays[name]
         if not write and not array.initialized[index]:
-            # print(f'ERROR: {index} \"{arr_name}\"')
-            # exit(4)
             pass
         if index >= array.size:
             print(f'ERROR: array \"{arr_name}\" is smaller than {index}')
@@ -83,16 +67,12 @@ class SymbolTable:
                 exit(4)
             elif proc_name == self.procedures[i].name:
                 return self.procedures[i]
-        #print(f'ERROR {proc_name}')
-        #exit(4)
         raise Exception('mak')
 
     def get_procedure_parameter_address(self, param, proc_name):
         procedure = self.get_procedure(proc_name)
         if param == 'RET':
             return procedure.address
-        #if param == 'FIRST':
-        #    return procedure.address + 1
         i = procedure.address + 1
         for arg in procedure.args:
             if type(arg) is tuple:
