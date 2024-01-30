@@ -1,4 +1,4 @@
-class Code:
+class Pair:
     def __init__(self, name, arg=None, labels=None):
         if labels is None:
             labels = []
