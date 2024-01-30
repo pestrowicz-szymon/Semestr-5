@@ -8,6 +8,7 @@ from my_variable import Variable
 #@TODO change labels
 #@TODO wywolania usunac nazwy
 #@TODO mnozenie
+#@TODO dzielenie
 
 class Generator:
     def __init__(self):
