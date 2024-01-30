@@ -31,7 +31,7 @@ class Generator:
         #remove labels from jump function
         l_dictionary = dict()
         for i in range(len(assembly_code)):
-            for label in assembly_code[i].l_dictionary:
+            for label in assembly_code[i].labels:
                 if label[1] == '-':
                     l_dictionary[label] = i + 1
                 else:
