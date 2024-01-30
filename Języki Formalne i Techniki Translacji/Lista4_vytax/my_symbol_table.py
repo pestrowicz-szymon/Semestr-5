@@ -30,10 +30,8 @@ class SymbolTable:
             print(f'Error: name not recognized \"{var_name}\"')
             exit(4)
         variable = self.variables[name]
-        if not is_initialized and not variable.initialized:
-            print(f'Warning: \"{var_name}\" may not be initialized')
-        if is_initialized:
-            variable.initialized = True
+        if not is_initialized and not variable.initialized: print(f'Warning: \"{var_name}\" may not be initialized')
+        if is_initialized: variable.initialized = True
         return variable.address
 
     def get_array_address(self, arr_name, func_name='main'):
@@ -50,37 +48,29 @@ class SymbolTable:
             print(f'Error: name not recognized \"{arr_name}\"')
             exit(4)
         array = self.arrays[name]
-        if not write and not array.initialized[index]:
-            pass
+        if not write and not array.initialized[index]: pass
         if index >= array.size:
             print(f'Error: array \"{arr_name}\" is smaller than {index}')
             exit(4)
-        if write:
-            array.initialized[index] = True
+        if write: array.initialized[index] = True
         return array.address + index
 
     def get_procedure(self, proc_name, from_func='main'):
         for i in range(len(self.procedures)):
             if from_func == self.procedures[i].name:
-                print(
-                    f'Error: procedure unknown \"{proc_name}\"')
+                print(f'Error: procedure unknown \"{proc_name}\"')
                 exit(4)
-            elif proc_name == self.procedures[i].name:
-                return self.procedures[i]
+            elif proc_name == self.procedures[i].name: return self.procedures[i]
         raise Exception('ex')
 
     def get_procedure_parameter_address(self, param, proc_name):
         procedure = self.get_procedure(proc_name)
-        if param == 'RET':
-            return procedure.address
+        if param == 'RET': return procedure.address
         i = procedure.address + 1
         for arg in procedure.args:
             if type(arg) is tuple:
-                if arg[1] == param:
-                    return i
-            else:
-                if arg == param:
-                    return i
+                if arg[1] == param: return i
+            elif arg == param: return i
             i = i + 1
         print(f'Error: name not recognized \"{param}\"')
         exit(4)
@@ -97,9 +87,6 @@ class SymbolTable:
         procedure = self.get_procedure(proc_name)
         for arg in procedure.args:
             if type(arg) is tuple:
-                if arg[1] == param_name:
-                    return True
-            else:
-                if arg == param_name:
-                    return True
+                if arg[1] == param_name: return True
+            elif arg == param_name: return True
         return False
