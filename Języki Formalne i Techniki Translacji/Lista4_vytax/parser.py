@@ -187,5 +187,5 @@ class MyParser(Parser):
         return (p.PIDENTIFIER0, p.PIDENTIFIER1)
 
     def error(self, p):
-        print(f'BŁĄD: błąd parsowania (\"{p.value}\" w linii {p.lineno})')
+        print(f'ERROR: parser (\"{p.value}\")')
         exit(3)

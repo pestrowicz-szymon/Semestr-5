@@ -47,5 +47,5 @@ class MyLexer(Lexer):
         return t
 
     def error(self, t):
-        print(f'BŁĄD: linia {self.lineno}, nieprawidłowy symbol \"{t.value[0]}\"')
+        print(f'ERROR: Unknown symbol \"{t.value[0]}\"')
         exit(2)

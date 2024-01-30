@@ -135,7 +135,7 @@ class Generator:
             elif line[0] == 'proc_call':
                 procedure = self.symbols.get_procedure(line[1], proc_name)
                 if len(procedure.args) != len(line[2]): #@TODO zmienic na angielski
-                    print(f'BŁĄD: procedura \"{line[1]}\" wymaga {len(procedure.args)} argumentów, a podano {len(line[2])}')
+                    print(f'ERROR: \"{line[1]}\" needs {len(procedure.args)} values, but {len(line[2])} were given')
                 argv_pointer = procedure.address
                 assembly += self.generate_value(argv_pointer, 'a')
                 assembly += [Pair('PUT', 'b')]

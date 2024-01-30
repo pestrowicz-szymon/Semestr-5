@@ -4,7 +4,7 @@ from parser import MyParser
 from generator import Generator
 
 if len(sys.argv) != 3:
-    print('Sposób użycia: python3 kompilator.py <plik_wejściowy.imp> <plik_wyjściowy.mr>')
+    print('Usage: python3 kompilator.py <input.imp> <output.mr>')
     exit(1)
 
 path_in = sys.argv[1]
@@ -25,4 +25,4 @@ with open(path_out, "w") as file:
         file.write(str(code))
         file.write('\n')
 
-print('Kompilacja zakończona pomyślnie')
+print(f'Saved to {path_out}')
