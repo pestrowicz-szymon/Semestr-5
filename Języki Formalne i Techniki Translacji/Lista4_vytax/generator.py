@@ -69,21 +69,6 @@ class Generator:
                 self.symbols.put(Variable(var), DataType.VARIABLE)
         assembly_code = self.make_all(lines, 'main')
         return assembly_code
-    
-    def generate_value(self, num, reg='a'):
-        assembly_code = [Pair('RST', reg)]
-        if num == 0:
-            return assembly_code
-        if num == 1:
-            return assembly_code + [Pair('INC', reg)]
-        s = str(bin(num))[2:]
-        for char in s[:-1]:
-            if char == '1':
-                assembly_code += [Pair('INC', reg)]
-            assembly_code += [Pair('SHL', reg)]
-        if s[len(s) - 1] == '1':
-            assembly_code += [Pair('INC', reg)]
-        return assembly_code
 
     def make_all(self, lines, current_procedure_name):
         assembly = []
@@ -181,6 +166,21 @@ class Generator:
             assembly_code += self.get_id_at_address(val, target_reg, temp_reg, False, proc_name)
             assembly_code += [Pair('LOAD', target_reg)]
             assembly_code += [Pair('PUT', target_reg)]
+        return assembly_code
+    
+    def generate_value(self, num, reg='a'):
+        assembly_code = [Pair('RST', reg)]
+        if num == 0:
+            return assembly_code
+        if num == 1:
+            return assembly_code + [Pair('INC', reg)]
+        s = str(bin(num))[2:]
+        for char in s[:-1]:
+            if char == '1':
+                assembly_code += [Pair('INC', reg)]
+            assembly_code += [Pair('SHL', reg)]
+        if s[len(s) - 1] == '1':
+            assembly_code += [Pair('INC', reg)]
         return assembly_code
 
     def get_id_at_address(self, identifier, target_reg='a', temp_reg='h', is_initialized=True, procedure_name='main'):
