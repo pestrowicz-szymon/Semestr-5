@@ -1,4 +1,4 @@
-class Labeler:
+class LabelGenerator:
     def __init__(self):
         self.label_number = 0
 

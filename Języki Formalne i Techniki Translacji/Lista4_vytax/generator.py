@@ -1,16 +1,18 @@
 from my_array import Array
 from my_pair import Pair
-from my_labeler import Labeler
+from my_label_generator import LabelGenerator
 from my_procedure_data import ProcedureData
 from my_symbol_table import SymbolTable, DataType
 from my_variable import Variable
 
 #@TODO change labels
+#@TODO wywolania usunac nazwy
+#@TODO mnozenie
 
 class Generator:
     def __init__(self):
         self.symbols = SymbolTable()
-        self.labeler = Labeler()
+        self.labeler = LabelGenerator()
 
     def compile_all(self, parser_result):
         procedures_result = []
