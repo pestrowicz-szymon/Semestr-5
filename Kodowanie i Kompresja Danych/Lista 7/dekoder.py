@@ -21,6 +21,7 @@ def get_message(bits):
     return '0000', True
 
 
+
 def decode(bits, possible_codes):
 
     def get_message(bits):
@@ -46,7 +47,9 @@ output_f = argv[2]
 
 possible_codes = []
 for x in range(16):
+    print(bin(x))
     possible_codes.append(get_code(bin(x)[2:].zfill(4)))
+print(possible_codes)
 
 b = bs(filename=input_f)
 bitSequence = []
